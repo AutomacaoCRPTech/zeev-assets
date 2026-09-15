@@ -29,7 +29,7 @@
   }
 
   function inserirSuporte(){
-    if(!location.href.includes('/my') || document.getElementById('s360')) return;
+    if(location.href.includes('/login') || document.getElementById('s360')) return;
     var ref = document.getElementById('aSideMenuMyRequests');
     if(!ref) return;
     var parent = ref.parentElement;
