@@ -46,7 +46,7 @@
     link.className = 'nav-link';
     link.href = 'https://suporte360.crptecnologia.com.br/tickets';
     link.target = '_blank';
-    link.innerHTML = '<svg class="ico-star ico-md" focusable="true"><use xlink:href="#star"></use></svg> Suporte360 <svg class="ico-right ico-sm" focusable="true"><use xlink:href="#right"></use></svg>';
+    link.innerHTML = '<img src="https://automacaocrptech.github.io/zeev-assets/producao/icons/logo_suporte.svg" style="width:20px;height:20px;vertical-align:middle;margin-right:6px"> Suporte360 <svg class="ico-right ico-sm" focusable="true"><use xlink:href="#right"></use></svg>';
     clone.appendChild(link);
     parent.after(clone);
   }
