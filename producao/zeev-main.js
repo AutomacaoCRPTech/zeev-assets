@@ -7,13 +7,14 @@
     var style = document.createElement('style');
     style.id = 'crp-login-style';
     style.textContent =
-      'body.login { background: linear-gradient(135deg, #0a1e5e 0%, #1a3fa0 40%, #2563eb 100%) !important; }' +
+      'body.login { background: linear-gradient(135deg, #0a1e5e 0%, #1a3fa0 40%, #2563eb 100%) !important; margin: 0 !important; min-height: 100vh !important; }' +
       '.desktop-content-view { display: none !important; }' +
-      '.col-12.col-lg-4 { flex: 0 0 100% !important; max-width: 100% !important; display: flex !important; justify-content: center !important; align-items: center !important; }' +
-      '.login-form { max-width: 420px !important; width: 100% !important; border-radius: 16px !important; box-shadow: 0 8px 32px rgba(0,0,0,0.2) !important; background: #fff !important; padding: 20px !important; }' +
+      '.col-12.col-lg-4 { flex: 0 0 100% !important; max-width: 100% !important; display: flex !important; justify-content: center !important; align-items: center !important; min-height: 100vh !important; }' +
+      '.login-form { max-width: 480px !important; width: calc(100% - 32px) !important; border-radius: 16px !important; box-shadow: 0 8px 32px rgba(0,0,0,0.2) !important; background: #fff !important; padding: 28px 24px !important; margin: 16px !important; }' +
       '.login-form .view-scroll-behavior { max-height: none !important; overflow: visible !important; }' +
       '.logo-field { margin-bottom: 12px !important; }' +
-      '#bv-l { margin-bottom: 12px !important; }';
+      '#bv-l { margin-bottom: 12px !important; }' +
+      '@media(max-width:500px){ .login-form { max-width: 100% !important; border-radius: 12px !important; padding: 20px 16px !important; } }';
     document.head.appendChild(style);
   }
 
