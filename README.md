@@ -1,4 +1,4 @@
-# zeev-assets
+# Zeev | Padrão Visual
 
 Arquivos estáticos hospedados via GitHub Pages para customização da plataforma Zeev da CRP Tecnologia.
 
@@ -32,3 +32,28 @@ O deploy é automático via GitHub Pages. Ao fazer `git push` na branch `main`, 
 ```
 https://automacaocrptech.github.io/zeev-assets/
 ```
+## Como aplicar o layout padrão nos formulários
+
+Para utilizar o layout padrão da CRP nos formulários do Zeev:
+
+1. Abra o formulário em que deseja aplicar o layout.
+2. Acesse **Scripts e estilos**.
+3. Na seção **Fontes externas**, cole o código abaixo.
+4. Configure a aplicação para **todas as atividades** do processo.
+5. Salve as alterações.
+
+```html
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/AutomacaoCRPTech/zeev-assets@main/producao/forms/zeev-default.css"
+>
+
+<script
+  src="https://cdn.jsdelivr.net/gh/AutomacaoCRPTech/zeev-assets@main/producao/forms/zeev-default.js"
+  defer
+></script>
+```
+
+Repita essa configuração em cada formulário que deverá utilizar o layout padrão.
+
+> Os arquivos são carregados da branch `main` deste repositório pelo jsDelivr. As atualizações poderão refletir em todos os formulários que utilizam esses links, com possível atraso devido ao cache.
