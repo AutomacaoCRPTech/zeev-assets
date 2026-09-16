@@ -1,0 +1,920 @@
+/* CRP — base visual geral. Carregar antes do CSS específico. */
+#containerRequest.crp-form {
+  --crp-primary: #053F88;
+  --crp-hover: #03336F;
+  --crp-secondary: #2A4B8D;
+  --crp-muted: #6B83B5;
+  --crp-text: #0B1323;
+  --crp-bg: #F3F6FB;
+  --crp-soft: #EAF0F8;
+  --crp-border: #C7D4EA;
+  --crp-danger: #E6373B;
+  --crp-warning: #F6A730;
+  --crp-width: 1000px;
+  --crp-radius: 18px;
+  --crp-shadow: 0 1px 2px #14284008, 0 8px 24px #1428400a;
+  background: var(--crp-bg);
+  color: var(--crp-text);
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+.crp-form .container-task { background: var(--crp-bg); }
+.crp-form .crp-main {
+  flex: 1 1 0;
+  min-width: 0;
+  width: 100%;
+  max-width: var(--crp-width);
+  margin: 0 auto;
+  padding: 0 16px 100px;
+  box-sizing: border-box;
+}
+.crp-form .crp-header {
+  box-sizing: border-box;
+  width: calc(100% - 32px);
+  max-width: calc(var(--crp-width) - 32px);
+  margin: 24px auto;
+  padding: 22px 28px !important;
+  background: #fff;
+  border: 1px solid var(--crp-border);
+  border-radius: var(--crp-radius);
+  box-shadow: var(--crp-shadow);
+}
+.crp-form .crp-header h1 {
+  margin: 4px 0;
+  padding-left: 16px;
+  border-left: 4px solid var(--crp-primary);
+  color: var(--crp-text);
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+.crp-form .crp-header h5 { font-size: 12px; color: var(--crp-muted); }
+.crp-form .crp-card {
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0 0 22px;
+  padding: 24px 28px;
+  border: 1px solid var(--crp-border);
+  border-radius: var(--crp-radius);
+  background: #fff;
+  box-shadow: var(--crp-shadow);
+}
+.crp-form .crp-card > h5,
+.crp-form .crp-panel > h5 {
+  margin: 0 0 18px;
+  color: var(--crp-text);
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: none;
+}
+.crp-form .crp-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--crp-border);
+}
+.crp-form .crp-tabs button {
+  padding: 8px 0 10px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--crp-muted);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.crp-form .crp-tabs button[aria-selected="true"] {
+  border-bottom-color: var(--crp-primary);
+  color: var(--crp-primary);
+  font-weight: 600;
+}
+.crp-form .crp-panel {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.crp-form .crp-panel[hidden] { display: none !important; }
+.crp-form .instructions-text {
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--crp-soft);
+  color: var(--crp-secondary);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.crp-form #ContainerConclusionCheckList .orquestra-checklist,
+.crp-form #ContainerConclusionCheckList .form-group {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.crp-form #ContainerConclusionCheckList .form-group + .form-group {
+  margin-top: 12px !important;
+}
+.crp-form #BoxFrmExecute { padding: 0 !important; }
+.crp-form #FrmExecute,
+.crp-form table.form { width: 100%; }
+.crp-form table.form > tbody > tr > td {
+  padding: 10px 8px;
+  vertical-align: top;
+}
+.crp-form table.form > tbody > tr > td.col0 {
+  color: var(--crp-text);
+  font-size: 13px;
+  font-weight: 600;
+}
+.crp-form table.form .group { color: var(--crp-primary); }
+.crp-form .form-control:not([type="radio"]):not([type="checkbox"]):not([type="hidden"]) {
+  box-sizing: border-box;
+  min-height: 42px;
+  max-width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--crp-border);
+  border-radius: 8px;
+  background: #FBFCFE;
+  color: var(--crp-text);
+  font-family: inherit;
+  font-size: 13px;
+  box-shadow: none;
+}
+.crp-form .form-control:focus {
+  border-color: var(--crp-primary);
+  outline: 2px solid var(--crp-soft);
+  outline-offset: 1px;
+}
+.crp-form .form-control:disabled,
+.crp-form .form-control[readonly] { background: var(--crp-soft); }
+.crp-form .form-text { color: var(--crp-muted); font-size: 12px; }
+/* Rádios nativos: mantém círculo e texto separados. */
+.crp-form #ContainerForm .form-check:has(input[type="radio"]) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 0;
+  margin: 0 0 8px;
+}
+.crp-form #ContainerForm .form-check input[type="radio"] {
+  position: static !important;
+  float: none !important;
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  margin: 0 !important;
+  transform: none !important;
+  accent-color: var(--crp-primary);
+}
+.crp-form #ContainerForm .form-check:has(input[type="radio"]) .form-check-label {
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+}
+/* Tabelas multivaloradas continuam tabelas. */
+.crp-form .table-responsive { max-width: 100%; overflow-x: auto; }
+.crp-form table[mult="S"] { border-color: var(--crp-border); }
+.crp-form table[mult="S"] .header > td,
+.crp-form table[mult="S"] th {
+  background: var(--crp-soft);
+  color: var(--crp-primary);
+}
+.crp-form #controllers {
+  box-sizing: border-box;
+  padding: 14px 24px !important;
+  background: #fff !important;
+  border-top: 1px solid var(--crp-border);
+}
+.crp-form #controllers #buttons { justify-content: flex-end; gap: 10px; }
+/* Classes opcionais para os scripts específicos. */
+.crp-form #BtnSend,
+.crp-form #btnAddMessage,
+.crp-form .crp-action-primary {
+  background: var(--crp-primary) !important;
+  border-color: var(--crp-primary) !important;
+  color: #fff !important;
+  border-radius: 999px;
+  padding: 9px 18px;
+}
+.crp-form #BtnSend:not(:disabled):not(.disabled):hover,
+.crp-form #btnAddMessage:not(:disabled):not(.disabled):hover,
+.crp-form .crp-action-primary:not(:disabled):not(.disabled):hover {
+  background: var(--crp-hover) !important;
+  border-color: var(--crp-hover) !important;
+}
+.crp-form .crp-action-review {
+  background: var(--crp-warning) !important;
+  border-color: var(--crp-warning) !important;
+  color: var(--crp-text) !important;
+}
+.crp-form .crp-action-danger {
+  background: var(--crp-danger) !important;
+  border-color: var(--crp-danger) !important;
+  color: #fff !important;
+}
+.crp-form .btn:disabled,
+.crp-form .btn.disabled { opacity: .55; }
+.crp-form button:focus-visible,
+.crp-form a:focus-visible { outline: 2px solid var(--crp-muted); outline-offset: 3px; }
+@media (max-width: 640px) {
+  .crp-form .crp-card,
+  .crp-form .crp-header { padding: 18px !important; }
+  .crp-form table.form > tbody > tr > td.col0,
+  .crp-form table.form > tbody > tr > td.col1 {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 6px 0;
+  }
+}
+
+.crp-form #crp-info-card[hidden] { display: none !important; }
+
+/* CRP v2 — composição inspirada no painel de referência */
+#containerRequest.crp-workspace {
+  --crp-width: 1440px;
+  --crp-radius: 8px;
+  --crp-border: #E1E7F0;
+  --crp-shadow: none;
+  font-size: 13px;
+}
+.crp-workspace .crp-header {
+  max-width: none;
+  width: 100%;
+  margin: 0 0 24px;
+  padding: 22px 32px !important;
+  border: 0;
+  border-bottom: 1px solid var(--crp-border);
+  border-radius: 0;
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.crp-workspace .crp-header h1 {
+  padding: 0;
+  border: 0;
+  font-size: 22px;
+  color: #1C3557;
+  font-weight: 650;
+}
+.crp-workspace .crp-header h5 { font-size: 11px; font-weight: 500; }
+.crp-workspace #RequesterInfo { max-width: 380px; font-size: 11px; }
+.crp-workspace #RequesterInfo .user-photo {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  background-size: cover;
+}
+.crp-workspace #RequesterInfo .user { font-size: 11px; }
+.crp-workspace .crp-main {
+  width: 100%;
+  max-width: var(--crp-width);
+  flex: 0 0 100%;
+  padding: 0 24px 110px;
+  margin: 0 auto;
+}
+.crp-workspace #ContainerForm.crp-form-shell {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  box-shadow: none;
+}
+.crp-workspace #BoxFrmExecute.crp-work-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, .38fr) minmax(0, .62fr);
+  align-items: start;
+  gap: 22px;
+  width: 100%;
+}
+.crp-workspace .crp-context-column,
+.crp-workspace .crp-action-column { min-width: 0; }
+.crp-workspace .crp-card {
+  margin-bottom: 18px;
+  padding: 24px;
+  border: 1px solid var(--crp-border);
+  border-radius: 8px;
+  box-shadow: none;
+}
+.crp-workspace .crp-card-title {
+  margin: 0 0 18px;
+  color: #1C3557;
+  font-size: 15px;
+  font-weight: 650;
+}
+.crp-workspace .crp-action-title {
+  margin: 0 0 22px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--crp-border);
+  color: #1C3557;
+  font-size: 21px;
+  font-weight: 650;
+}
+.crp-workspace .crp-tabs { gap: 6px; padding-bottom: 12px; }
+.crp-workspace .crp-tabs button {
+  border: 0;
+  border-radius: 5px;
+  padding: 7px 10px;
+  font-size: 12px;
+  color: #526786;
+}
+.crp-workspace .crp-tabs button[aria-selected="true"] {
+  background: var(--crp-soft);
+  color: var(--crp-primary);
+}
+.crp-workspace .crp-panel { padding: 0 !important; margin: 0 !important; }
+.crp-workspace .crp-panel[hidden] { display: none !important; }
+.crp-workspace .crp-instructions {
+  padding: 0;
+  margin: 14px 0;
+  background: transparent;
+  box-shadow: none;
+}
+.crp-workspace .instructions-text { font-size: 12px; }
+.crp-workspace .crp-readonly-group { width: 100%; margin: 0 0 14px; }
+.crp-workspace .crp-readonly-group table.form > tbody {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 14px 18px;
+}
+.crp-workspace .crp-readonly-group table.form > tbody > tr {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.crp-workspace .crp-readonly-group table.form > tbody > tr.group,
+.crp-workspace .crp-readonly-group table.form > tbody > tr:has([xtype="TEXTAREA"]),
+.crp-workspace .crp-readonly-group table.form > tbody > tr:has(#td1solicitacaoTipo),
+.crp-workspace .crp-readonly-group table.form > tbody > tr:has(#td1justificativa) {
+  grid-column: 1 / -1;
+}
+.crp-workspace .crp-readonly-group table.form > tbody > tr > td {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  text-align: left;
+}
+.crp-workspace .crp-readonly-group table.form > tbody > tr > td.col0 {
+  margin-bottom: 4px;
+  font-size: 11px;
+  font-weight: 400;
+  color: #526786;
+}
+.crp-workspace .crp-readonly-group td.col0::after { content: none !important; }
+.crp-workspace .crp-readonly-group td.col1,
+.crp-workspace .crp-readonly-group td.col1 > div {
+  color: #253B59;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.crp-workspace .crp-readonly-group .group b { font-size: 13px; font-weight: 600; }
+.crp-workspace .crp-action-content table.form > tbody > tr > td.col0,
+.crp-workspace .crp-action-content table.form > tbody > tr > td.col1 {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 6px 0;
+  text-align: left;
+}
+.crp-workspace .crp-action-content table.form { margin-bottom: 18px; }
+.crp-workspace .crp-action-content .form-control { width: 100%; }
+.crp-workspace table[mult="S"] { font-size: 12px; }
+.crp-workspace table[mult="S"] th,
+.crp-workspace table[mult="S"] td { padding: 10px 8px; }
+.crp-workspace .crp-auxiliary {
+  width: 100%;
+  max-width: none;
+  padding: 0;
+}
+.crp-workspace .crp-auxiliary > .box {
+  padding: 16px;
+  margin: 0 0 16px;
+  border: 1px solid var(--crp-border);
+  border-radius: 8px;
+  box-shadow: none;
+}
+.crp-workspace #commands { position: static !important; }
+.crp-workspace #commands ul { flex-direction: row !important; flex-wrap: wrap; gap: 4px; }
+.crp-workspace #commands a { padding: 5px 7px; font-size: 11px; }
+.crp-workspace #controllers { left: 0; right: 0; width: 100%; }
+.crp-workspace #controllers .btn,
+.crp-workspace #btnAddMessage {
+  border-radius: 6px;
+  font-size: 12px;
+  padding: 9px 14px;
+}
+.crp-workspace #controllers #buttons { max-width: none; margin: 0; }
+.crp-workspace #btnFinish {
+  background: var(--crp-primary) !important;
+  border-color: var(--crp-primary) !important;
+  color: #fff !important;
+}
+@media (max-width: 900px) {
+  .crp-workspace #BoxFrmExecute.crp-work-grid { grid-template-columns: minmax(0, 1fr); }
+  .crp-workspace .crp-header { flex-wrap: wrap; padding: 18px !important; }
+  .crp-workspace .crp-main { padding: 0 16px 130px; }
+}
+/* Oculta a navegação duplicada abaixo das abas */
+#containerRequest.crp-workspace #commands {
+  display: none !important;
+}
+/* Outras opções e Salvar juntos à esquerda */
+#containerRequest.crp-workspace
+#controllers .crp-footer-secondary {
+  display: flex !important;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 auto 0 0 !important;
+}
+
+/* Mesmo padrão visual para as ações secundárias */
+#containerRequest.crp-workspace
+#controllers #inpOtherOptions,
+#containerRequest.crp-workspace
+#controllers .crp-save-button {
+  box-sizing: border-box;
+  width: auto !important;
+  min-height: 40px;
+  margin: 0 !important;
+  border: 1px solid #C7D4EA !important;
+  border-radius: 6px !important;
+  background-color: #FFFFFF !important;
+  color: #053F88 !important;
+  font-family: inherit;
+  font-size: 13px !important;
+  font-weight: 500;
+  line-height: 1.4;
+  box-shadow: none !important;
+}
+
+#containerRequest.crp-workspace
+#controllers #inpOtherOptions {
+  min-width: 165px;
+  padding: 9px 32px 9px 12px !important;
+  cursor: pointer;
+}
+
+#containerRequest.crp-workspace
+#controllers .crp-save-button {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  min-width: 90px;
+  padding: 9px 18px !important;
+  float: none !important;
+  text-decoration: none !important;
+}
+
+/* Interação */
+#containerRequest.crp-workspace
+#controllers #inpOtherOptions:not(:disabled):hover,
+#containerRequest.crp-workspace
+#controllers .crp-save-button:not(:disabled):not(.disabled):hover {
+  background-color: #EAF0F8 !important;
+  border-color: #053F88 !important;
+}
+
+#containerRequest.crp-workspace
+#controllers #inpOtherOptions:focus-visible,
+#containerRequest.crp-workspace
+#controllers .crp-save-button:focus-visible {
+  outline: 2px solid #6B83B5 !important;
+  outline-offset: 2px;
+}
+
+/* Títulos dos grupos na área de ações */
+#containerRequest.crp-workspace
+.crp-action-content table.form > tbody > tr.group > td.group {
+  padding: 0 0 14px !important;
+  border: 0 !important;
+  background: transparent !important;
+  text-align: left !important;
+}
+
+#containerRequest.crp-workspace
+.crp-action-content table.form > tbody > tr.group > td.group > b {
+  display: block;
+  margin: 0;
+  padding: 2px 0 2px 10px;
+  border-left: 3px solid #C7D4EA;
+  color: #253B59 !important;
+  font-family: inherit;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  line-height: 1.4;
+  text-transform: none !important;
+}
+#containerRequest.crp-workspace
+#controllers #inpOtherOptions {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+
+  text-align: center !important;
+  text-align-last: center !important;
+  padding: 9px 30px !important;
+
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23053F88' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 10px center !important;
+  background-size: 16px 16px !important;
+}
+
+/* Menu aberto: seta para cima */
+#containerRequest.crp-workspace
+#controllers #inpOtherOptions:open {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23053F88' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 15 6-6 6 6'/%3E%3C/svg%3E") !important;
+}
+
+/* Itens do menu alinhados à esquerda */
+#containerRequest.crp-workspace
+#controllers #inpOtherOptions option {
+  text-align: left;
+  text-align-last: left;
+}
+/* Transição suave */
+#containerRequest.crp-workspace #buttons .crp-action-review,
+#containerRequest.crp-workspace #buttons #btnFinish {
+  transition: background-color 0.18s ease,
+              border-color 0.18s ease;
+}
+
+/* Solicitar revisão */
+#containerRequest.crp-workspace
+#buttons .crp-action-review:not(:disabled):not(.disabled):hover {
+  background-color: #D98A00 !important;
+  border-color: #D98A00 !important;
+  color: #0B1323 !important;
+}
+
+/* Concluir */
+#containerRequest.crp-workspace
+#buttons #btnFinish:not(:disabled):not(.disabled):hover {
+  background-color: #03336F !important;
+  border-color: #03336F !important;
+  color: #FFFFFF !important;
+}
+/* Espaçamento do título */
+#containerRequest.crp-workspace
+#containerFiles .title-container-files {
+  margin: 0 0 16px !important;
+  font-size: 14px;
+  font-weight: 600;
+  color: #253B59;
+}
+
+/* Seleção e ordenação em linhas separadas */
+#containerRequest.crp-workspace
+#containerFiles #annex > .d-flex {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+#containerRequest.crp-workspace
+#containerFiles #annex > .d-flex > div {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Botões com largura e altura consistentes */
+#containerRequest.crp-workspace
+#containerFiles #btnAddFile,
+#containerRequest.crp-workspace
+#containerFiles #lnkViewAllFiles {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 40px;
+  margin: 0 !important;
+  padding: 10px 14px !important;
+  border: 1px solid #C7D4EA !important;
+  border-radius: 6px !important;
+  background: #FFFFFF !important;
+  color: #053F88 !important;
+  font-family: inherit;
+  font-size: 13px !important;
+  font-weight: 500;
+  line-height: 1.4;
+  text-align: center;
+  text-decoration: none !important;
+}
+
+/* Ícones sem distorção */
+#containerRequest.crp-workspace
+#containerFiles #btnAddFile svg,
+#containerRequest.crp-workspace
+#containerFiles #lnkViewAllFiles svg {
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  margin: 0 !important;
+}
+
+/* Ordenação */
+#containerRequest.crp-workspace
+#containerFiles label[for="fileOrder"] {
+  display: block;
+  margin: 0 0 6px;
+  color: #526786;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+#containerRequest.crp-workspace
+#containerFiles #fileOrder {
+  box-sizing: border-box;
+  width: 100% !important;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 40px;
+  margin: 0;
+  padding: 9px 12px;
+  border: 1px solid #C7D4EA;
+  border-radius: 6px;
+  background-color: #FBFCFE;
+  color: #253B59;
+  font-family: inherit;
+  font-size: 13px;
+}
+
+/* Lista: acomoda nomes longos */
+#containerRequest.crp-workspace
+#containerFiles #divFile {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+#containerRequest.crp-workspace
+#containerFiles #tblFile {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+#containerRequest.crp-workspace
+#containerFiles #tblFile td {
+  overflow-wrap: anywhere;
+}
+
+/* Rodapé do painel */
+#containerRequest.crp-workspace
+#containerFiles > .text-right {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #E1E7F0;
+  text-align: left !important;
+}
+
+/* Hover */
+#containerRequest.crp-workspace
+#containerFiles #btnAddFile:not(:disabled):not(.disabled):hover,
+#containerRequest.crp-workspace
+#containerFiles #lnkViewAllFiles:not(.disabled):hover {
+  background: #EAF0F8 !important;
+  border-color: #053F88 !important;
+}
+
+/* Foco da ordenação */
+#containerRequest.crp-workspace
+#containerFiles #fileOrder:focus-visible {
+  outline: 2px solid #6B83B5;
+  outline-offset: 2px;
+}
+/* Títulos das tabelas no padrão dos demais grupos */
+#containerRequest.crp-workspace
+#ContainerForm table[mult="S"] > caption {
+  caption-side: top !important;
+  text-align: left !important;
+
+  margin: 0 !important;
+  padding: 2px 0 2px 10px !important;
+
+  border: 0 !important;
+  border-left: 3px solid #C7D4EA !important;
+  background: transparent !important;
+
+  color: #253B59 !important;
+  font-family: inherit !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  line-height: 1.4 !important;
+  text-transform: none !important;
+}
+
+/* Espaço entre o título e a tabela */
+#containerRequest.crp-workspace
+#ContainerForm table[mult="S"]:has(> caption) {
+  border-top: 12px solid transparent !important;
+  background-clip: padding-box;
+}
+/* Card de orientações acima das ações */
+#containerRequest.crp-workspace #crp-instructions-card {
+  margin-bottom: 18px;
+  padding: 22px 24px;
+  background: #FFFFFF;
+  border: 1px solid #E1E7F0;
+  border-radius: 8px;
+}
+
+/* Título no padrão dos demais cards */
+#containerRequest.crp-workspace
+#crp-instructions-card > .crp-card-title {
+  margin: 0 0 14px;
+  color: #1C3557;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* Texto sem o fundo azul do antigo Resumo */
+#containerRequest.crp-workspace
+#crp-instructions-card .instructions-text {
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0;
+  background: transparent !important;
+  color: #526786;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+#containerRequest.crp-workspace
+#crp-instructions-card .instructions-text > div,
+#containerRequest.crp-workspace
+#crp-instructions-card .instructions-text > p {
+  margin: 0 0 12px;
+}
+
+#containerRequest.crp-workspace
+#crp-instructions-card .instructions-text > :last-child {
+  margin-bottom: 0;
+}
+
+#containerRequest.crp-workspace
+#crp-instructions-card .instructions-text strong {
+  color: #253B59;
+  font-weight: 600;
+}
+
+#containerRequest.crp-workspace
+#crp-instructions-card .instructions-text p:empty {
+  display: none;
+}
+/* Card de orientações */
+#containerRequest.crp-workspace #crp-instructions-card {
+  position: relative;
+  padding: 24px !important;
+  border: 1px solid #DCE5F1;
+  border-top: 3px solid #053F88;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #F8FAFE 0%, #FFFFFF 65%);
+  box-shadow: 0 4px 16px rgba(5, 63, 136, 0.04);
+}
+
+/* Cabeçalho com ícone */
+#containerRequest.crp-workspace
+#crp-instructions-card > .crp-card-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 18px;
+  color: #053F88;
+  font-size: 16px;
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+#containerRequest.crp-workspace
+#crp-instructions-card > .crp-card-title::before {
+  content: "";
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  border: 1px solid #DCE5F1;
+  border-radius: 10px;
+  background-color: #EAF0F8;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23053F88' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='5' y='4' width='14' height='17' rx='2'/%3E%3Crect x='9' y='2' width='6' height='4' rx='1' fill='%23EAF0F8'/%3E%3Cpath d='m8 12 2 2 5-5M9 18h6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 21px;
+}
+
+/* Texto principal */
+#containerRequest.crp-workspace
+#crp-instructions-card .instructions-text {
+  color: #526786;
+  font-size: 13px;
+  line-height: 1.75;
+}
+
+/* Introdução com fundo suave */
+#containerRequest.crp-workspace
+#crp-instructions-card .instructions-text > div:first-child {
+  margin: 0 0 18px;
+  padding: 12px 14px;
+  border: 1px solid #E1E8F3;
+  border-radius: 8px;
+  background: #F0F4FA;
+  color: #526786;
+}
+
+/* Subtítulo: Esta tarefa consiste em */
+#containerRequest.crp-workspace
+#crp-instructions-card .instructions-text > p:has(> strong:only-child) {
+  margin: 0 0 8px;
+}
+
+/* Também contempla o subtítulo seguido de <br> */
+#containerRequest.crp-workspace
+#crp-instructions-card .instructions-text > p:has(> strong + br:last-child) {
+  margin: 0 0 8px;
+}
+
+#containerRequest.crp-workspace
+#crp-instructions-card .instructions-text strong {
+  color: #253B59;
+  font-weight: 600;
+}
+
+/* Espaçamento dos parágrafos */
+#containerRequest.crp-workspace
+#crp-instructions-card .instructions-text > p {
+  margin: 0 0 12px;
+}
+
+#containerRequest.crp-workspace
+#crp-instructions-card .instructions-text > p:empty {
+  display: none;
+}
+
+/* Links, caso existam nas orientações */
+#containerRequest.crp-workspace
+#crp-instructions-card .instructions-text a {
+  color: #053F88;
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 640px) {
+  #containerRequest.crp-workspace #crp-instructions-card {
+    padding: 18px !important;
+  }
+}
+/* Nome da proposta e exclusão lado a lado */
+#containerRequest.crp-workspace .crp-proposal-file {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+/* Nome visual do arquivo */
+#containerRequest.crp-workspace .crp-proposal-link {
+  color: #053F88 !important;
+  font-family: inherit;
+  font-size: 13px !important;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+#containerRequest.crp-workspace .crp-proposal-link:hover {
+  color: #03336F !important;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Ícone original de excluir arquivo */
+#containerRequest.crp-workspace .crp-proposal-delete {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  margin: 0 !important;
+  padding: 0;
+  border-radius: 6px;
+  color: #E6373B !important;
+  text-decoration: none !important;
+  transition: background-color 0.18s ease;
+}
+
+#containerRequest.crp-workspace .crp-proposal-delete:hover {
+  background: #FFF0F1;
+}
+
+#containerRequest.crp-workspace .crp-proposal-delete svg {
+  width: 16px;
+  height: 16px;
+  margin: 0 !important;
+  color: inherit !important;
+}
