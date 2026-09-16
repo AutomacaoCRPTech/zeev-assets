@@ -34,10 +34,6 @@
     var ids = ['aSideMenuMyRequests','aSideMenuMyTasks','aSideMenuStartApplication'];
     var ref = null;
     for(var i = 0; i < ids.length; i++){ ref = document.getElementById(ids[i]); if(ref) break; }
-    if(!ref){
-      var links = document.querySelectorAll('.nav-link');
-      if(links.length) ref = links[links.length - 1];
-    }
     if(!ref) return;
     var parent = ref.parentElement;
     var clone = parent.cloneNode(false);
