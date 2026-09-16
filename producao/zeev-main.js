@@ -29,6 +29,46 @@
     form.insertAdjacentElement('beforebegin', d);
   }
 
+  function inserirBotoesAcompanhar(){
+    if(!location.href.includes('/report/my-legacy') || document.getElementById('crp-filtro-rapido')) return;
+    var dropdown = null;
+    var selects = document.querySelectorAll('select');
+    for(var i = 0; i < selects.length; i++){
+      var opts = selects[i].querySelectorAll('option');
+      for(var j = 0; j < opts.length; j++){
+        if(opts[j].textContent.indexOf('Minhas solicita') > -1){ dropdown = selects[i]; break; }
+      }
+      if(dropdown) break;
+    }
+    if(!dropdown) return;
+    var bar = document.createElement('div');
+    bar.id = 'crp-filtro-rapido';
+    bar.style.cssText = 'display:flex;gap:8px;padding:0 0 16px;flex-wrap:wrap';
+    var nomes = {'Minhas solicitações':'Minhas solicitações','Solicitações que participei e tenho acesso':'Participei e tenho acesso','Todas as solicitações que tenho acesso':'Todas as solicitações'};
+    Array.from(dropdown.options).forEach(function(opt){
+      var btn = document.createElement('button');
+      var label = opt.text.trim();
+      btn.textContent = nomes[label] || label;
+      btn.dataset.value = opt.value;
+      var ativo = dropdown.value === opt.value;
+      btn.style.cssText = 'padding:8px 18px;border-radius:20px;border:2px solid '+(ativo?'#1a3fa0':'#e0e0e0')+';cursor:pointer;font-size:13px;font-weight:500;transition:all .2s;background:'+(ativo?'#1a3fa0':'#fff')+';color:'+(ativo?'#fff':'#555');
+      btn.addEventListener('click', function(){
+        dropdown.value = opt.value;
+        dropdown.dispatchEvent(new Event('change',{bubbles:true}));
+        bar.querySelectorAll('button').forEach(function(b){
+          var on = b.dataset.value === opt.value;
+          b.style.background = on?'#1a3fa0':'#fff';
+          b.style.color = on?'#fff':'#555';
+          b.style.borderColor = on?'#1a3fa0':'#e0e0e0';
+        });
+      });
+      bar.appendChild(btn);
+    });
+    var lista = document.querySelector('.instance-list') || document.querySelector('[class*="instance"]');
+    if(lista) lista.parentElement.insertBefore(bar, lista);
+    else{ var content = document.querySelector('.content-wrapper') || document.querySelector('main'); if(content) content.insertBefore(bar, content.firstChild); }
+  }
+
   function inserirSuporte(){
     if(location.href.includes('/login') || document.getElementById('s360')) return;
     var ids = ['aSideMenuMyRequests','aSideMenuMyTasks','aSideMenuStartApplication'];
@@ -47,8 +87,9 @@
     parent.after(clone);
   }
 
-  new MutationObserver(function(){ estilizarLogin(); inserirLogin(); inserirSuporte(); }).observe(document.body, {childList: true, subtree: true});
+  new MutationObserver(function(){ estilizarLogin(); inserirLogin(); inserirSuporte(); inserirBotoesAcompanhar(); }).observe(document.body, {childList: true, subtree: true});
   estilizarLogin();
   setTimeout(inserirLogin, 600);
   setTimeout(inserirSuporte, 1000);
+  setTimeout(inserirBotoesAcompanhar, 1000);
 })();
