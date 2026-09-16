@@ -57,8 +57,9 @@
       });
       bar.appendChild(btn);
     });
-    var aside = document.querySelector('.filterCol');
-    if(aside && aside.parentElement) aside.parentElement.insertBefore(bar, aside);
+    var container = document.querySelector('.d-flex.h-100.flex-column');
+    var row = container ? container.querySelector('.row.flex-nowrap') : null;
+    if(container && row) container.insertBefore(bar, row);
   }
 
   function inserirSuporte(){
