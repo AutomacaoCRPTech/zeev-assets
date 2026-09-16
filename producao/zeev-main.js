@@ -29,39 +29,6 @@
     form.insertAdjacentElement('beforebegin', d);
   }
 
-  function inserirBotoesAcompanhar(){
-    if(!location.href.includes('/report/my-legacy') || document.getElementById('crp-filtro-rapido')) return;
-    var items = document.querySelectorAll('#dropdownReportMenuType .dropdown-item');
-    if(!items.length) return;
-    var btnAtual = document.querySelector('#btnReportType span');
-    var textoAtivo = btnAtual ? btnAtual.textContent.trim() : 'Minhas solicitações';
-    var bar = document.createElement('div');
-    bar.id = 'crp-filtro-rapido';
-    bar.style.cssText = 'display:flex;gap:8px;padding:12px 16px;flex-wrap:wrap';
-    var nomes = {'Minhas solicitações':'Minhas solicitações','Solicitações que participei e tenho acesso':'Participei e tenho acesso','Todas as solicitações que tenho acesso':'Todas as solicitações'};
-    items.forEach(function(item){
-      var label = item.textContent.trim();
-      var btn = document.createElement('button');
-      btn.textContent = nomes[label] || label;
-      btn.dataset.reportId = item.dataset.reportId;
-      var ativo = textoAtivo === label;
-      btn.style.cssText = 'padding:8px 18px;border-radius:20px;border:2px solid '+(ativo?'#1a3fa0':'#e0e0e0')+';cursor:pointer;font-size:13px;font-weight:500;transition:all .2s;background:'+(ativo?'#1a3fa0':'#fff')+';color:'+(ativo?'#fff':'#555');
-      btn.addEventListener('click', function(){
-        item.click();
-        bar.querySelectorAll('button').forEach(function(b){
-          var on = b.dataset.reportId === item.dataset.reportId;
-          b.style.background = on?'#1a3fa0':'#fff';
-          b.style.color = on?'#fff':'#555';
-          b.style.borderColor = on?'#1a3fa0':'#e0e0e0';
-        });
-      });
-      bar.appendChild(btn);
-    });
-    var container = document.querySelector('.d-flex.h-100.flex-column');
-    var row = container ? container.querySelector('.row.flex-nowrap') : null;
-    if(container && row) container.insertBefore(bar, row);
-  }
-
   function inserirSuporte(){
     if(location.href.includes('/login') || document.getElementById('s360')) return;
     var ids = ['aSideMenuMyRequests','aSideMenuMyTasks','aSideMenuStartApplication'];
@@ -80,9 +47,8 @@
     parent.after(clone);
   }
 
-  new MutationObserver(function(){ estilizarLogin(); inserirLogin(); inserirSuporte(); inserirBotoesAcompanhar(); }).observe(document.body, {childList: true, subtree: true});
+  new MutationObserver(function(){ estilizarLogin(); inserirLogin(); inserirSuporte(); }).observe(document.body, {childList: true, subtree: true});
   estilizarLogin();
   setTimeout(inserirLogin, 600);
   setTimeout(inserirSuporte, 1000);
-  setTimeout(inserirBotoesAcompanhar, 1000);
 })();
