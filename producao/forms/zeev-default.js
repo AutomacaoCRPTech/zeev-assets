@@ -100,6 +100,71 @@
       if (item.button.textContent !== text) item.button.textContent = text;
     });
   }
+  function atualizarVisibilidadeAcoes(s) {
+    var card = s.actions;
+    var conteudo = s.content;
+
+    // Permite verificar o conteúdo mesmo se o card estava oculto.
+    // O observer já fica desconectado durante a atualização.
+    card.hidden = false;
+
+    function estaVisivel(elemento) {
+      if (!elemento || elemento.closest('[hidden]')) return false;
+
+      var estilo = getComputedStyle(elemento);
+
+      return estilo.display !== 'none' &&
+        estilo.visibility !== 'hidden' &&
+        estilo.visibility !== 'collapse' &&
+        elemento.getClientRects().length > 0;
+    }
+
+    // Preserva campos editáveis e outros recursos visíveis.
+    var temInteracao = Array.prototype.some.call(
+      conteudo.querySelectorAll(
+        'input:not([type="hidden"]), select, textarea, button, ' +
+        'a[href], [contenteditable="true"], [role="button"]'
+      ),
+      function (elemento) {
+        return estaVisivel(elemento) &&
+          !elemento.matches(':disabled') &&
+          !elemento.readOnly;
+      }
+    );
+
+    // Preserva informações de consulta, mensagens e anexos.
+    var temTexto = false;
+    var textos = document.createTreeWalker(
+      conteudo,
+      NodeFilter.SHOW_TEXT
+    );
+
+    var texto;
+
+    while ((texto = textos.nextNode())) {
+      var pai = texto.parentElement;
+
+      if (
+        !texto.textContent.trim() ||
+        !pai ||
+        pai.closest('script, style, template, option, tr.group')
+      ) {
+        continue;
+      }
+
+      if (estaVisivel(pai)) {
+        temTexto = true;
+        break;
+      }
+    }
+
+    var temConteudoVisual = Array.prototype.some.call(
+      conteudo.querySelectorAll('img, svg, canvas, iframe, video'),
+      estaVisivel
+    );
+
+    card.hidden = !(temInteracao || temTexto || temConteudoVisual);
+  }
   function update() {
     if (!setup()) return;
     var s = state;
@@ -220,6 +285,7 @@
       review.style.removeProperty('color');
     }
     render();
+    atualizarVisibilidadeAcoes(s);
   }
   function refresh() {
     if (observer) observer.disconnect();

@@ -918,3 +918,7 @@
   margin: 0 !important;
   color: inherit !important;
 }
+/* Oculta o card de ações quando não há conteúdo visível. */
+.crp-workspace .crp-actions[hidden] {
+  display: none !important;
+}
