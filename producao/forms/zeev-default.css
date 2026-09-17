@@ -922,3 +922,9 @@
 .crp-workspace .crp-actions[hidden] {
   display: none !important;
 }
+/* Oculta o card quando o conteúdo está vazio
+   ou contém somente campos ocultos. */
+#containerRequest.crp-workspace
+.crp-actions:has(> .crp-action-content):not(:has(> .crp-action-content :not(input[type="hidden"]))) {
+  display: none !important;
+}
