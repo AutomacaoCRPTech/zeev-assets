@@ -104,66 +104,62 @@
     var card = s.actions;
     var conteudo = s.content;
 
-    // Permite verificar o conteúdo mesmo se o card estava oculto.
-    // O observer já fica desconectado durante a atualização.
+    // Reabre para verificar os campos, inclusive após mudanças condicionais.
     card.hidden = false;
+    card.style.removeProperty('display');
 
     function estaVisivel(elemento) {
-      if (!elemento || elemento.closest('[hidden]')) return false;
+      var atual = elemento;
 
-      var estilo = getComputedStyle(elemento);
+      while (atual && atual.nodeType === 1) {
+        var estilo = getComputedStyle(atual);
 
-      return estilo.display !== 'none' &&
-        estilo.visibility !== 'hidden' &&
-        estilo.visibility !== 'collapse' &&
-        elemento.getClientRects().length > 0;
+        if (
+          atual.hidden ||
+          estilo.display === 'none' ||
+          estilo.visibility === 'hidden' ||
+          estilo.visibility === 'collapse'
+        ) {
+          return false;
+        }
+
+        atual = atual.parentElement;
+      }
+
+      return elemento.getClientRects().length > 0;
     }
 
-    // Preserva campos editáveis e outros recursos visíveis.
-    var temInteracao = Array.prototype.some.call(
-      conteudo.querySelectorAll(
-        'input:not([type="hidden"]), select, textarea, button, ' +
-        'a[href], [contenteditable="true"], [role="button"]'
-      ),
-      function (elemento) {
-        return estaVisivel(elemento) &&
-          !elemento.matches(':disabled') &&
-          !elemento.readOnly;
+    var seletores = [
+      'input:not([type="hidden"]):not([type="submit"]):not([type="reset"])',
+      'select',
+      'textarea',
+      'button',
+      '[role="button"]',
+      '[contenteditable="true"]'
+    ].join(',');
+
+    var temAcao = Array.prototype.some.call(
+      conteudo.querySelectorAll(seletores),
+      function (campo) {
+        if (campo.matches(':disabled') || campo.readOnly) return false;
+        if (campo.closest('[inert], [aria-disabled="true"]')) return false;
+
+        if (estaVisivel(campo)) return true;
+
+        // Alguns uploads usam um input escondido e um label visível.
+        if (campo.matches('input[type="file"]') && campo.labels) {
+          return Array.prototype.some.call(campo.labels, estaVisivel);
+        }
+
+        return false;
       }
     );
 
-    // Preserva informações de consulta, mensagens e anexos.
-    var temTexto = false;
-    var textos = document.createTreeWalker(
-      conteudo,
-      NodeFilter.SHOW_TEXT
-    );
+    card.hidden = !temAcao;
 
-    var texto;
-
-    while ((texto = textos.nextNode())) {
-      var pai = texto.parentElement;
-
-      if (
-        !texto.textContent.trim() ||
-        !pai ||
-        pai.closest('script, style, template, option, tr.group')
-      ) {
-        continue;
-      }
-
-      if (estaVisivel(pai)) {
-        temTexto = true;
-        break;
-      }
+    if (!temAcao) {
+      card.style.setProperty('display', 'none', 'important');
     }
-
-    var temConteudoVisual = Array.prototype.some.call(
-      conteudo.querySelectorAll('img, svg, canvas, iframe, video'),
-      estaVisivel
-    );
-
-    card.hidden = !(temInteracao || temTexto || temConteudoVisual);
   }
   function update() {
     if (!setup()) return;
