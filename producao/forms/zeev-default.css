@@ -928,3 +928,55 @@
 .crp-actions:has(> .crp-action-content):not(:has(> .crp-action-content :not(input[type="hidden"]))) {
   display: none !important;
 }
+/* Permite posicionar a bolinha no canto da aba. */
+#containerRequest.crp-workspace .crp-tabs button {
+  position: relative;
+  overflow: visible;
+}
+
+/* Indicador de mensagens ou anexos existentes. */
+#containerRequest.crp-workspace
+.crp-tabs button[data-crp-tem-conteudo="true"]::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  right: -5px;
+  width: 8px;
+  height: 8px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background-color: #F6A730;
+  box-sizing: content-box;
+  pointer-events: none;
+}
+/* Permite que os elementos se ajustem à largura do card. */
+#containerRequest.crp-workspace .crp-context-column,
+#containerRequest.crp-workspace #crp-info-card,
+#containerRequest.crp-workspace #containerHistory,
+#containerRequest.crp-workspace #containerHistoryRender {
+  min-width: 0;
+}
+
+/* Quebra textos longos nas colunas do histórico. */
+#containerRequest.crp-workspace
+#containerHistoryRender > .row > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Mantém o status completo dentro da própria coluna. */
+#containerRequest.crp-workspace
+#containerHistoryRender .badge {
+  display: inline-block;
+  max-width: 100%;
+  box-sizing: border-box;
+
+  white-space: normal !important;
+  overflow-wrap: anywhere;
+  word-break: normal;
+
+  height: auto;
+  line-height: 1.4;
+  padding: 5px 9px;
+  text-align: center;
+}
