@@ -185,6 +185,14 @@
       var readonly = side === 'context' || (side !== 'actions' && !interactive && !multiple);
       wrapper.classList.toggle('crp-readonly-group', readonly);
       move(wrapper, readonly ? s.summary : s.content);
+      if (!readonly) {
+        wrapper.querySelectorAll('tr').forEach(function (tr) {
+          if (tr.style.display === 'none') {
+            var editavel = tr.querySelector('input:not([type="hidden"]):not(:disabled), select:not(:disabled), textarea:not(:disabled)');
+            if (editavel) tr.style.display = '';
+          }
+        });
+      }
     });
 
     var instructions = s.root.querySelector(".instructions-text");
