@@ -1,4 +1,3 @@
-/* CRP v2 — substituir a base anterior, não executar as duas juntas. */
 (function () {
   'use strict';
 
