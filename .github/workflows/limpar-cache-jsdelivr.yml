@@ -1,0 +1,40 @@
+name: Limpar cache jsDelivr
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - producao/forms/zeev-default.css
+      - producao/forms/zeev-default.js
+      - .github/workflows/limpar-cache-jsdelivr.yml
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: limpar-cache-jsdelivr
+  cancel-in-progress: false
+
+jobs:
+  limpar-cache:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Solicitar limpeza do CSS e JavaScript
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          for arquivo in zeev-default.css zeev-default.js; do
+            echo "Solicitando limpeza: $arquivo"
+
+            curl --fail-with-body --silent --show-error \
+              --connect-timeout 15 --max-time 60 \
+              --retry 2 --retry-delay 10 \
+              "https://purge.jsdelivr.net/gh/AutomacaoCRPTech/zeev-assets@main/producao/forms/$arquivo" \
+              --output resposta.json
+
+            cat resposta.json
+            jq -e '.status == "finished"' resposta.json > /dev/null
+          done
