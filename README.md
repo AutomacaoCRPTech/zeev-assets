@@ -34,26 +34,62 @@ https://automacaocrptech.github.io/zeev-assets/
 ```
 ## Como aplicar o layout padrão nos formulários
 
-Para utilizar o layout padrão da CRP nos formulários do Zeev:
+Em cada fluxo/app do Zeev:
 
-1. Abra o formulário em que deseja aplicar o layout.
-2. Acesse **Scripts e estilos**.
-3. Na seção **Fontes externas**, cole o código abaixo.
-4. Configure a aplicação para **todas as atividades** do processo.
-5. Salve as alterações.
+1. Abra o app e vá em **Scripts e estilos nas atividades**.
+2. Cole o JavaScript abaixo no campo/aba **JavaScript**.
+3. **Salvar**.
 
-```html
-<link
-  rel="stylesheet"
-  href="https://cdn.jsdelivr.net/gh/AutomacaoCRPTech/zeev-assets@main/producao/forms/zeev-default.css"
->
+> Pode apagar o *Fontes externas* e usar só este JS no campo de JavaScript: é ele que
+> injeta o CSS e o JS em runtime, sempre na versão do último commit.
 
-<script
-  src="https://cdn.jsdelivr.net/gh/AutomacaoCRPTech/zeev-assets@main/producao/forms/zeev-default.js"
-  defer
-></script>
+### Código (copiar e colar)
+
+```js
+(function () {
+  var REPO = 'AutomacaoCRPTech/zeev-assets';
+  var FILES = [
+    { t: 'css', p: 'producao/forms/zeev-default.css' },
+    { t: 'js',  p: 'producao/forms/zeev-default.js' }
+  ];
+  var API = 'https://api.github.com/repos/' + REPO + '/commits/main';
+  var KEY = 'zeev-assets:sha';
+  var TTL = 5 * 60 * 1000;
+
+  function inject(sha) {
+    FILES.forEach(function (f) {
+      var url = 'https://cdn.jsdelivr.net/gh/' + REPO + '@' + sha + '/' + f.p;
+      var el = document.createElement(f.t === 'css' ? 'link' : 'script');
+      if (f.t === 'css') { el.rel = 'stylesheet'; el.href = url; }
+      else { el.src = url; el.defer = true; }
+      document.head.appendChild(el);
+    });
+  }
+
+  var sha = null;
+  try {
+    var c = JSON.parse(localStorage.getItem(KEY) || 'null');
+    if (c && c.sha && Date.now() - c.t < TTL) sha = c.sha;
+  } catch (e) {}
+
+  if (sha) { inject(sha); return; }
+
+  fetch(API, { cache: 'no-store', headers: { Accept: 'application/vnd.github+json' } })
+    .then(function (r) { return r.json(); })
+    .then(function (j) {
+      var s = j.sha || 'main';
+      try { localStorage.setItem(KEY, JSON.stringify({ sha: s, t: Date.now() })); } catch (e) {}
+      inject(s);
+    })
+    .catch(function () { inject('main'); });
+})();
 ```
+### Observações importantes
 
-Repita essa configuração em cada formulário que deverá utilizar o layout padrão.
-
-> Os arquivos são carregados da branch `main` deste repositório pelo jsDelivr. As atualizações poderão refletir em todos os formulários que utilizam esses links, com possível atraso devido ao cache.
+- **Demora:** o SHA é guardado no `localStorage` por 5 minutos (`TTL`). Então uma alteração nova
+  aparece em **até ~5 min**. Quer mais rápido? Diminua o `TTL`.
+- **Limite da API do GitHub:** sem token são 60 requisições/hora por IP. O `TTL` de 5 min reduz
+  para ~12/h por pessoa. Se muita gente sair pelo mesmo IP (NAT), aumente o `TTL`.
+- **Outros arquivos:** se o fluxo usar CSS/JS com outro nome/caminho, é só ajustar a lista `FILES`.
+- **Fallback:** se a API do GitHub falhar, ele cai para `@main` (funciona, mas pode ficar em cache).
+- Não precisa mais do workflow de purge do jsDelivr para esses arquivos.
