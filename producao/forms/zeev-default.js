@@ -178,6 +178,64 @@
     state.active = item;
     render();
   }
+  function statusAnexos(root) {
+    var escopo = root || document;
+
+    var obrigatorioPendente = false;
+    var algumEnviado = false;
+
+    // Anexos obrigatórios do Zeev (módulo de captura).
+    var blocoObrig =
+      escopo.querySelector('#mandatoryAnnex') ||
+      document.querySelector('#mandatoryAnnex');
+
+    if (blocoObrig) {
+      blocoObrig
+        .querySelectorAll('[cod][onclick*="capture.upload"]')
+        .forEach(function (doc) {
+          var enviado = !!doc.querySelector('.icon-remove');
+          if (enviado) algumEnviado = true;
+          else obrigatorioPendente = true;
+        });
+    }
+
+    // Campos de arquivo do formulário.
+    Array.prototype.slice
+      .call(
+        escopo.querySelectorAll(
+          "[data-fieldformat='FILE'],[data-fieldformat='FILE_VIEW']"
+        )
+      )
+      .forEach(function (campo) {
+        var linha = campo.closest('tr') || campo.parentElement;
+        var visivel =
+          linha &&
+          linha.offsetParent !== null &&
+          getComputedStyle(linha).display !== 'none';
+        if (!visivel) return;
+
+        var enviado = String(campo.value || '').trim() !== '';
+        if (enviado) algumEnviado = true;
+        if (campo.getAttribute('data-required') === 'true' && !enviado) {
+          obrigatorioPendente = true;
+        }
+      });
+
+    // Qualquer anexo (contador do Zeev).
+    var contador =
+      escopo.querySelector('#commands .count-files') ||
+      document.querySelector('#commands .count-files');
+    if (
+      contador &&
+      Number(String(contador.textContent).replace(/[^\d]/g, '')) > 0
+    ) {
+      algumEnviado = true;
+    }
+
+    if (obrigatorioPendente) return 'pendente';
+    if (algumEnviado) return 'ok';
+    return 'nenhum';
+  }
 
   function render() {
     state.items.forEach(function (item) {
@@ -200,17 +258,19 @@
         item.button.textContent = text;
       }
   
-      var temConteudo =
-        (
-          item.panel.id === 'containerMessages' ||
-          item.panel.id === 'containerFiles'
-        ) &&
-        quantidade > 0;
-  
-      item.button.setAttribute(
-        'data-crp-tem-conteudo',
-        temConteudo ? 'true' : 'false'
-      );
+      if (item.panel.id === 'containerFiles') {
+        // Anexos: pendente = vermelho, ok = verde, nenhum = sem bolinha.
+        item.button.setAttribute('data-crp-anexos', statusAnexos(state.root));
+        item.button.setAttribute('data-crp-tem-conteudo', 'false');
+      } else {
+        var temConteudo =
+          item.panel.id === 'containerMessages' && quantidade > 0;
+
+        item.button.setAttribute(
+          'data-crp-tem-conteudo',
+          temConteudo ? 'true' : 'false'
+        );
+      }
   
       item.button.setAttribute('aria-label', text);
     });
@@ -288,65 +348,28 @@
 
   function atualizarAnexosObrigatorios(s) {
     var bloco = s.root.querySelector('#mandatoryAnnex');
-    var card = s.root.querySelector('#crp-required-files-card');
+    if (!bloco || !sameForm(bloco, s.info)) return;
 
-    if (!bloco || !sameForm(bloco, s.info)) {
-      if (card) card.hidden = true;
-      return;
-    }
+    // O Zeev consulta o contêiner original ao adicionar/remover arquivos.
+    // Mantém #mandatoryAnnex no mesmo lugar e aplica somente classes visuais.
+    bloco.classList.add('crp-required-files');
 
-    // Oculta o título original dentro da aba Anexos.
     var titulo = bloco.previousElementSibling;
-
-    if (
-      titulo &&
-      titulo.matches('h5.title-container-files')
-    ) {
-      titulo.hidden = true;
+    if (titulo && titulo.matches('h5.title-container-files')) {
+      titulo.hidden = false;
+      titulo.classList.add('crp-required-files-title');
     }
 
-    var temCampos = !!bloco.querySelector(
-      '[onclick*="captureModule.capture.upload"], input[type="file"], [cod]'
-    );
-
-    if (!temCampos && !card) return;
-
-    if (!card) {
-      card = el('section', 'crp-card crp-required-files');
-      card.id = 'crp-required-files-card';
-
-      card.setAttribute(
-        'aria-labelledby',
-        'crp-required-files-title'
-      );
-
-      var heading = el(
-        'h2',
-        'crp-card-title',
-        'Anexos obrigatórios'
-      );
-
-      heading.id = 'crp-required-files-title';
-      card.appendChild(heading);
-    }
-
-    // Posiciona imediatamente abaixo das informações da solicitação.
-    if (s.info.nextElementSibling !== card) {
-      s.left.insertBefore(card, s.info.nextSibling);
-    }
-
-    // Preserva os elementos originais e seus eventos.
-    move(bloco, card);
-
-    var oculto = bloco.hidden ||
-      getComputedStyle(bloco).display === 'none';
-
-    card.hidden = !temCampos || oculto;
-
-    card.style.setProperty(
-      'display',
-      card.hidden ? 'none' : 'block',
-      'important'
+    // O X já chama removeUpload pelo onclick nativo. Impede somente que
+    // o clique suba ao botão pai, que abriria a seleção de arquivos.
+    bloco.querySelectorAll('.icon-remove[onclick*="removeUpload"]').forEach(
+      function (remover) {
+        if (remover.dataset.crpRemoveBound) return;
+        remover.dataset.crpRemoveBound = '1';
+        remover.addEventListener('click', function (event) {
+          event.stopPropagation();
+        });
+      }
     );
   }
 

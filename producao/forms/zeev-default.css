@@ -1,4 +1,79 @@
 /* CRP — base visual geral. Carregar antes do CSS específico. */
+/* Anexos obrigatórios: mantém a estrutura original do Zeev no painel Anexos. */
+#containerRequest.crp-workspace #containerFiles .crp-required-files-title {
+  display: block !important;
+  margin: 18px 0 0;
+  padding: 20px 22px 0;
+  border: 1px solid #C7D4EA;
+  border-bottom: 0;
+  border-radius: 12px 12px 0 0;
+  background: #fff;
+  color: #0B1323;
+  font-size: 16px;
+  font-weight: 650;
+}
+
+#containerRequest.crp-workspace #containerFiles #mandatoryAnnex.crp-required-files {
+  margin: 0 0 22px;
+  padding: 16px 22px 20px;
+  border: 1px solid #C7D4EA;
+  border-top: 0;
+  border-radius: 0 0 12px 12px;
+  background: #fff;
+}
+
+#containerRequest.crp-workspace #mandatoryAnnex #customizedUpload {
+  max-width: 100%;
+}
+
+#containerRequest.crp-workspace #mandatoryAnnex [cod][onclick*="capture.upload"] {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  white-space: normal;
+}
+
+#containerRequest.crp-workspace #mandatoryAnnex [cod][onclick*="capture.upload"] > svg {
+  display: none;
+}
+
+#containerRequest.crp-workspace #mandatoryAnnex [cod][onclick*="capture.upload"]::before {
+  content: "+";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  border: 1px solid #053F88;
+  border-radius: 50%;
+  color: #053F88;
+  font: 600 17px/1 Arial, sans-serif;
+}
+
+#containerRequest.crp-workspace #mandatoryAnnex .icon-remove[onclick*="removeUpload"] {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  margin-left: 4px;
+  border-radius: 5px;
+  color: #E6373B;
+  cursor: pointer;
+}
+
+#containerRequest.crp-workspace #mandatoryAnnex .icon-remove[onclick*="removeUpload"]::before {
+  content: "×";
+  font: 21px/1 Arial, sans-serif;
+}
+
+#containerRequest.crp-workspace #mandatoryAnnex .icon-remove[onclick*="removeUpload"]:hover {
+  background: #FFF0F1;
+}
+
 #containerRequest.crp-form {
   --crp-primary: #053F88;
   --crp-hover: #03336F;
@@ -948,6 +1023,33 @@
   background-color: #F6A730;
   box-sizing: content-box;
   pointer-events: none;
+}
+
+/* Indicador de anexos por situação. */
+#containerRequest.crp-workspace
+.crp-tabs button[data-crp-anexos="pendente"]::after,
+#containerRequest.crp-workspace
+.crp-tabs button[data-crp-anexos="ok"]::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  right: -5px;
+  width: 8px;
+  height: 8px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  box-sizing: content-box;
+  pointer-events: none;
+}
+
+#containerRequest.crp-workspace
+.crp-tabs button[data-crp-anexos="pendente"]::after {
+  background-color: #D93025;
+}
+
+#containerRequest.crp-workspace
+.crp-tabs button[data-crp-anexos="ok"]::after {
+  background-color: #1E8E3E;
 }
 /* Permite que os elementos se ajustem à largura do card. */
 #containerRequest.crp-workspace .crp-context-column,
