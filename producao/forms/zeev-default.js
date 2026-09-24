@@ -305,13 +305,15 @@
       return elemento.getClientRects().length > 0;
     }
 
-    var seletores = [
+        var seletores = [
       'input:not([type="hidden"]):not([type="submit"]):not([type="reset"])',
       'select',
       'textarea',
       'button',
       '[role="button"]',
-      '[contenteditable="true"]'
+      '[contenteditable="true"]',
+      '[xtype]',                     // <- representação de leitura (modo visualização)
+      'table[mult="S"]'              // <- tabela multivalorada (mesmo só leitura)
     ].join(',');
 
     var temAcao = Array.prototype.some.call(
