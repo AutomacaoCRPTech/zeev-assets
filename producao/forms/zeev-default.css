@@ -53,27 +53,6 @@
   font: 600 17px/1 Arial, sans-serif;
 }
 
-#containerRequest.crp-workspace #mandatoryAnnex .icon-remove[onclick*="removeUpload"] {
-  display: inline-flex !important;
-  align-items: center;
-  justify-content: center;
-  width: 22px;
-  height: 22px;
-  margin-left: 4px;
-  border-radius: 5px;
-  color: #E6373B;
-  cursor: pointer;
-}
-
-#containerRequest.crp-workspace #mandatoryAnnex .icon-remove[onclick*="removeUpload"]::before {
-  content: "×";
-  font: 21px/1 Arial, sans-serif;
-}
-
-#containerRequest.crp-workspace #mandatoryAnnex .icon-remove[onclick*="removeUpload"]:hover {
-  background: #FFF0F1;
-}
-
 #containerRequest.crp-form {
   --crp-primary: #053F88;
   --crp-hover: #03336F;
@@ -376,6 +355,24 @@
   color: #1C3557;
   font-size: 15px;
   font-weight: 650;
+}
+
+/* Hierarquia do card "Informações da solicitação": título principal
+   destacado, com linha divisória, separado dos subtítulos internos. */
+#containerRequest.crp-workspace #crp-info-card > .crp-card-title {
+  margin: 0 0 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #C7D4EA !important;
+  color: #053F88;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* Subtítulos internos (grupos nativos do formulário). */
+#containerRequest.crp-workspace #crp-info-card td.group > b {
+  color: #2A4B8D;
+  font-size: 14px;
+  font-weight: 600 !important;
 }
 .crp-workspace .crp-action-title {
   margin: 0 0 22px;
@@ -1081,4 +1078,1081 @@
   line-height: 1.4;
   padding: 5px 9px;
   text-align: center;
+}
+
+/* Card de anexos obrigatórios: fica abaixo de Informações relevantes. */
+#containerRequest.crp-workspace #crp-required-files-card {
+  position: relative;
+  margin-bottom: 18px;
+  padding: 24px !important;
+  border: 1px solid #dce5f1;
+  border-top: 3px solid #053f88;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #f8fafe 0%, #ffffff 65%);
+  box-shadow: 0 4px 16px rgba(5, 63, 136, 0.04);
+}
+
+#containerRequest.crp-workspace
+#crp-required-files-card > .crp-card-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 6px;
+  color: #053f88;
+  font-size: 16px;
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+#containerRequest.crp-workspace
+#crp-required-files-card > .crp-card-title::before {
+  content: '';
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  border: 1px solid #dce5f1;
+  border-radius: 10px;
+  background-color: #eaf0f8;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23053f88' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21.4 11.1 12.3 20.2a5.5 5.5 0 0 1-7.8-7.8l9.2-9.1a3.7 3.7 0 0 1 5.2 5.2l-9.1 9.2a1.8 1.8 0 0 1-2.6-2.6l8.4-8.4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 21px;
+}
+
+#containerRequest.crp-workspace
+#crp-required-files-card .crp-required-hint {
+  margin: 0 0 16px;
+  color: #526786;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* O bloco mantém a lista do Zeev, sem a moldura da aba Anexos. */
+#containerRequest.crp-workspace
+#crp-required-files-card #mandatoryAnnex.crp-required-files {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+#containerRequest.crp-workspace
+#crp-required-files-card #customizedUpload {
+  width: 100%;
+}
+
+/* Título antigo da aba Anexos: o card acima tem o seu. */
+#containerRequest.crp-workspace #containerFiles .crp-required-files-title {
+  display: none !important;
+}
+
+/* Marcador que o Zeev usa para reencontrar o contêiner. Não pode
+   esconder conteúdo: ao adicionar ou remover arquivos o Zeev move
+   #customizedUpload para dentro dele, e um display: none aqui apaga
+   os botões de anexo obrigatório. display: contents mantém o marcador
+   sem caixa, então o que vier dentro continua aparecendo. */
+#containerRequest.crp-workspace #crp-annex-anchor {
+  display: contents !important;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  font-size: inherit;
+  color: inherit;
+}
+
+@media (max-width: 640px) {
+  #containerRequest.crp-workspace #crp-required-files-card {
+    padding: 18px !important;
+  }
+}
+
+/* Abas: aparência de botão, contadores em selo e foco visível. */
+#containerRequest.crp-workspace .crp-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+#containerRequest.crp-workspace .crp-tabs button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-sizing: border-box;
+  min-height: 44px;
+  max-width: 100%;
+  margin: 0;
+  padding: 10px 16px;
+  border: 1px solid #c7d4ea;
+  border-radius: 10px;
+  background: #eaf0f8;
+  color: #053f88;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease,
+    color 0.15s ease, box-shadow 0.15s ease;
+}
+
+#containerRequest.crp-workspace .crp-tabs button:hover {
+  border-color: #053f88;
+  background: #dde7f5;
+}
+
+#containerRequest.crp-workspace .crp-tabs button:active {
+  background: #d3e0f2;
+}
+
+#containerRequest.crp-workspace .crp-tabs button:focus-visible {
+  outline: 3px solid #053f88 !important;
+  outline-offset: 2px !important;
+}
+
+/* Aba aberta. */
+#containerRequest.crp-workspace
+.crp-tabs button[aria-selected='true'] {
+  border-color: #053f88;
+  background: #053f88;
+  color: #ffffff;
+}
+
+#containerRequest.crp-workspace
+.crp-tabs button[aria-selected='true']:hover {
+  border-color: #03336f;
+  background: #03336f;
+}
+
+/* Selo do contador. */
+#containerRequest.crp-workspace .crp-tabs .crp-tab-count {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 7px;
+  border: 1px solid #b9c9e4;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #053f88;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+#containerRequest.crp-workspace
+.crp-tabs button[aria-selected='true'] .crp-tab-count {
+  border-color: #ffffff;
+  background: #ffffff;
+  color: #053f88;
+}
+
+/* Texto apenas para leitores de tela da aba de anexos. */
+#containerRequest.crp-workspace .crp-tabs .crp-tab-desc {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Dica ao passar o mouse: quantidade por extenso e aviso de pendência. */
+#containerRequest.crp-workspace
+.crp-tabs button[data-crp-dica]:hover::before {
+  content: attr(data-crp-dica);
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 20;
+  box-sizing: border-box;
+  max-width: 260px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #0b1323;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+  text-align: left;
+  white-space: normal;
+  box-shadow: 0 6px 18px rgba(11, 19, 35, 0.24);
+}
+
+/* Bolinhas de status mantidas, agora dentro da caixa do botão. */
+#containerRequest.crp-workspace
+.crp-tabs button[data-crp-tem-conteudo='true']::after,
+#containerRequest.crp-workspace
+.crp-tabs button[data-crp-anexos='pendente']::after,
+#containerRequest.crp-workspace
+.crp-tabs button[data-crp-anexos='ok']::after {
+  top: 6px;
+  right: 6px;
+}
+
+@media (max-width: 640px) {
+#containerRequest.crp-workspace .crp-tabs {
+  gap: 8px;
+}
+
+#containerRequest.crp-workspace .crp-tabs button {
+  flex: 1 1 140px;
+  padding: 10px 12px;
+  font-size: 13px;
+}
+}
+
+/* ===== CRP v3 — Mensagens, Anexos e Histórico ===== */
+#containerRequest.crp-workspace #crp-info-card .crp-panel > h5,
+#containerRequest.crp-workspace #crp-info-card #containerFiles > h5,
+#containerRequest.crp-workspace #crp-info-card #containerMessages > h5,
+#containerRequest.crp-workspace #crp-info-card #containerHistory > h5 {
+  margin: 0 0 14px;
+  color: #053F88;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+/* 1) ANEXOS */
+#containerRequest.crp-workspace #containerFiles #divFile { overflow-x: visible; }
+#containerRequest.crp-workspace #containerFiles #tblFile,
+#containerRequest.crp-workspace #containerFiles #tblNewFile,
+#containerRequest.crp-workspace #containerFiles #tblFile tbody,
+#containerRequest.crp-workspace #containerFiles #tblNewFile tbody {
+  display: block;
+  width: 100%;
+  margin: 0;
+}
+#containerRequest.crp-workspace #containerFiles #tblFile tr,
+#containerRequest.crp-workspace #containerFiles #tblNewFile tr {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 10px 12px;
+  margin: 0 0 12px !important;
+  padding: 14px 16px;
+  border: 1px solid #C7D4EA;
+  border-radius: 10px;
+  background: #F3F6FB;
+}
+#containerRequest.crp-workspace #containerFiles #tblFile td,
+#containerRequest.crp-workspace #containerFiles #tblNewFile td {
+  display: block;
+  padding: 0;
+  border: 0;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+#containerRequest.crp-workspace #containerFiles #tblFile td.avatar,
+#containerRequest.crp-workspace #containerFiles #tblNewFile td.avatar { flex: 0 0 auto; }
+#containerRequest.crp-workspace #containerFiles #tblFile td.message,
+#containerRequest.crp-workspace #containerFiles #tblNewFile td.message { flex: 1 1 300px; min-width: 0; }
+#containerRequest.crp-workspace #containerFiles #tblFile td.download { flex: 0 0 auto; margin-left: auto; align-self: center; }
+#containerRequest.crp-workspace #containerFiles #tblFile td.lock,
+#containerRequest.crp-workspace #containerFiles #tblFile td.del { flex: 0 0 auto; align-self: center; }
+#containerRequest.crp-workspace #containerFiles #tblFile td.message .message-box {
+  margin: 4px 0 0;
+  padding: 0;
+  border: 0;
+  background: transparent !important;
+}
+#containerRequest.crp-workspace #containerFiles #tblFile td.message .message-box a {
+  color: #053F88 !important;
+  font-size: 14px;
+  font-weight: 600 !important;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+#containerRequest.crp-workspace #containerFiles #tblFile td.message > div:first-child h5 {
+  margin: 0;
+  color: #526786 !important;
+  font-size: 12px;
+  font-weight: 500;
+}
+#containerRequest.crp-workspace #containerFiles #tblFile td.message .text-right { text-align: left; }
+#containerRequest.crp-workspace #containerFiles #tblFile td.message .text-right .small,
+#containerRequest.crp-workspace #containerFiles #tblFile td.message .text-right span {
+  color: #526786 !important;
+  font-size: 12px;
+  white-space: normal;
+}
+#containerRequest.crp-workspace #containerFiles #tblFile td.message .message-box .badge {
+  display: inline-block;
+  max-width: 100%;
+  padding: 2px 8px;
+  border: 1px solid #D7E0EC;
+  border-radius: 999px;
+  background: #E7EEF8 !important;
+  color: #526786 !important;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: normal !important;
+  overflow-wrap: anywhere;
+  height: auto;
+}
+#containerRequest.crp-workspace #containerFiles #tblFile td.download a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid #053F88 !important;
+  border-radius: 6px;
+  background: #053F88 !important;
+  color: #FFFFFF !important;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+}
+#containerRequest.crp-workspace #containerFiles #tblFile td.download a::after { content: "Baixar"; }
+#containerRequest.crp-workspace #containerFiles #tblFile td.download a:hover {
+  background: #03336F !important;
+  border-color: #03336F !important;
+}
+#containerRequest.crp-workspace #containerFiles #annex > .d-flex {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 12px;
+}
+#containerRequest.crp-workspace #containerFiles #btnAddFile { margin-bottom: 0 !important; }
+#containerRequest.crp-workspace #containerFiles #annex > .d-flex > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+#containerRequest.crp-workspace #containerFiles #annex > .d-flex label {
+  margin: 0;
+  color: #526786;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* 2) MENSAGENS */
+#containerRequest.crp-workspace #containerMessages #tblMessage,
+#containerRequest.crp-workspace #containerMessages #tblMessageBody {
+  display: block;
+  width: 100%;
+  margin: 0;
+}
+#containerRequest.crp-workspace #containerMessages #tblMessageBody > tr {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 10px 12px;
+  margin: 0 0 12px !important;
+  padding: 14px 16px;
+  border: 1px solid #C7D4EA;
+  border-radius: 10px;
+  background: #F3F6FB;
+}
+#containerRequest.crp-workspace #containerMessages #tblMessageBody > tr > td {
+  display: block;
+  padding: 0;
+  border: 0;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+#containerRequest.crp-workspace #containerMessages #tblMessageBody > tr > td.avatar { flex: 0 0 auto; }
+#containerRequest.crp-workspace #containerMessages #tblMessageBody > tr > td.message { flex: 1 1 300px; min-width: 0; }
+#containerRequest.crp-workspace #containerMessages #tblMessageBody > tr > td.lock,
+#containerRequest.crp-workspace #containerMessages #tblMessageBody > tr > td.del { flex: 0 0 auto; align-self: center; }
+#containerRequest.crp-workspace #containerMessages #tblMessageBody > tr > td.message > div:first-child h5 {
+  margin: 0;
+  color: #053F88 !important;
+  font-size: 14px;
+  font-weight: 600;
+}
+#containerRequest.crp-workspace #containerMessages #tblMessageBody > tr > td.message .message-box {
+  margin: 6px 0 0;
+  padding: 0;
+  border: 0;
+  background: transparent !important;
+  color: #0B1323 !important;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+#containerRequest.crp-workspace #containerMessages #tblMessageBody > tr > td.message .message-box a {
+  color: #053F88 !important;
+  text-decoration: underline;
+  overflow-wrap: anywhere;
+}
+#containerRequest.crp-workspace #containerMessages #tblMessageBody > tr > td.message .text-right { text-align: left; }
+#containerRequest.crp-workspace #containerMessages #tblMessageBody > tr > td.message .text-right .small,
+#containerRequest.crp-workspace #containerMessages #tblMessageBody > tr > td.message .text-right span {
+  color: #526786 !important;
+  font-size: 12px;
+  white-space: normal;
+}
+#containerRequest.crp-workspace #containerMessages #tblMessageBody > tr > td.message .badge {
+  background: #E7EEF8 !important;
+  color: #526786 !important;
+  font-size: 12px;
+  font-weight: 500;
+}
+#containerRequest.crp-workspace #containerMessages #inpDsMessage {
+  background: #FFFFFF;
+  border: 1px solid #C7D4EA;
+  border-radius: 8px;
+  color: #0B1323;
+  font-size: 14px;
+  line-height: 1.5;
+}
+#containerRequest.crp-workspace #containerMessages #inpDsMessage:focus {
+  border-color: #053F88;
+  outline: 2px solid #053F88;
+  outline-offset: 1px;
+}
+#containerRequest.crp-workspace #containerMessages #btnAddMessage {
+  display: block;
+  margin-left: auto;
+  background: #053F88 !important;
+  border: 1px solid #053F88 !important;
+  color: #FFFFFF !important;
+  font-weight: 600;
+}
+#containerRequest.crp-workspace #containerMessages #btnAddMessage:disabled { opacity: 0.6; }
+#containerRequest.crp-workspace #containerMessages .d-none.d-lg-block .small {
+  color: #526786;
+  font-size: 12px;
+}
+
+/* 3) HISTORICO */
+#containerRequest.crp-workspace #containerHistoryRender > hr { display: none !important; }
+#containerRequest.crp-workspace #containerHistoryRender > .row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas:
+    "avatar responsavel status"
+    "avatar atividade   status"
+    "avatar data        status"
+    "comentario comentario comentario";
+  column-gap: 12px;
+  row-gap: 4px;
+  align-items: start;
+  margin: 0 0 12px !important;
+  padding: 14px 16px;
+  border: 1px solid #C7D4EA;
+  border-radius: 10px;
+  background: #F3F6FB;
+}
+#containerRequest.crp-workspace #containerHistoryRender > .row > .avatar { grid-area: avatar; }
+#containerRequest.crp-workspace #containerHistoryRender > .row > .col-md-3 { grid-area: responsavel; min-width: 0; }
+#containerRequest.crp-workspace #containerHistoryRender > .row > .col.small { grid-area: atividade; min-width: 0; }
+#containerRequest.crp-workspace #containerHistoryRender > .row > .col-md-2 { grid-area: data; min-width: 0; }
+#containerRequest.crp-workspace #containerHistoryRender > .row > .col-2:not(.avatar) { display: contents; }
+#containerRequest.crp-workspace #containerHistoryRender > .row > .col-2:not(.avatar) > .badge { grid-area: status; }
+#containerRequest.crp-workspace #containerHistoryRender > .row > .col-2:not(.avatar) > .small { grid-area: comentario; }
+#containerRequest.crp-workspace #containerHistoryRender > .row > .col-2:not(.avatar) > .small:empty { display: none; }
+#containerRequest.crp-workspace #containerHistoryRender > .row > .col-md-3 h5 {
+  margin: 0;
+  color: #253B59;
+  font-size: 12px;
+  font-weight: 600;
+}
+#containerRequest.crp-workspace #containerHistoryRender > .row > .col-md-3 .extra-small {
+  color: #526786;
+  font-size: 12px;
+}
+#containerRequest.crp-workspace #containerHistoryRender > .row > .col.small {
+  color: #053F88;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+#containerRequest.crp-workspace #containerHistoryRender > .row > .col.small .d-md-none h5 {
+  color: #253B59;
+  font-size: 12px;
+  font-weight: 600;
+}
+#containerRequest.crp-workspace #containerHistoryRender > .row > .col-md-2 {
+  color: #526786;
+  font-size: 12px;
+  white-space: nowrap;
+}
+#containerRequest.crp-workspace #containerHistoryRender .badge {
+  justify-self: end;
+  align-self: start;
+  max-width: 100%;
+  height: auto;
+  padding: 5px 10px;
+  border: 1px solid #D7E0EC;
+  border-radius: 999px;
+  background: #EEF2F7 !important;
+  color: #526786 !important;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+  text-align: center;
+  white-space: normal !important;
+  overflow-wrap: normal;
+  word-break: keep-all;
+}
+#containerRequest.crp-workspace #containerHistoryRender .badge[data-crp-status="concluido"] {
+  border-color: #B7E1C2;
+  background: #E6F4EA !important;
+  color: #1E7A34 !important;
+}
+#containerRequest.crp-workspace #containerHistoryRender .badge[data-crp-status="revisao"] {
+  border-color: #F0D9A8;
+  background: #FFF4E0 !important;
+  color: #9A6700 !important;
+}
+#containerRequest.crp-workspace #containerHistoryRender > .row > .col-2:not(.avatar) > .small {
+  margin: 6px 0 0 !important;
+  padding: 8px 10px;
+  border: 1px solid #E1E7F0;
+  border-radius: 8px;
+  background: #FFFFFF;
+  color: #0B1323;
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+/* 4) TELAS PEQUENAS */
+@media (max-width: 575.98px) {
+  #containerRequest.crp-workspace #containerFiles #tblFile tr,
+  #containerRequest.crp-workspace #containerFiles #tblNewFile tr,
+  #containerRequest.crp-workspace #containerMessages #tblMessageBody > tr { padding: 12px; }
+  #containerRequest.crp-workspace #containerFiles #tblFile td.download { margin-left: 0; }
+  #containerRequest.crp-workspace #containerHistoryRender > .row {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      "avatar responsavel"
+      "avatar atividade"
+      "avatar data"
+      "status status"
+      "comentario comentario";
+  }
+  #containerRequest.crp-workspace #containerHistoryRender .badge { justify-self: start; }
+}
+
+/* Histórico: neutraliza as larguras col-* do Bootstrap dentro do grid */
+#containerRequest.crp-workspace #containerHistoryRender > .row > .avatar,
+#containerRequest.crp-workspace #containerHistoryRender > .row > .col-md-3,
+#containerRequest.crp-workspace #containerHistoryRender > .row > .col.small,
+#containerRequest.crp-workspace #containerHistoryRender > .row > .col-md-2 {
+  width: auto !important;
+  max-width: 100% !important;
+  flex: 0 1 auto !important;
+  padding: 0 !important;
+  float: none !important;
+}
+
+/* ===== Anexos: card compacto em grid (substitui flex/colunas) ===== */
+#containerRequest.crp-workspace #containerFiles #tblFile tr,
+#containerRequest.crp-workspace #containerFiles #tblNewFile tr {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr) auto auto;
+  grid-template-areas:
+    "avatar nome    nome    nome    processo"
+    "avatar icone   arquivo baixar  acoes"
+    "desc   desc    desc    desc    desc"
+    "rodape rodape  rodape  rodape  rodape";
+  column-gap: 8px;
+  row-gap: 8px;
+  align-items: center;
+  align-content: start;
+  padding: 12px;
+  height: auto;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+#containerRequest.crp-workspace #containerFiles #tblFile tr * ,
+#containerRequest.crp-workspace #containerFiles #tblNewFile tr * {
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+#containerRequest.crp-workspace #containerFiles #tblFile td,
+#containerRequest.crp-workspace #containerFiles #tblNewFile td {
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+#containerRequest.crp-workspace #containerFiles #tblFile td.avatar,
+#containerRequest.crp-workspace #containerFiles #tblNewFile td.avatar { grid-area: avatar; align-self: start; width: auto; }
+#containerRequest.crp-workspace #containerFiles #tblFile td.message,
+#containerRequest.crp-workspace #containerFiles #tblNewFile td.message { display: contents !important; }
+#containerRequest.crp-workspace #containerFiles #tblFile td.message .message-box,
+#containerRequest.crp-workspace #containerFiles #tblNewFile td.message .message-box { display: contents !important; }
+#containerRequest.crp-workspace #containerFiles #tblFile td.message .message-box > .row,
+#containerRequest.crp-workspace #containerFiles #tblNewFile td.message .message-box > .row { display: contents !important; }
+#containerRequest.crp-workspace #containerFiles #tblFile td.message .message-box .col-lg-2,
+#containerRequest.crp-workspace #containerFiles #tblNewFile td.message .message-box .col-lg-2 { display: contents !important; }
+#containerRequest.crp-workspace #containerFiles #tblFile td.message > div:first-child,
+#containerRequest.crp-workspace #containerFiles #tblNewFile td.message > div:first-child { grid-area: nome; min-width: 0; }
+#containerRequest.crp-workspace #containerFiles #tblFile td.message .message-box .d-md-flex,
+#containerRequest.crp-workspace #containerFiles #tblNewFile td.message .message-box .d-md-flex { grid-area: icone; align-self: center; }
+#containerRequest.crp-workspace #containerFiles #tblFile td.message .message-box > .row > .col,
+#containerRequest.crp-workspace #containerFiles #tblNewFile td.message .message-box > .row > .col { grid-area: arquivo; min-width: 0; }
+#containerRequest.crp-workspace #containerFiles #tblFile td.message .message-box a,
+#containerRequest.crp-workspace #containerFiles #tblNewFile td.message .message-box a {
+  overflow-wrap: break-word;
+  word-break: normal;
+  white-space: normal;
+  font-size: 14px;
+  font-weight: 600 !important;
+  color: #053F88 !important;
+}
+#containerRequest.crp-workspace #containerFiles #tblFile td.message .message-box .badge,
+#containerRequest.crp-workspace #containerFiles #tblNewFile td.message .message-box .badge {
+  grid-area: desc;
+  justify-self: stretch;
+  align-self: start;
+  display: block !important;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 4px 8px;
+  border: 1px solid #D7E0EC;
+  border-radius: 8px;
+  background: #E7EEF8 !important;
+  color: #526786 !important;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  overflow-wrap: break-word;
+  word-break: normal;
+  text-align: left;
+  height: auto;
+}
+#containerRequest.crp-workspace #containerFiles #tblFile td.message > .text-right,
+#containerRequest.crp-workspace #containerFiles #tblNewFile td.message > .text-right {
+  grid-area: rodape;
+  min-width: 0;
+  text-align: left;
+}
+#containerRequest.crp-workspace #containerFiles #tblFile td.message > .text-right .small,
+#containerRequest.crp-workspace #containerFiles #tblFile td.message > .text-right span,
+#containerRequest.crp-workspace #containerFiles #tblNewFile td.message > .text-right .small,
+#containerRequest.crp-workspace #containerFiles #tblNewFile td.message > .text-right span {
+  color: #526786 !important;
+  font-size: 12px;
+  white-space: normal;
+}
+#containerRequest.crp-workspace #containerFiles #tblFile td.download {
+  grid-area: baixar;
+  display: block !important;
+  align-self: center;
+  justify-self: end;
+  flex: 0 0 auto;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+#containerRequest.crp-workspace #containerFiles #tblFile td.download a,
+#containerRequest.crp-workspace #containerFiles #tblFile td.download a::after {
+  white-space: nowrap !important;
+  word-break: normal !important;
+  flex-shrink: 0;
+}
+#containerRequest.crp-workspace #containerFiles #tblFile td.lock,
+#containerRequest.crp-workspace #containerFiles #tblFile td.del {
+  grid-area: acoes;
+  align-self: center;
+  justify-self: end;
+  padding: 0 !important;
+}
+
+@media (max-width: 575.98px) {
+  #containerRequest.crp-workspace #containerFiles #tblFile tr,
+  #containerRequest.crp-workspace #containerFiles #tblNewFile tr {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      "avatar nome"
+      "processo processo"
+      "icone  arquivo"
+      "baixar baixar"
+      "desc   desc"
+      "rodape rodape";
+    align-items: start;
+  }
+  #containerRequest.crp-workspace #containerFiles #tblFile td.download { justify-self: start; }
+}
+
+/* ===== Anexos: selo do processo no topo direito ===== */
+#containerRequest.crp-workspace #containerFiles #tblFile td.message > .text-right,
+#containerRequest.crp-workspace #containerFiles #tblNewFile td.message > .text-right {
+  display: contents !important;
+}
+#containerRequest.crp-workspace #containerFiles #tblFile td.message > .text-right > .small,
+#containerRequest.crp-workspace #containerFiles #tblNewFile td.message > .text-right > .small {
+  grid-area: rodape;
+  min-width: 0;
+  text-align: left;
+}
+#containerRequest.crp-workspace #containerFiles #tblFile td.message > .text-right > .badge,
+#containerRequest.crp-workspace #containerFiles #tblNewFile td.message > .text-right > .badge {
+  grid-area: processo;
+  justify-self: end;
+  align-self: center;
+  display: inline-block;
+  width: auto;
+  max-width: max-content;
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 3px 8px;
+  border: 0;
+  border-radius: 999px;
+  background: #EAF0F8 !important;
+  color: #526786 !important;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.4;
+  white-space: nowrap !important;
+  overflow-wrap: normal;
+  word-break: normal;
+  height: auto;
+}
+#containerRequest.crp-workspace #containerFiles #tblFile td.message > .text-right > .badge a {
+  color: #526786 !important;
+  text-decoration: underline;
+  cursor: pointer;
+}
+@media (max-width: 575.98px) {
+  #containerRequest.crp-workspace #containerFiles #tblFile td.message > .text-right > .badge { justify-self: start; }
+}
+
+/* ===== Mensagens: card de comentário compacto ===== */
+#containerRequest.crp-workspace #containerMessages #tblMessage,
+#containerRequest.crp-workspace #containerMessages #tblMessageBody { display: block; width: 100%; margin: 0; }
+#containerRequest.crp-workspace #containerMessages #tblMessageBody > tr {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas:
+    "avatar cabecalho acoes"
+    "corpo  corpo     corpo"
+    "rodape rodape    rodape";
+  column-gap: 8px;
+  row-gap: 8px;
+  align-items: start;
+  margin: 0 0 12px !important;
+  padding: 12px !important;
+  border: 1px solid #C7D4EA;
+  border-radius: 8px;
+  background: #FFFFFF !important;
+  height: auto;
+  min-height: 0;
+  box-sizing: border-box;
+}
+#containerRequest.crp-workspace #containerMessages #tblMessageBody > tr > td {
+  display: block;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+#containerRequest.crp-workspace #containerMessages #tblMessageBody > tr > td.avatar { grid-area: avatar; align-self: start; width: auto; }
+#containerRequest.crp-workspace #containerMessages #tblMessageBody > tr > td.message { display: contents !important; }
+#containerRequest.crp-workspace #containerMessages #tblMessageBody > tr > td.lock,
+#containerRequest.crp-workspace #containerMessages #tblMessageBody > tr > td.del { grid-area: acoes; align-self: start; justify-self: end; padding: 0 !important; }
+#containerRequest.crp-workspace #containerMessages #tblMessageBody > tr > td.avatar .user,
+#containerRequest.crp-workspace #containerMessages #tblMessageBody > tr > td.avatar .user-photo {
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px;
+}
+#containerRequest.crp-workspace #containerMessages #tblMessageBody > tr > td.message > div:first-child {
+  grid-area: cabecalho;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 8px;
+  min-width: 0;
+}
+#containerRequest.crp-workspace #containerMessages #tblMessageBody > tr > td.message > div:first-child h5 {
+  margin: 0;
+  color: #053F88 !important;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+#containerRequest.crp-workspace #containerMessages .crp-msg-data {
+  margin-left: auto;
+  color: #526786;
+  font-size: 12px;
+  white-space: nowrap;
+}
+#containerRequest.crp-workspace #containerMessages #tblMessageBody > tr > td.message .message-box {
+  grid-area: corpo;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent !important;
+  color: #0B1323 !important;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-wrap: break-word;
+  word-break: normal;
+  white-space: normal;
+}
+#containerRequest.crp-workspace #containerMessages #tblMessageBody > tr > td.message .message-box a {
+  color: #053F88 !important;
+  text-decoration: underline;
+  overflow-wrap: break-word;
+}
+#containerRequest.crp-workspace #containerMessages #tblMessageBody > tr > td.message > .text-right {
+  grid-area: rodape;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  text-align: left;
+  color: #526786;
+  font-size: 12px;
+}
+#containerRequest.crp-workspace #containerMessages #tblMessageBody > tr > td.message > .text-right:empty { display: none; }
+#containerRequest.crp-workspace #containerMessages .crp-msg-atividade,
+#containerRequest.crp-workspace #containerMessages .crp-msg-sep,
+#containerRequest.crp-workspace #containerMessages .crp-msg-processo,
+#containerRequest.crp-workspace #containerMessages .crp-msg-processo a {
+  color: #526786 !important;
+  font-size: 12px;
+}
+#containerRequest.crp-workspace #containerMessages .crp-msg-processo a {
+  text-decoration: underline;
+  cursor: pointer;
+}
+@media (max-width: 575.98px) {
+  #containerRequest.crp-workspace #containerMessages #tblMessageBody > tr {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      "avatar cabecalho"
+      "corpo  corpo"
+      "rodape rodape";
+  }
+  #containerRequest.crp-workspace #containerMessages #tblMessageBody > tr > td.lock,
+  #containerRequest.crp-workspace #containerMessages #tblMessageBody > tr > td.del { display: none !important; }
+  #containerRequest.crp-workspace #containerMessages .crp-msg-data { margin-left: 0; flex-basis: 100%; }
+}
+
+/* ===== Resumo: arquivos anexados em campos do formulário ===== */
+/* Título do campo acima do arquivo */
+#containerRequest.crp-workspace .crp-readonly-group table.form > tbody > tr:has(.containerFormFileLink) > td.col0,
+#containerRequest.crp-workspace .crp-action-content table.form > tbody > tr:has(.containerFormFileLink) > td.col0 {
+  margin-bottom: 6px;
+  color: #253B59;
+  font-size: 13px;
+  font-weight: 600;
+}
+/* Duas colunas com intervalo de 12px */
+#containerRequest.crp-workspace .crp-readonly-group table.form:has(.containerFormFileLink) > tbody,
+#containerRequest.crp-workspace .crp-action-content table.form:has(.containerFormFileLink) > tbody {
+  column-gap: 12px;
+  row-gap: 12px;
+}
+/* Bloco compacto do arquivo */
+#containerRequest.crp-workspace .containerFormFileLink {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 10px;
+  border: 1px solid #C7D4EA;
+  border-radius: 8px;
+  background: #F3F6FB;
+  height: auto;
+  min-height: 0;
+}
+#containerRequest.crp-workspace .containerFormFileLink + .containerFormFileLink { margin-top: 8px; }
+#containerRequest.crp-workspace .containerFormFileLink:empty { display: none !important; }
+/* Ícone de arquivo à esquerda */
+#containerRequest.crp-workspace .containerFormFileLink::before {
+  content: "";
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23053F88' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/%3E%3Cpath d='M14 2v6h6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+/* Nome do arquivo (preserva a extensão e o link nativo) */
+#containerRequest.crp-workspace .containerFormFileLink > a.small {
+  flex: 1 1 auto;
+  min-width: 0;
+  color: #053F88 !important;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  overflow-wrap: break-word;
+  word-break: normal;
+  white-space: normal;
+}
+/* Botão de download discreto (36x36) */
+#containerRequest.crp-workspace .containerFormFileLink > a[donwload],
+#containerRequest.crp-workspace .containerFormFileLink > a[download] {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  min-height: 36px;
+  margin: 0 !important;
+  padding: 0;
+  border: 1px solid #C7D4EA;
+  border-radius: 8px;
+  background-color: #FFFFFF;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23053F88' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3v12'/%3E%3Cpath d='m7 10 5 5 5-5'/%3E%3Cpath d='M5 21h14'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 18px 18px;
+  text-decoration: none;
+}
+#containerRequest.crp-workspace .containerFormFileLink > a[donwload] svg,
+#containerRequest.crp-workspace .containerFormFileLink > a[download] svg { display: none !important; }
+#containerRequest.crp-workspace .containerFormFileLink > a[donwload]:hover,
+#containerRequest.crp-workspace .containerFormFileLink > a[download]:hover {
+  background-color: #EAF0F8;
+  border-color: #053F88;
+}
+@media (max-width: 575.98px) {
+  #containerRequest.crp-workspace .crp-readonly-group table.form:has(.containerFormFileLink) > tbody {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Resumo: evita overflow horizontal das tabelas em telas pequenas */
+@media (max-width: 575.98px) {
+  #containerRequest.crp-workspace #crp-summary table.form { margin-left: 0 !important; }
+}
+
+/* ===== Ações: anexos de campos com o mesmo padrão dos cards ===== */
+/* Grade de 2 colunas para o grupo que contém arquivos */
+#containerRequest.crp-workspace .crp-action-content table.form:has(.containerFormFileLink) > tbody {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+#containerRequest.crp-workspace .crp-action-content table.form:has(.containerFormFileLink) > tbody > tr {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+#containerRequest.crp-workspace .crp-action-content table.form:has(.containerFormFileLink) > tbody > tr.group { grid-column: 1 / -1; }
+#containerRequest.crp-workspace .crp-action-content table.form:has(.containerFormFileLink) > tbody > tr > td {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+}
+/* Botão Anexar arquivo */
+#containerRequest.crp-workspace table.form:has(.containerFormFileLink) button[onclick*="fileUpload"] {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: auto !important;
+  max-width: max-content;
+  min-height: 40px;
+  margin: 8px 0 0 !important;
+  padding: 0 14px;
+  border: 1px solid #C7D4EA;
+  border-radius: 8px;
+  background: #EAF0F8 !important;
+  color: #053F88 !important;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  text-transform: none;
+}
+#containerRequest.crp-workspace table.form:has(.containerFormFileLink) button[onclick*="fileUpload"]::before {
+  content: "";
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23053F88' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 16V4'/%3E%3Cpath d='m7 9 5-5 5 5'/%3E%3Cpath d='M4 20h16'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+#containerRequest.crp-workspace table.form:has(.containerFormFileLink) button[onclick*="fileUpload"]:hover {
+  background: #DCE7F5 !important;
+  border-color: #053F88;
+}
+#containerRequest.crp-workspace table.form:has(.containerFormFileLink) button[onclick*="fileUpload"]:focus-visible {
+  outline: 2px solid #053F88;
+  outline-offset: 2px;
+}
+
+/* Remover arquivo (apenas quando o campo oferecer a ação) */
+#containerRequest.crp-workspace td.col1:has(.containerFormFileLink) a[onclick*="files.delete"],
+#containerRequest.crp-workspace td.col1:has(.containerFormFileLink) a[onclick*="fileUpload.delete"],
+#containerRequest.crp-workspace .containerFormFileLink a[onclick*="files.delete"],
+#containerRequest.crp-workspace .containerFormFileLink a[onclick*="fileUpload.delete"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background-color: transparent;
+  color: #E6373B !important;
+  text-decoration: none !important;
+}
+#containerRequest.crp-workspace td.col1:has(.containerFormFileLink) a[onclick*="files.delete"]:hover,
+#containerRequest.crp-workspace td.col1:has(.containerFormFileLink) a[onclick*="fileUpload.delete"]:hover,
+#containerRequest.crp-workspace .containerFormFileLink a[onclick*="files.delete"]:hover,
+#containerRequest.crp-workspace .containerFormFileLink a[onclick*="fileUpload.delete"]:hover { background-color: #FFF0F1; }
+
+/* Campo editável: bloco único branco (arquivo + ações de baixar/excluir + anexar) */
+#containerRequest.crp-workspace td.col1:has(button[onclick*="fileUpload"]) {
+  display: block !important;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0 !important;
+  padding: 12px !important;
+  border: 1px solid #C7D4EA !important;
+  border-radius: 8px !important;
+  background: #FFFFFF !important;
+}
+#containerRequest.crp-workspace td.col1:has(button[onclick*="fileUpload"]) > .containerFormFileLink {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+#containerRequest.crp-workspace td.col1:has(button[onclick*="fileUpload"]) > button[onclick*="fileUpload"] {
+  margin: 8px 0 0 !important;
+}
+@media (max-width: 575.98px) {
+  #containerRequest.crp-workspace .crp-action-content table.form:has(.containerFormFileLink) > tbody { grid-template-columns: minmax(0, 1fr); }
+  #containerRequest.crp-workspace .crp-action-content table.form:has(.containerFormFileLink) { margin-left: 0 !important; }
 }

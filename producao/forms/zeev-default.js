@@ -105,7 +105,7 @@
     return state;
   }
 
-  function addTab(panel, label, count) {
+  function addTab(panel, label, count, singular) {
     if (
       !panel ||
       state.items.some(function (i) {
@@ -120,7 +120,7 @@
     panel.classList.add('crp-panel');
     panel.setAttribute('role', 'tabpanel');
 
-    var button = el('button', '', label);
+    var button = el('button', 'crp-tab', label);
     button.type = 'button';
     button.id = 'crp-tab-' + panel.id;
     button.setAttribute('role', 'tab');
@@ -135,7 +135,8 @@
       panel: panel,
       button: button,
       label: label,
-      count: count
+      count: count,
+      singular: singular
     };
 
     state.items.push(item);
@@ -237,6 +238,53 @@
     return 'nenhum';
   }
 
+  // Mantém o plural correto: "1 mensagem", "2 anexos", "0 mensagens".
+  // O rótulo da aba já é o plural; o singular vem declarado, porque em
+  // português não dá para deduzir pelo final ("mensagens" -&gt; "mensagem",
+  // e o plural não é o singular mais um "s").
+  function palavraContagem(item, plural) {
+    var nomeDaAba = String(item.label || '')
+      .toLowerCase()
+      .trim();
+
+    var singular = String(item.singular || '')
+      .toLowerCase()
+      .trim();
+
+    if (plural || !singular) return nomeDaAba;
+
+    return singular;
+  }
+
+  // Repõe apenas os spans internos do botão. O elemento, o id e o
+  // clique já registrados são preservados.
+  function montarRotuloAba(item, quantidade, temContador) {
+    var botao = item.button;
+    var nome = palavraContagem(item, quantidade !== 1);
+
+    var rotulo = el('span', 'crp-tab-label');
+    rotulo.appendChild(document.createTextNode(item.label));
+
+    if (temContador) {
+      rotulo.appendChild(document.createTextNode(' '));
+      rotulo.appendChild(
+        el('span', 'crp-tab-count', String(quantidade))
+      );
+    }
+
+    var descricao = el('span', 'crp-tab-desc');
+    descricao.id = botao.id + '-desc';
+    descricao.textContent = temContador ? quantidade + ' ' + nome : '';
+    rotulo.appendChild(descricao);
+
+    botao.textContent = '';
+    botao.appendChild(rotulo);
+
+    botao.setAttribute('aria-label', item.label);
+
+    return descricao;
+  }
+
   function render() {
     state.items.forEach(function (item) {
       var active = state.active === item;
@@ -247,21 +295,44 @@
   
       var count = item.count &&
         state.root.querySelector('#commands .' + item.count);
-  
+
+      var temContador = !!count;
       var textoContador = count ? count.textContent.trim() : '';
-      var quantidade = Number(textoContador.replace(/[^\d]/g, ''));
-  
-      var text = item.label +
-        (count ? ' · ' + textoContador : '');
-  
-      if (item.button.textContent !== text) {
-        item.button.textContent = text;
+      var quantidade =
+        Number(textoContador.replace(/[^\d]/g, '')) || 0;
+
+      // Só remontamos o conteúdo quando o número muda, para não
+      // reconstruir os spans a cada atualização do observador.
+      var assinatura =
+        item.label + '|' + (count ? quantidade : 'sem');
+
+      if (item.rotuloAtual !== assinatura) {
+        item.rotuloAtual = assinatura;
+        item.descricao = montarRotuloAba(item, quantidade, temContador);
       }
-  
+
+      // Descrição acessível e dica ao passar o mouse carregam o texto
+      // completo, porque o selo visível mostra apenas o número.
+      var textoCompleto = temContador
+        ? quantidade + ' ' + palavraContagem(item, quantidade !== 1)
+        : '';
+
       if (item.panel.id === 'containerFiles') {
         // Anexos: pendente = vermelho, ok = verde, nenhum = sem bolinha.
-        item.button.setAttribute('data-crp-anexos', statusAnexos(state.root));
+        var status = statusAnexos(state.root);
+
+        item.button.setAttribute('data-crp-anexos', status);
         item.button.setAttribute('data-crp-tem-conteudo', 'false');
+
+        // A bolinha mantém a regra atual de status; a pendência ganha
+        // uma descrição para não depender só da cor.
+        if (status === 'pendente') {
+          var aviso = 'Há documento obrigatório pendente de anexar.';
+
+          textoCompleto = textoCompleto
+            ? textoCompleto + '. ' + aviso
+            : aviso;
+        }
       } else {
         var temConteudo =
           item.panel.id === 'containerMessages' && quantidade > 0;
@@ -271,8 +342,19 @@
           temConteudo ? 'true' : 'false'
         );
       }
-  
-      item.button.setAttribute('aria-label', text);
+
+      item.descricao.textContent = textoCompleto;
+
+      if (textoCompleto) {
+        item.button.setAttribute(
+          'aria-describedby',
+          item.descricao.id
+        );
+        item.button.setAttribute('data-crp-dica', textoCompleto);
+      } else {
+        item.button.removeAttribute('data-crp-dica');
+        item.button.removeAttribute('aria-describedby');
+      }
     });
   }
 
@@ -350,29 +432,87 @@
 
   function atualizarAnexosObrigatorios(s) {
     var bloco = s.root.querySelector('#mandatoryAnnex');
+    var card = document.getElementById('crp-required-files-card');
+    var painel = s.root.querySelector('#containerFiles');
+
     if (!bloco || !sameForm(bloco, s.info)) return;
 
-    // O Zeev consulta o contêiner original ao adicionar/remover arquivos.
-    // Mantém #mandatoryAnnex no mesmo lugar e aplica somente classes visuais.
-    bloco.classList.add('crp-required-files');
+    // O card só aparece quando há documento obrigatório a anexar.
+    if (!bloco.querySelector('[cod][onclick*="capture.upload"]')) {
+      if (card && sameForm(card, s.info)) card.hidden = true;
+      return;
+    }
 
-    var titulo = bloco.previousElementSibling;
-    if (titulo && titulo.matches('h5.title-container-files')) {
-      titulo.hidden = false;
+    // O Zeev desenha o bloco no carregamento da página. Espera o desenho
+    // terminar para não retirar o bloco de dentro do contêiner original.
+    if (!s.root.querySelector('#customizedUpload')) return;
+
+    // Título da aba Anexos: lido antes de qualquer inserção.
+    var titulo = painel && painel.querySelector('h5.title-container-files');
+
+    if (!card) {
+      card = el('section', 'crp-card crp-required-files-card');
+      card.id = 'crp-required-files-card';
+
+      card.appendChild(
+        el('h2', 'crp-card-title', 'Anexos obrigatórios')
+      );
+
+      card.appendChild(
+        el(
+          'p',
+          'crp-required-hint',
+          'Anexe os documentos abaixo para concluir esta etapa.'
+        )
+      );
+    }
+
+    card.hidden = false;
+
+    // Fica abaixo de Informações relevantes e acima das ações.
+    if (
+      card.parentNode !== s.right ||
+      card.nextElementSibling !== s.actions
+    ) {
+      s.right.insertBefore(card, s.actions);
+    }
+
+    // O Zeev procura o contêiner original ao adicionar ou remover
+    // arquivos. Deixa um marcador vazio no lugar do bloco que saiu de lá.
+    // O marcador não pode ficar oculto: ao adicionar ou remover arquivo o
+    // Zeev move #customizedUpload para dentro dele, e esconder o marcador
+    // apagaria os botões de anexo obrigatório da tela.
+    if (painel) {
+      var ancora = painel.querySelector('#crp-annex-anchor');
+
+      if (!ancora) {
+        ancora = el('div', 'box-header crp-annex-anchor');
+        ancora.id = 'crp-annex-anchor';
+        painel.insertBefore(ancora, bloco);
+      }
+
+      ancora.removeAttribute('hidden');
+    }
+
+    if (titulo) {
+      titulo.hidden = true;
       titulo.classList.add('crp-required-files-title');
     }
 
-    // O X já chama removeUpload pelo onclick nativo. Impede somente que
-    // o clique suba ao botão pai, que abriria a seleção de arquivos.
-    bloco.querySelectorAll('.icon-remove[onclick*="removeUpload"]').forEach(
-      function (remover) {
-        if (remover.dataset.crpRemoveBound) return;
-        remover.dataset.crpRemoveBound = '1';
-        remover.addEventListener('click', function (event) {
-          event.stopPropagation();
-        });
-      }
-    );
+    bloco.classList.add('crp-required-files');
+
+    if (bloco.parentNode !== card) card.appendChild(bloco);
+
+    // Ao adicionar ou remover um arquivo o Zeev devolve a tabela de
+    // upload para o marcador e tira ela do card. Traz de volta para o
+    // bloco, que continua dentro do card.
+    if (bloco) {
+      var upload = document.getElementById('customizedUpload');
+
+      if (upload && !bloco.contains(upload)) bloco.appendChild(upload);
+    }
+
+    card.setAttribute('data-crp-anexos', statusAnexos(s.root));
   }
 
   function update() {
@@ -439,9 +579,14 @@
       }
 
       // Posiciona o card imediatamente antes das ações.
+      // Mantém o card antes das ações, sem disputarem posição com o
+      // card de anexos obrigatórios.
       if (
         instructionsCard.parentNode !== s.right ||
-        instructionsCard.nextElementSibling !== s.actions
+        !(
+          s.actions.compareDocumentPosition(instructionsCard) &
+          Node.DOCUMENT_POSITION_FOLLOWING
+        )
       ) {
         s.right.insertBefore(instructionsCard, s.actions);
       }
@@ -482,9 +627,9 @@
     }
 
     [
-      ['containerMessages', 'Mensagens', 'count-messages'],
-      ['containerFiles', 'Anexos', 'count-files'],
-      ['containerHistory', 'Histórico', null]
+      ['containerMessages', 'Mensagens', 'count-messages', 'mensagem'],
+      ['containerFiles', 'Anexos', 'count-files', 'anexo'],
+      ['containerHistory', 'Histórico', null, null]
     ].forEach(function (def) {
       var panel = s.root.querySelector('#' + def[0]);
 
@@ -504,7 +649,7 @@
         return;
       }
 
-      addTab(panel, def[1], def[2]);
+      addTab(panel, def[1], def[2], def[3]);
     });
 
     // Mantém os atalhos e ações auxiliares acessíveis.
@@ -560,7 +705,171 @@
 
     atualizarAnexosObrigatorios(s);
     render();
+    classificarStatusHistorico();
+    ajustarNumeroProcesso();
+    ajustarMensagens();
+    ajustarArquivosCampos();
     atualizarVisibilidadeAcoes(s);
+  }
+
+  // Padroniza os anexos dos campos do formulário (Resumo e Ações) sem
+  // alterar URLs, IDs, eventos nem o comportamento nativo de cada campo.
+  function ajustarArquivosCampos() {
+    var root = document.getElementById('containerRequest');
+
+    if (!root) return;
+
+    // Botão de download de cada arquivo.
+    Array.prototype.forEach.call(
+      root.querySelectorAll('.containerFormFileLink > a[donwload], .containerFormFileLink > a[download]'),
+      function (botao) {
+        if (botao.dataset.crpBaixar === '1') return;
+
+        botao.setAttribute('aria-label', 'Baixar arquivo');
+        botao.setAttribute('title', 'Baixar arquivo');
+        botao.dataset.crpBaixar = '1';
+      }
+    );
+
+    // Botão de remover, somente quando o campo oferecer a ação.
+    Array.prototype.forEach.call(
+      root.querySelectorAll('.containerFormFileLink a[onclick*="files.delete"], .containerFormFileLink a[onclick*="fileUpload.delete"], td.col1:has(.containerFormFileLink) a[onclick*="files.delete"], td.col1:has(.containerFormFileLink) a[onclick*="fileUpload.delete"]'),
+      function (botao) {
+        if (botao.dataset.crpRemover === '1') return;
+
+        botao.setAttribute('aria-label', 'Remover arquivo');
+        botao.setAttribute('title', 'Remover arquivo');
+        botao.dataset.crpRemover = '1';
+      }
+    );
+
+    // Botão de anexar arquivo do campo editável.
+    Array.prototype.forEach.call(
+      root.querySelectorAll('button[onclick*="fileUpload"]'),
+      function (botao) {
+        if (botao.dataset.crpAnexar === '1') return;
+
+        var multi = !!botao.closest('table[mult="S"]');
+        var campo = botao.closest('td');
+        var arquivos = campo ? campo.querySelectorAll('.containerFormFileLink a[href*="/document/preview/"]').length : 0;
+        var texto = multi && arquivos > 0 ? 'Adicionar arquivo' : 'Anexar arquivo';
+
+        if (!botao.children.length && botao.textContent.trim() !== texto) {
+          botao.textContent = texto;
+        }
+
+        botao.dataset.crpAnexar = '1';
+      }
+    );
+  }
+
+  // Reorganiza o card de mensagem: data no cabeçalho e, no rodapé,
+  // a atividade de origem e o processo (preservando link, se houver).
+  function ajustarMensagens() {
+    var linhas = document.querySelectorAll('#containerMessages #tblMessageBody > tr');
+
+    Array.prototype.forEach.call(linhas, function (linha) {
+      if (linha.dataset.crpMensagem === '1') return;
+
+      var cabecalho = linha.querySelector('td.message > div:first-child');
+      var rodape = linha.querySelector('td.message > .text-right');
+
+      if (!cabecalho || !rodape) return;
+
+      var meta = rodape.querySelector('.small');
+      var selo = rodape.querySelector('.badge');
+      var texto = meta ? (meta.textContent || '').trim() : '';
+      var pos = texto.indexOf(',');
+      var data = pos >= 0 ? texto.slice(0, pos).trim() : texto;
+      var atividade = pos >= 0 ? texto.slice(pos + 1).trim() : '';
+
+      var frag = document.createDocumentFragment();
+
+      if (atividade) {
+        var at = document.createElement('span');
+        at.className = 'crp-msg-atividade';
+        at.textContent = atividade;
+        frag.appendChild(at);
+      }
+
+      if (selo) {
+        var link = selo.tagName === 'A' ? selo : selo.querySelector('a');
+        var numero = ((link || selo).textContent || '').replace(/[^0-9]/g, '');
+
+        if (numero) {
+          if (atividade) {
+            var ponto = document.createElement('span');
+            ponto.className = 'crp-msg-sep';
+            ponto.textContent = '\u00b7';
+            frag.appendChild(ponto);
+          }
+
+          var proc = document.createElement(link ? 'a' : 'span');
+          proc.className = 'crp-msg-processo';
+          proc.textContent = 'Processo #' + numero;
+
+          if (link) {
+            proc.setAttribute('href', link.getAttribute('href'));
+            if (link.getAttribute('target')) proc.setAttribute('target', link.getAttribute('target'));
+          }
+
+          frag.appendChild(proc);
+        }
+      }
+
+      rodape.textContent = '';
+      rodape.appendChild(frag);
+
+      if (data) {
+        var dataEl = document.createElement('span');
+        dataEl.className = 'crp-msg-data';
+        dataEl.textContent = data;
+        cabecalho.appendChild(dataEl);
+      }
+
+      linha.dataset.crpMensagem = '1';
+    });
+  }
+
+  // Mostra o número do processo como "Processo #NNNN" no card de anexos,
+  // preservando o link quando o número já é clicável.
+  function ajustarNumeroProcesso() {
+    var selos = document.querySelectorAll(
+      '#containerFiles #tblFile td.message > .text-right .badge'
+    );
+
+    Array.prototype.forEach.call(selos, function (selo) {
+      if (selo.dataset.crpProcesso === '1') return;
+
+      var alvo = selo.tagName === 'A' ? selo : (selo.querySelector('a') || selo);
+      var numero = (alvo.textContent || '').replace(/[^0-9]/g, '');
+
+      if (!numero) return;
+
+      alvo.textContent = 'Processo #' + numero;
+      selo.dataset.crpProcesso = '1';
+    });
+  }
+
+  // Classifica o status de cada evento do Histórico para colorir o selo
+  // (verde para concluído, âmbar para revisão e neutro para os demais),
+  // sem alterar textos nem a ordem dos registros.
+  function classificarStatusHistorico() {
+    var escopo = document.getElementById('containerHistoryRender');
+
+    if (!escopo) return;
+
+    escopo.querySelectorAll('.badge').forEach(function (selo) {
+      var texto = (selo.textContent || '').toLowerCase();
+      var status = 'neutro';
+
+      if (texto.indexOf('conclu') >= 0) status = 'concluido';
+      else if (texto.indexOf('revis') >= 0) status = 'revisao';
+
+      if (selo.getAttribute('data-crp-status') !== status) {
+        selo.setAttribute('data-crp-status', status);
+      }
+    });
   }
 
   function refresh() {
