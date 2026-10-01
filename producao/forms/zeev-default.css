@@ -2156,3 +2156,64 @@
   #containerRequest.crp-workspace .crp-action-content table.form:has(.containerFormFileLink) > tbody { grid-template-columns: minmax(0, 1fr); }
   #containerRequest.crp-workspace .crp-action-content table.form:has(.containerFormFileLink) { margin-left: 0 !important; }
 }
+
+/* ===================================================================
+   Hierarquia visual de campos (labels x valores)
+   Rótulos em azul CRP semibold; valores em peso normal; grupos mais
+   destacados que os rótulos. Não afeta botões, abas nem textos de ajuda.
+   =================================================================== */
+
+/* 1) Títulos de grupo: base mais forte que os rótulos de campo. */
+#containerRequest.crp-workspace #crp-info-card td.group > b,
+#containerRequest.crp-workspace .crp-readonly-group .group b,
+#containerRequest.crp-workspace .crp-action-content table.form > tbody > tr.group > td.group > b {
+  color: #053F88 !important;
+  font-weight: 700 !important;
+  font-size: 15px !important;
+  letter-spacing: .2px;
+}
+
+/* 2) Rótulos dos campos (col0): semibold, azul CRP e espaçamento claro. */
+#containerRequest.crp-workspace table.form:not([mult="S"]) > tbody > tr:not(.group) > td.col0 {
+  color: #1F1F1F !important;
+  font-weight: 700 !important;
+  font-size: 13px;
+  line-height: 1.35;
+  padding-top: 12px;
+  padding-bottom: 4px;
+}
+
+/* 3) Valores/conteúdo (col1): peso normal, cor neutra e legível. */
+#containerRequest.crp-workspace table.form:not([mult="S"]) > tbody > tr:not(.group) > td.col1,
+#containerRequest.crp-workspace table.form:not([mult="S"]) > tbody > tr:not(.group) > td.col1 > div {
+  color: #1F2D3D !important;
+  font-weight: 400 !important;
+  font-size: 14px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* 4) Respiro entre campos. */
+#containerRequest.crp-workspace table.form:not([mult="S"]) > tbody > tr:not(.group) > td.col1 {
+  padding-bottom: 14px;
+}
+
+/* 5) Campos longos (textarea / texto somente leitura). */
+#containerRequest.crp-workspace table.form:not([mult="S"]) > tbody > tr > td.col1 textarea,
+#containerRequest.crp-workspace table.form:not([mult="S"]) > tbody > tr > td.col1 [xtype="TEXTAREA"] {
+  font-weight: 400 !important;
+  line-height: 1.55;
+}
+
+/* 6) Mobile: rótulo acima do valor, com respiro. */
+@media (max-width: 640px) {
+  #containerRequest.crp-workspace table.form:not([mult="S"]) > tbody > tr:not(.group) > td.col0 {
+    padding-top: 10px;
+    padding-bottom: 2px;
+  }
+  #containerRequest.crp-workspace table.form:not([mult="S"]) > tbody > tr:not(.group) > td.col1 {
+    padding-top: 0;
+    padding-bottom: 12px;
+  }
+}
