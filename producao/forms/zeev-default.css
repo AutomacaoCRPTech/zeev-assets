@@ -169,11 +169,11 @@
 .crp-form #BoxFrmExecute { padding: 0 !important; }
 .crp-form #FrmExecute,
 .crp-form table.form { width: 100%; }
-.crp-form table.form > tbody > tr > td {
+.crp-form table.form:not([mult="S"]) > tbody > tr > td {
   padding: 10px 8px;
   vertical-align: top;
 }
-.crp-form table.form > tbody > tr > td.col0 {
+.crp-form table.form:not([mult="S"]) > tbody > tr > td.col0 {
   color: var(--crp-text);
   font-size: 13px;
   font-weight: 600;
@@ -271,8 +271,8 @@
 @media (max-width: 640px) {
   .crp-form .crp-card,
   .crp-form .crp-header { padding: 18px !important; }
-  .crp-form table.form > tbody > tr > td.col0,
-  .crp-form table.form > tbody > tr > td.col1 {
+  .crp-form table.form:not([mult="S"]) > tbody > tr > td.col0,
+  .crp-form table.form:not([mult="S"]) > tbody > tr > td.col1 {
     display: block;
     box-sizing: border-box;
     width: 100%;
@@ -404,30 +404,31 @@
 }
 .crp-workspace .instructions-text { font-size: 12px; }
 .crp-workspace .crp-readonly-group { width: 100%; margin: 0 0 14px; }
-.crp-workspace .crp-readonly-group table.form > tbody {
+/* Não afeta tabelas multivaloradas (mult="S"), que devem manter o layout. */
+.crp-workspace .crp-readonly-group table.form:not([mult="S"]) > tbody {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 14px 18px;
 }
-.crp-workspace .crp-readonly-group table.form > tbody > tr {
+.crp-workspace .crp-readonly-group table.form:not([mult="S"]) > tbody > tr {
   display: flex;
   flex-direction: column;
   min-width: 0;
 }
-.crp-workspace .crp-readonly-group table.form > tbody > tr.group,
-.crp-workspace .crp-readonly-group table.form > tbody > tr:has([xtype="TEXTAREA"]),
-.crp-workspace .crp-readonly-group table.form > tbody > tr:has(#td1solicitacaoTipo),
-.crp-workspace .crp-readonly-group table.form > tbody > tr:has(#td1justificativa) {
+.crp-workspace .crp-readonly-group table.form:not([mult="S"]) > tbody > tr.group,
+.crp-workspace .crp-readonly-group table.form:not([mult="S"]) > tbody > tr:has([xtype="TEXTAREA"]),
+.crp-workspace .crp-readonly-group table.form:not([mult="S"]) > tbody > tr:has(#td1solicitacaoTipo),
+.crp-workspace .crp-readonly-group table.form:not([mult="S"]) > tbody > tr:has(#td1justificativa) {
   grid-column: 1 / -1;
 }
-.crp-workspace .crp-readonly-group table.form > tbody > tr > td {
+.crp-workspace .crp-readonly-group table.form:not([mult="S"]) > tbody > tr > td {
   display: block;
   width: 100%;
   padding: 0;
   border: 0;
   text-align: left;
 }
-.crp-workspace .crp-readonly-group table.form > tbody > tr > td.col0 {
+.crp-workspace .crp-readonly-group table.form:not([mult="S"]) > tbody > tr > td.col0 {
   margin-bottom: 4px;
   font-size: 11px;
   font-weight: 400;
@@ -443,15 +444,15 @@
   overflow-wrap: anywhere;
 }
 .crp-workspace .crp-readonly-group .group b { font-size: 13px; font-weight: 600; }
-.crp-workspace .crp-action-content table.form > tbody > tr > td.col0,
-.crp-workspace .crp-action-content table.form > tbody > tr > td.col1 {
+.crp-workspace .crp-action-content table.form:not([mult="S"]) > tbody > tr > td.col0,
+.crp-workspace .crp-action-content table.form:not([mult="S"]) > tbody > tr > td.col1 {
   display: block;
   box-sizing: border-box;
   width: 100%;
   padding: 6px 0;
   text-align: left;
 }
-.crp-workspace .crp-action-content table.form { margin-bottom: 18px; }
+.crp-workspace .crp-action-content table.form:not([mult="S"]) { margin-bottom: 18px; }
 .crp-workspace .crp-action-content .form-control { width: 100%; }
 .crp-workspace table[mult="S"] { font-size: 12px; }
 .crp-workspace table[mult="S"] th,
@@ -560,7 +561,7 @@
 
 /* Títulos dos grupos na área de ações */
 #containerRequest.crp-workspace
-.crp-action-content table.form > tbody > tr.group > td.group {
+.crp-action-content table.form:not([mult="S"]) > tbody > tr.group > td.group {
   padding: 0 0 14px !important;
   border: 0 !important;
   background: transparent !important;
@@ -568,7 +569,7 @@
 }
 
 #containerRequest.crp-workspace
-.crp-action-content table.form > tbody > tr.group > td.group > b {
+.crp-action-content table.form:not([mult="S"]) > tbody > tr.group > td.group > b {
   display: block;
   margin: 0;
   padding: 2px 0 2px 10px;
@@ -1964,8 +1965,8 @@
   font-weight: 600;
 }
 /* Duas colunas com intervalo de 12px */
-#containerRequest.crp-workspace .crp-readonly-group table.form:has(.containerFormFileLink) > tbody,
-#containerRequest.crp-workspace .crp-action-content table.form:has(.containerFormFileLink) > tbody {
+#containerRequest.crp-workspace .crp-readonly-group table.form:not([mult="S"]):has(.containerFormFileLink) > tbody,
+#containerRequest.crp-workspace .crp-action-content table.form:not([mult="S"]):has(.containerFormFileLink) > tbody {
   column-gap: 12px;
   row-gap: 12px;
 }
@@ -2040,7 +2041,7 @@
   border-color: #053F88;
 }
 @media (max-width: 575.98px) {
-  #containerRequest.crp-workspace .crp-readonly-group table.form:has(.containerFormFileLink) > tbody {
+  #containerRequest.crp-workspace .crp-readonly-group table.form:not([mult="S"]):has(.containerFormFileLink) > tbody {
     grid-template-columns: minmax(0, 1fr);
   }
 }
@@ -2052,24 +2053,24 @@
 
 /* ===== Ações: anexos de campos com o mesmo padrão dos cards ===== */
 /* Grade de 2 colunas para o grupo que contém arquivos */
-#containerRequest.crp-workspace .crp-action-content table.form:has(.containerFormFileLink) > tbody {
+#containerRequest.crp-workspace .crp-action-content table.form:not([mult="S"]):has(.containerFormFileLink) > tbody {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 }
-#containerRequest.crp-workspace .crp-action-content table.form:has(.containerFormFileLink) > tbody > tr {
+#containerRequest.crp-workspace .crp-action-content table.form:not([mult="S"]):has(.containerFormFileLink) > tbody > tr {
   display: flex;
   flex-direction: column;
   min-width: 0;
 }
-#containerRequest.crp-workspace .crp-action-content table.form:has(.containerFormFileLink) > tbody > tr.group { grid-column: 1 / -1; }
-#containerRequest.crp-workspace .crp-action-content table.form:has(.containerFormFileLink) > tbody > tr > td {
+#containerRequest.crp-workspace .crp-action-content table.form:not([mult="S"]):has(.containerFormFileLink) > tbody > tr.group { grid-column: 1 / -1; }
+#containerRequest.crp-workspace .crp-action-content table.form:not([mult="S"]):has(.containerFormFileLink) > tbody > tr > td {
   display: block;
   width: 100%;
   padding: 0;
   border: 0;
 }
 /* Botão Anexar arquivo */
-#containerRequest.crp-workspace table.form:has(.containerFormFileLink) button[onclick*="fileUpload"] {
+#containerRequest.crp-workspace table.form:not([mult="S"]):has(.containerFormFileLink) button[onclick*="fileUpload"] {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -2088,7 +2089,7 @@
   white-space: nowrap;
   text-transform: none;
 }
-#containerRequest.crp-workspace table.form:has(.containerFormFileLink) button[onclick*="fileUpload"]::before {
+#containerRequest.crp-workspace table.form:not([mult="S"]):has(.containerFormFileLink) button[onclick*="fileUpload"]::before {
   content: "";
   flex: 0 0 18px;
   width: 18px;
@@ -2098,11 +2099,11 @@
   background-position: center;
   background-size: contain;
 }
-#containerRequest.crp-workspace table.form:has(.containerFormFileLink) button[onclick*="fileUpload"]:hover {
+#containerRequest.crp-workspace table.form:not([mult="S"]):has(.containerFormFileLink) button[onclick*="fileUpload"]:hover {
   background: #DCE7F5 !important;
   border-color: #053F88;
 }
-#containerRequest.crp-workspace table.form:has(.containerFormFileLink) button[onclick*="fileUpload"]:focus-visible {
+#containerRequest.crp-workspace table.form:not([mult="S"]):has(.containerFormFileLink) button[onclick*="fileUpload"]:focus-visible {
   outline: 2px solid #053F88;
   outline-offset: 2px;
 }
@@ -2153,8 +2154,8 @@
   margin: 8px 0 0 !important;
 }
 @media (max-width: 575.98px) {
-  #containerRequest.crp-workspace .crp-action-content table.form:has(.containerFormFileLink) > tbody { grid-template-columns: minmax(0, 1fr); }
-  #containerRequest.crp-workspace .crp-action-content table.form:has(.containerFormFileLink) { margin-left: 0 !important; }
+  #containerRequest.crp-workspace .crp-action-content table.form:not([mult="S"]):has(.containerFormFileLink) > tbody { grid-template-columns: minmax(0, 1fr); }
+  #containerRequest.crp-workspace .crp-action-content table.form:not([mult="S"]):has(.containerFormFileLink) { margin-left: 0 !important; }
 }
 
 /* ===================================================================
