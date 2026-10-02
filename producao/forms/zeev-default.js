@@ -568,6 +568,22 @@
     if (!setup()) return;
 
     var s = state;
+    var semAcaoAtual = false;
+    (function () {
+      var ct = s.actions && s.actions.querySelector('.crp-action-content');
+      var alvo = ct || s.actions;
+      // Só conta como "ação" quando há controle interativo VISÍVEL.
+      // Textos/labels de blocos ocultos (ex.: "Equipamentos") não valem.
+      var temVis = alvo && Array.prototype.some.call(
+        alvo.querySelectorAll('input:not([type="hidden"]),select,textarea,button,a,img'),
+        function (e) { return e.getClientRects().length > 0 && getComputedStyle(e).display !== 'none'; }
+      );
+      var temTabela = alvo && Array.prototype.some.call(
+        alvo.querySelectorAll("table[mult=\"S\"]"),
+        function (t) { return t.getClientRects().length > 0 && t.querySelectorAll("tbody tr:not(.header)").length > 0; }
+      );
+      semAcaoAtual = !temVis && !temTabela;
+    })();
 
     // Incorpora blocos inseridos posteriormente pelo Zeev.
     Array.prototype.slice.call(s.body.childNodes).forEach(
@@ -630,7 +646,10 @@
       // Posiciona o card imediatamente antes das ações.
       // Mantém o card antes das ações, sem disputarem posição com o
       // card de anexos obrigatórios.
-      if (
+      var destinoIns = semAcaoAtual ? s.left : s.right;
+      if (destinoIns === s.left) {
+        s.left.appendChild(instructionsCard);
+      } else if (
         instructionsCard.parentNode !== s.right ||
         !(
           s.actions.compareDocumentPosition(instructionsCard) &
@@ -670,7 +689,10 @@
         );
       }
 
-      if (checklist.parentNode !== s.right) {
+      var destinoChk = semAcaoAtual ? s.left : s.right;
+      if (destinoChk === s.left) {
+        s.left.appendChild(checklist);
+      } else if (checklist.parentNode !== s.right) {
         s.right.insertBefore(checklist, s.actions);
       }
     }
@@ -759,6 +781,23 @@
     ajustarMensagens();
     ajustarArquivosCampos();
     atualizarVisibilidadeAcoes(s);
+
+    // Ordem quando sem ação: Informações relevantes -> Checklist -> Info da solicitação.
+    // Só reordena quando a ordem atual está diferente, para não gerar
+    // mutações em loop (que faziam a página voltar ao topo).
+    if (semAcaoAtual) {
+      var info = s.root.querySelector('#crp-info-card');
+      var ins = s.root.querySelector('#crp-instructions-card');
+      var chk = s.root.querySelector('#ContainerConclusionCheckList');
+      var aux = s.left.querySelector('.crp-auxiliary');
+      var ordem = [ins, chk, info, aux].filter(Boolean);
+      var atual = ordem.filter(function (c) { return s.left.contains(c); });
+      var atualFiltrado = Array.prototype.slice.call(s.left.children).filter(function (c) { return ordem.indexOf(c) >= 0; });
+      var jaCorreto = atualFiltrado.length === ordem.length && atualFiltrado.every(function (c, i) { return c === ordem[i]; });
+      if (!jaCorreto) {
+        ordem.forEach(function (c) { s.left.appendChild(c); });
+      }
+    }
   }
 
   // Padroniza os anexos dos campos do formulário (Resumo e Ações) sem
@@ -1136,4 +1175,91 @@
   } else {
     iniciar();
   }
+})();
+/* CRP | Tarefa SEM AÇÃO: exibe um layout de conferência (hero + cartões)
+   reaproveitando o estilo crp-approval-*. Quando há ação, nada muda. */
+(function () {
+  'use strict';
+  var CHAVE = '__crpNoActionView';
+  if (window[CHAVE]) return;
+  window[CHAVE] = true;
+
+  var CLASSE = 'crp-approval-view';
+  var estilo = document.createElement('style');
+  estilo.id = 'crp-noaction-style';
+  document.head.appendChild(estilo);
+
+  function estaVisivel(elemento) {
+    if (!elemento) return false;
+    if (elemento.closest('[hidden], .d-none, .hide')) return false;
+    return getComputedStyle(elemento).display !== 'none' && elemento.getClientRects().length > 0;
+  }
+
+  function remover(container) {
+    if (!container) return;
+    container.classList.remove(CLASSE);
+    var hero = container.querySelector('.crp-approval-hero');
+    if (hero) hero.remove();
+    var resumo = container.querySelector('#crp-summary');
+    if (resumo) resumo.classList.remove('crp-approval-summary-visible');
+  }
+
+  function temAcao(acoes) {
+    if (!acoes) return false;
+    var conteudo = acoes.querySelector('.crp-action-content') || acoes;
+    var temControle = Array.prototype.some.call(
+      conteudo.querySelectorAll('input:not([type=hidden]),select,textarea,button,a,img'),
+      estaVisivel
+    );
+    if (temControle) return true;
+    // Tabela multivalorada com linhas tambem conta como acao/conteudo.
+    return Array.prototype.some.call(
+      conteudo.querySelectorAll('table[mult="S"]'),
+      function (t) { return estaVisivel(t) && t.querySelectorAll('tbody tr:not(.header)').length > 0; }
+    );
+  }
+
+  function criarHero(grid) {
+    var hero = document.createElement('section');
+    hero.className = 'crp-approval-hero';
+    hero.setAttribute('aria-label', 'Resumo da tarefa');
+    hero.innerHTML = [
+      '<p class="crp-approval-eyebrow">ANÁLISE DA SOLICITAÇÃO</p>',
+      '<h2 class="crp-approval-heading">Confira as informações</h2>',
+      '<p class="crp-approval-hint">Esta etapa não exige preenchimento. Revise os dados abaixo e conclua quando estiver tudo certo.</p>',
+      '<dl class="crp-approval-facts"></dl>'
+    ].join('');
+    var coluna = grid.querySelector('.crp-context-column');
+    coluna.insertBefore(hero, coluna.firstChild);
+    return hero;
+  }
+
+  function aplicar() {
+    var raiz = document.getElementById('containerRequest');
+    if (!raiz) return;
+    var grid = raiz.querySelector('.crp-work-grid');
+    var coluna = raiz.querySelector('.crp-context-column');
+    var acoes = raiz.querySelector('.crp-actions');
+    var resumo = raiz.querySelector('#crp-summary');
+    if (!grid || !coluna || !resumo) { remover(raiz); return; }
+
+    var semAcao = !temAcao(acoes);
+    if (!semAcao) { remover(raiz); return; }
+
+    raiz.classList.add(CLASSE);
+    resumo.classList.add('crp-approval-summary-visible');
+    if (acoes) acoes.classList.add('crp-approval-hidden');
+  }
+
+  var ultima = null;
+  setInterval(function () {
+    if (!document.body) return;
+    var raiz = document.getElementById('containerRequest');
+    if (!raiz) return;
+    var assinatura = raiz.querySelector('.crp-action-content') ? raiz.querySelector('.crp-action-content').innerHTML : '';
+    if (assinatura === ultima && raiz.classList.contains(CLASSE) === (assinatura, true)) { /* noop */ }
+    ultima = assinatura;
+    aplicar();
+  }, 700);
+  setTimeout(aplicar, 1200);
 })();
