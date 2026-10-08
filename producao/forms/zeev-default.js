@@ -1345,3 +1345,209 @@ function inicializar() {
 document.addEventListener('DOMContentLoaded', () => {
   setTimeout(inicializar, 500);
 });
+/* CRP | Autocomplete (typeahead): alinha a lista de sugestões ao campo.
+   O plugin insere <ul class="typeahead dropdown-menu"> logo após o input,
+   podendo ficar recortada por cards/tabelas (overflow). Posicionamos a
+   lista com position:fixed em relação ao campo, acompanhando largura,
+   rolagem e redimensionamento, sem alterar consultas/valores/eventos. */
+(function () {
+  'use strict';
+  if (window.__crpSuggestAjuste) return;
+  window.__crpSuggestAjuste = true;
+
+  var GAP = 4;
+
+  function listaDoCampo(campo) {
+    var prox = campo.nextElementSibling;
+    if (prox && /(^|\s)typeahead(\s|$)/.test(prox.className) &&
+        /(^|\s)dropdown-menu(\s|$)/.test(prox.className)) {
+      return prox;
+    }
+    return null;
+  }
+
+  function posicionar(campo) {
+    var lista = listaDoCampo(campo);
+    if (!lista) return;
+    var visivel = getComputedStyle(lista).display !== 'none'; /* fixed => offsetParent e null */
+    if (!visivel) {
+      lista.style.removeProperty('top');
+      lista.style.removeProperty('left');
+      lista.style.removeProperty('min-width');
+      lista.style.removeProperty('max-width');
+      return;
+    }
+    var r = campo.getBoundingClientRect();
+    var larguraCampo = Math.round(r.width);
+    var largura = Math.min(Math.max(larguraCampo, 240), window.innerWidth - 16);
+    var larguraLista = lista.getBoundingClientRect().width || 0;
+    largura = Math.max(largura, Math.min(larguraLista, window.innerWidth - 16));
+    var topo = r.bottom + GAP;
+    var altura = lista.getBoundingClientRect().height || 0;
+    if (topo + altura > window.innerHeight - 8 && r.top - GAP - altura > 8) {
+      topo = r.top - GAP - altura;
+    }
+    var esq = r.left;
+    if (esq + largura > window.innerWidth - 8) {
+      esq = Math.max(8, window.innerWidth - 8 - largura);
+    }
+    lista.style.position = 'fixed';
+    lista.style.top = Math.round(topo) + 'px';
+    lista.style.left = Math.round(esq) + 'px';
+    lista.style.minWidth = largura + 'px';
+    lista.style.maxWidth = largura + 'px';
+  }
+
+  var campoAtivo = null;
+  var raf = 0;
+  function ciclo() {
+    if (campoAtivo && document.body.contains(campoAtivo)) posicionar(campoAtivo);
+    raf = requestAnimationFrame(ciclo);
+  }
+
+  document.addEventListener("focusin", function (e) {
+    var campo = e.target;
+    if (campo && campo.matches && campo.matches(
+      "[data-special-type='suggest'],[data-fieldformat='SUGGEST2']")) {
+      campoAtivo = campo;
+    }
+  }, true);
+  document.addEventListener("scroll", function () {
+    if (campoAtivo) posicionar(campoAtivo);
+  }, true);
+  window.addEventListener("resize", function () {
+    if (campoAtivo) posicionar(campoAtivo);
+  });
+
+  ciclo();
+})();
+
+/* CRP | Nome do anexo na tabela multivalorada.
+   Mostra apenas as 5 primeiras letras seguidas de "..." e mantem o nome
+   COMPLETO no atributo data-crp-nome-completo/title (tooltip).
+   Nao mexe em links de "Proposta" nem em outras telas. */
+(function () {
+  'use strict';
+  if (window.__crpNomeCurtoAnexo) return;
+  window.__crpNomeCurtoAnexo = true;
+  function rotulos() {
+    var links = document.querySelectorAll('#containerRequest table[mult="S"] .containerFormFileLink > a.small');
+    Array.prototype.forEach.call(links, function (a) {
+      if (a.classList.contains('crp-proposal-link')) return;
+      var completo = a.getAttribute('data-crp-nome-completo') || (a.textContent || '').trim();
+      if (!completo) return;
+      if (!a.getAttribute('data-crp-nome-completo')) a.setAttribute('data-crp-nome-completo', completo);
+      if (a.getAttribute('title') !== completo) a.setAttribute('title', completo);
+      var curto = completo.length > 5 ? completo.slice(0, 5) + '...' : completo;
+      if (a.textContent !== curto) a.textContent = curto;
+    });
+  }
+  function iniciar() { rotulos();
+    var observer = new MutationObserver(function () { rotulos(); });
+    observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+  }
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', iniciar); } else { iniciar(); }
+})();
+
+/* CRP | Resumo: icones de grupo, grupos vazios e campos de largura total. */
+(function () {
+  'use strict';
+  if (window.__crpResumoVisual) return;
+  window.__crpResumoVisual = true;
+  var RE_FULL = /(nome|e-?mail|descri|justific|observa|endere|motivo|mensagem|condi|detalh|texto)/i;
+  function iframeOrigemVazio(ifr) {
+    if (!ifr) return false;
+    try {
+      var d = ifr.contentDocument;
+      var t = d && d.body ? (d.body.innerText || d.body.textContent || "").trim() : "";
+      return t === "";
+    } catch (e) { return false; }
+  }
+  function aplicar() {
+    var resumo = document.getElementById('crp-summary'); if (!resumo) return;
+    var vis = getComputedStyle(resumo).display !== 'none';
+    var grupos = resumo.querySelectorAll('.crp-readonly-group');
+    Array.prototype.forEach.call(grupos, function (g) {
+      var tabela = g.querySelector('table.form'); if (!tabela) return;
+      var lc = tabela.querySelectorAll("tbody > tr");
+      Array.prototype.forEach.call(lc, function (tr) {
+        if (tr.classList.contains("group")) return;
+        var ifr = tr.querySelector('iframe[xname="inpfluxoOrigem"]');
+        if (!ifr) return;
+        if (iframeOrigemVazio(ifr)) { if (tr.style.display !== "none") tr.style.display = "none"; }
+        else if (tr.style.display === "none") tr.style.display = "";
+      });
+      if (vis) { var linhas = tabela.querySelectorAll("tbody > tr"); var tem=false;
+        Array.prototype.forEach.call(linhas, function(tr){ if(tr.classList.contains("group"))return; if(getComputedStyle(tr).display!=="none") tem=true; });
+        if (g.classList.contains("crp-empty") === tem) g.classList.toggle("crp-empty", !tem); }
+      Array.prototype.forEach.call(lc, function (tr) {
+        if (tr.classList.contains("group")) return;
+        if (tr.querySelector(".containerFormFileLink") || tr.querySelector("textarea") || tr.querySelector('[xtype="TEXTAREA"]')) { if(!tr.classList.contains("crp-full")) tr.classList.add("crp-full"); return; }
+        var c0 = tr.querySelector("td.col0"); var c1 = tr.querySelector("td.col1");
+        var rot = c0 ? c0.textContent : ""; var val = c1 ? c1.textContent : "";
+        var cheio = RE_FULL.test(rot) || (val && val.trim().length > 34);
+        if (cheio && !tr.classList.contains("crp-full")) tr.classList.add("crp-full");
+      });
+    });
+    if (vis) {
+      var arr = Array.prototype.slice.call(resumo.querySelectorAll(':scope > .crp-readonly-group')).filter(function (g) { return getComputedStyle(g).display !== 'none'; });
+      var sozinho = (arr.length % 2 === 1);
+      var alvo = sozinho ? arr[arr.length - 1] : null;
+      Array.prototype.forEach.call(resumo.querySelectorAll(':scope > .crp-readonly-group'), function (g) {
+        var deve = (g === alvo);
+        if (g.classList.contains('crp-last-span') !== deve) g.classList.toggle('crp-last-span', deve);
+      });
+    }
+  }
+  var raf = 0; function agendar(){ cancelAnimationFrame(raf); raf = requestAnimationFrame(aplicar); }
+  function iniciar(){ aplicar();
+    var card = document.getElementById('crp-info-card'); if(!card) return;
+    var obs = new MutationObserver(agendar);
+    obs.observe(card, { childList:true, subtree:true, attributes:true, attributeFilter:['hidden','style','class'] });
+  }
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', iniciar); } else { iniciar(); }
+})();
+
+/* CRP | Tabelas multivaloradas: contador e modo consulta/edicao. */
+(function () {
+  'use strict';
+  if (window.__crpMultTabelas) return;
+  window.__crpMultTabelas = true;
+  function contarRegistros(tabela) {
+    var linhas = tabela.querySelectorAll("tbody > tr"); var n = 0;
+    Array.prototype.forEach.call(linhas, function (tr) {
+      if (tr.classList.contains("header") || tr.classList.contains("template") || tr.hidden) return;
+      if (getComputedStyle(tr).display === "none") return;
+      n++;
+    });
+    return n;
+  }
+  function temColunaEditavel(tabela) {
+    var celulas = tabela.querySelectorAll("tbody > tr:not(.header) > td[column-name]");
+    return Array.prototype.some.call(celulas, function (td) {
+      if (td.querySelector("input:not([type='hidden']):not([type='file'])") || td.querySelector("select, textarea") || td.querySelector("[contenteditable='true']")) return true;
+      if (td.querySelector("button[onclick*='fileUpload'], button[onclick*='files.']")) return true;
+      var sug = td.querySelector("[data-special-type='suggest']");
+      if (sug && !sug.readOnly && !sug.disabled) return true;
+      return false;
+    });
+  }
+  function aplicar() {
+    var tabelas = document.querySelectorAll("#containerRequest table[mult='S']");
+    Array.prototype.forEach.call(tabelas, function (t) {
+      var edicao = temColunaEditavel(t);
+      t.classList.toggle("crp-mult-readonly", !edicao);
+      var cap = t.querySelector(":scope > caption"); if (!cap) return;
+      var span = cap.querySelector(":scope > .crp-mult-count");
+      if (!span) { span = document.createElement("span"); span.className = "crp-mult-count"; cap.appendChild(span); }
+      var n = contarRegistros(t); var txt = n === 1 ? "1 registro" : n + " registros";
+      if (span.textContent !== txt) span.textContent = txt;
+    });
+  }
+  var raf = 0; function agendar(){ cancelAnimationFrame(raf); raf = requestAnimationFrame(aplicar); }
+  function iniciar(){ aplicar(); document.addEventListener("multipletable-updatedRows", agendar, true);
+    if (!document.body) return;
+    var obs = new MutationObserver(agendar); obs.observe(document.body, { childList:true, subtree:true });
+  }
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', iniciar); } else { iniciar(); }
+})();
