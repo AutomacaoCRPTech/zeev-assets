@@ -850,6 +850,18 @@
         botao.dataset.crpAnexar = '1';
       }
     );
+
+    // CRP | Campos de arquivo em tabelas multivaloradas: o controle nativo de
+    // remocao vira um botao-icone (icone desenhado via CSS ::before),
+    // preservando handler, URL e atributos.
+    Array.prototype.forEach.call(
+      root.querySelectorAll('table[mult="S"] .containerFormFileLink a[onclick*="fileUpload.delete"], table[mult="S"] .containerFormFileLink [data-crp-remover="1"]'),
+      function (botao) {
+        if (botao.childNodes.length) botao.textContent = '';
+        if (botao.getAttribute('aria-label') !== 'Apagar arquivo') botao.setAttribute('aria-label', 'Apagar arquivo');
+        if (botao.getAttribute('title') !== 'Apagar arquivo') botao.setAttribute('title', 'Apagar arquivo');
+      }
+    );
   }
 
   // Reorganiza o card de mensagem: data no cabeçalho e, no rodapé,
@@ -948,12 +960,37 @@
 
     if (!escopo) return;
 
+    // Subprocesso: a instancia atual possui uma instancia mestre diferente.
+    var subprocesso = false;
+    var atual = document.getElementById('inpCodFlowExecute');
+    var mestre = document.getElementById('inpCodFlowExecuteMaster');
+    if (atual && mestre) {
+      var a = (atual.value || '').trim();
+      var m = (mestre.value || '').trim();
+      subprocesso = m !== '' && m !== '0' && m !== a;
+    }
+
+    // Registro de abertura = tarefa mais antiga (menor data-id).
+    var abertura = null, menor = null;
+    escopo.querySelectorAll(':scope > .row').forEach(function (r) {
+      var id = parseInt(r.getAttribute('data-id'), 10);
+      if (isNaN(id)) return;
+      if (menor === null || id < menor) { menor = id; abertura = r; }
+    });
+
     escopo.querySelectorAll('.badge').forEach(function (selo) {
       var texto = (selo.textContent || '').toLowerCase();
       var status = 'neutro';
 
-      if (texto.indexOf('conclu') >= 0) status = 'concluido';
+      if (texto.indexOf('subprocesso') >= 0) status = 'subprocesso';
+      else if (texto.indexOf('conclu') >= 0) status = 'concluido';
       else if (texto.indexOf('revis') >= 0) status = 'revisao';
+
+      var vazio = (selo.textContent || '').trim() === '';
+      if (subprocesso && vazio && abertura && abertura.contains(selo)) {
+        selo.textContent = 'Subprocesso';
+        status = 'subprocesso';
+      }
 
       if (selo.getAttribute('data-crp-status') !== status) {
         selo.setAttribute('data-crp-status', status);
@@ -1081,102 +1118,6 @@
   }
 })();
 
-/* Identificação dos arquivos de propostas. */
-(function () {
-  'use strict';
-
-  var timer;
-
-  function atualizarPropostas() {
-    var root = document.getElementById('containerRequest');
-    if (!root) return;
-
-    root.querySelectorAll('table[mult="S"]').forEach(function (table) {
-      var numero = 0;
-
-      Array.prototype.forEach.call(table.rows, function (row) {
-        if (row.closest('table') !== table) return;
-        if (row.classList.contains('header')) return;
-
-        var cell = Array.prototype.find.call(
-          row.cells,
-          function (td) {
-            return td.getAttribute('column-name') === 'colproposta';
-          }
-        );
-
-        if (!cell) return;
-
-        numero++;
-
-        var nome = 'Proposta ' + numero;
-
-        cell.querySelectorAll(
-          '.containerFormFileLink a[href*="/document/preview/"]'
-        ).forEach(function (link) {
-          if (link.textContent.trim() !== nome) {
-            link.textContent = nome;
-          }
-
-          if (!link.classList.contains('crp-proposal-link')) {
-            link.classList.add('crp-proposal-link');
-          }
-
-          var title = 'Abrir ' + nome.toLowerCase();
-
-          if (link.getAttribute('title') !== title) {
-            link.setAttribute('title', title);
-          }
-
-          var group = link.parentElement;
-
-          if (!group.classList.contains('crp-proposal-file')) {
-            group.classList.add('crp-proposal-file');
-          }
-
-          // Usa a exclusão original do arquivo, não a da linha.
-          var remove = group.querySelector(
-            'a[onclick*="fileUpload.delete"]'
-          );
-
-          if (remove) {
-            if (!remove.classList.contains('crp-proposal-delete')) {
-              remove.classList.add('crp-proposal-delete');
-            }
-
-            var label = 'Excluir arquivo da ' + nome.toLowerCase();
-
-            if (remove.getAttribute('aria-label') !== label) {
-              remove.setAttribute('aria-label', label);
-              remove.setAttribute('title', label);
-            }
-          }
-        });
-      });
-    });
-  }
-
-  function iniciar() {
-    atualizarPropostas();
-
-    var observer = new MutationObserver(function () {
-      clearTimeout(timer);
-      timer = setTimeout(atualizarPropostas, 80);
-    });
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-      characterData: true
-    });
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', iniciar);
-  } else {
-    iniciar();
-  }
-})();
 /* CRP | Tarefa SEM AÇÃO: exibe um layout de conferência (hero + cartões)
    reaproveitando o estilo crp-approval-*. Quando há ação, nada muda. */
 (function () {
@@ -1518,6 +1459,9 @@ document.addEventListener('DOMContentLoaded', () => {
     Array.prototype.forEach.call(linhas, function (tr) {
       if (tr.classList.contains("header") || tr.classList.contains("template") || tr.hidden) return;
       if (getComputedStyle(tr).display === "none") return;
+      var temTexto = (tr.textContent || "").trim().length > 0;
+      var temControle = !!tr.querySelector("input:not([type='hidden']), select, textarea, [contenteditable='true'], button");
+      if (!temTexto && !temControle) return;
       n++;
     });
     return n;
@@ -1537,10 +1481,15 @@ document.addEventListener('DOMContentLoaded', () => {
     Array.prototype.forEach.call(tabelas, function (t) {
       var edicao = temColunaEditavel(t);
       t.classList.toggle("crp-mult-readonly", !edicao);
+      var n = contarRegistros(t);
+      var vazio = !edicao && (getComputedStyle(t).display === "none" || n === 0);
+      t.classList.toggle("crp-mult-empty", vazio);
+      var wrap = t.closest(".table-responsive");
+      if (wrap) wrap.classList.toggle("crp-mult-empty", vazio);
       var cap = t.querySelector(":scope > caption"); if (!cap) return;
       var span = cap.querySelector(":scope > .crp-mult-count");
       if (!span) { span = document.createElement("span"); span.className = "crp-mult-count"; cap.appendChild(span); }
-      var n = contarRegistros(t); var txt = n === 1 ? "1 registro" : n + " registros";
+      var txt = n === 1 ? "1 registro" : n + " registros";
       if (span.textContent !== txt) span.textContent = txt;
     });
   }

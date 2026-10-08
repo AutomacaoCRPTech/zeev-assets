@@ -1,0 +1,58 @@
+/* Oculta o card de ações quando não há conteúdo visível. */
+.crp-workspace .crp-actions[hidden] {
+  display: none !important;
+}
+/* Oculta o card quando o conteúdo está vazio
+   ou contém somente campos ocultos. */
+#containerRequest.crp-workspace
+.crp-actions:has(> .crp-action-content):not(:has(> .crp-action-content :not(input[type="hidden"]))) {
+  display: none !important;
+}
+/* Permite posicionar a bolinha no canto da aba. */
+#containerRequest.crp-workspace .crp-tabs button {
+  position: relative;
+  overflow: visible;
+}
+
+/* Indicador de mensagens ou anexos existentes. */
+#containerRequest.crp-workspace
+.crp-tabs button[data-crp-tem-conteudo="true"]::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  right: -5px;
+  width: 8px;
+  height: 8px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background-color: #F6A730;
+  box-sizing: content-box;
+  pointer-events: none;
+}
+
+/* Indicador de anexos por situação. */
+#containerRequest.crp-workspace
+.crp-tabs button[data-crp-anexos="pendente"]::after,
+#containerRequest.crp-workspace
+.crp-tabs button[data-crp-anexos="ok"]::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  right: -5px;
+  width: 8px;
+  height: 8px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  box-sizing: content-box;
+  pointer-events: none;
+}
+
+#containerRequest.crp-workspace
+.crp-tabs button[data-crp-anexos="pendente"]::after {
+  background-color: #D93025;
+}
+
+#containerRequest.crp-workspace
+.crp-tabs button[data-crp-anexos="ok"]::after {
+  background-color: #1E8E3E;
+}

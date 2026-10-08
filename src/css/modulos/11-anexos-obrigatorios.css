@@ -1,0 +1,89 @@
+/* Card de anexos obrigatórios: fica abaixo de Informações relevantes. */
+#containerRequest.crp-workspace #crp-required-files-card {
+  position: relative;
+  margin-bottom: 18px;
+  padding: 24px !important;
+  border: 1px solid #dce5f1;
+  border-top: 3px solid #053f88;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #f8fafe 0%, #ffffff 65%);
+  box-shadow: 0 4px 16px rgba(5, 63, 136, 0.04);
+}
+
+#containerRequest.crp-workspace
+#crp-required-files-card > .crp-card-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 6px;
+  color: #053f88;
+  font-size: 16px;
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+#containerRequest.crp-workspace
+#crp-required-files-card > .crp-card-title::before {
+  content: '';
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  border: 1px solid #dce5f1;
+  border-radius: 10px;
+  background-color: #eaf0f8;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23053f88' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21.4 11.1 12.3 20.2a5.5 5.5 0 0 1-7.8-7.8l9.2-9.1a3.7 3.7 0 0 1 5.2 5.2l-9.1 9.2a1.8 1.8 0 0 1-2.6-2.6l8.4-8.4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 21px;
+}
+
+#containerRequest.crp-workspace
+#crp-required-files-card .crp-required-hint {
+  margin: 0 0 16px;
+  color: #526786;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* O bloco mantém a lista do Zeev, sem a moldura da aba Anexos. */
+#containerRequest.crp-workspace
+#crp-required-files-card #mandatoryAnnex.crp-required-files {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+#containerRequest.crp-workspace
+#crp-required-files-card #customizedUpload {
+  width: 100%;
+}
+
+/* Título antigo da aba Anexos: o card acima tem o seu. */
+#containerRequest.crp-workspace #containerFiles .crp-required-files-title {
+  display: none !important;
+}
+
+/* Marcador que o Zeev usa para reencontrar o contêiner. Não pode
+   esconder conteúdo: ao adicionar ou remover arquivos o Zeev move
+   #customizedUpload para dentro dele, e um display: none aqui apaga
+   os botões de anexo obrigatório. display: contents mantém o marcador
+   sem caixa, então o que vier dentro continua aparecendo. */
+#containerRequest.crp-workspace #crp-annex-anchor {
+  display: contents !important;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  font-size: inherit;
+  color: inherit;
+}
+
+@media (max-width: 640px) {
+  #containerRequest.crp-workspace #crp-required-files-card {
+    padding: 18px !important;
+  }
+}
+

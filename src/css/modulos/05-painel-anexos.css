@@ -1,0 +1,131 @@
+/* Espaçamento do título */
+#containerRequest.crp-workspace
+#containerFiles .title-container-files {
+  margin: 0 0 16px !important;
+  font-size: 14px;
+  font-weight: 600;
+  color: #253B59;
+}
+
+/* Seleção e ordenação em linhas separadas */
+#containerRequest.crp-workspace
+#containerFiles #annex > .d-flex {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+#containerRequest.crp-workspace
+#containerFiles #annex > .d-flex > div {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Botões com largura e altura consistentes */
+#containerRequest.crp-workspace
+#containerFiles #btnAddFile,
+#containerRequest.crp-workspace
+#containerFiles #lnkViewAllFiles {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 40px;
+  margin: 0 !important;
+  padding: 10px 14px !important;
+  border: 1px solid #C7D4EA !important;
+  border-radius: 6px !important;
+  background: #FFFFFF !important;
+  color: #053F88 !important;
+  font-family: inherit;
+  font-size: 13px !important;
+  font-weight: 500;
+  line-height: 1.4;
+  text-align: center;
+  text-decoration: none !important;
+}
+
+/* Ícones sem distorção */
+#containerRequest.crp-workspace
+#containerFiles #btnAddFile svg,
+#containerRequest.crp-workspace
+#containerFiles #lnkViewAllFiles svg {
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  margin: 0 !important;
+}
+
+/* Ordenação */
+#containerRequest.crp-workspace
+#containerFiles label[for="fileOrder"] {
+  display: block;
+  margin: 0 0 6px;
+  color: #526786;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+#containerRequest.crp-workspace
+#containerFiles #fileOrder {
+  box-sizing: border-box;
+  width: 100% !important;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 40px;
+  margin: 0;
+  padding: 9px 12px;
+  border: 1px solid #C7D4EA;
+  border-radius: 6px;
+  background-color: #FBFCFE;
+  color: #253B59;
+  font-family: inherit;
+  font-size: 13px;
+}
+
+/* Lista: acomoda nomes longos */
+#containerRequest.crp-workspace
+#containerFiles #divFile {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+#containerRequest.crp-workspace
+#containerFiles #tblFile {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+#containerRequest.crp-workspace
+#containerFiles #tblFile td {
+  overflow-wrap: anywhere;
+}
+
+/* Rodapé do painel */
+#containerRequest.crp-workspace
+#containerFiles > .text-right {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #E1E7F0;
+  text-align: left !important;
+}
+
+/* Hover */
+#containerRequest.crp-workspace
+#containerFiles #btnAddFile:not(:disabled):not(.disabled):hover,
+#containerRequest.crp-workspace
+#containerFiles #lnkViewAllFiles:not(.disabled):hover {
+  background: #EAF0F8 !important;
+  border-color: #053F88 !important;
+}
+
+/* Foco da ordenação */
+#containerRequest.crp-workspace
+#containerFiles #fileOrder:focus-visible {
+  outline: 2px solid #6B83B5;
+  outline-offset: 2px;
+}

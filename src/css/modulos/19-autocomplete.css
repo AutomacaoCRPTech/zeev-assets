@@ -1,0 +1,75 @@
+/* ===== Autocomplete (typeahead) dos campos de sugestão | CRP =====
+   A lista ul.typeahead.dropdown-menu é inserida logo após o input (fora de
+   cards/tabelas) e é posicionada via JS (position:fixed) para não ser
+   recortada por overflow. Aqui tratamos apenas a aparência. */
+.crp-form .form-control[data-special-type="suggest"]:focus,
+.crp-form .form-control[data-special-type="suggest"]:focus-visible,
+.crp-form input[data-fieldformat="SUGGEST2"]:focus,
+.crp-form input[data-fieldformat="SUGGEST2"]:focus-visible {
+  border-color: var(--crp-primary) !important;
+  outline: 2px solid var(--crp-soft) !important;
+  outline-offset: 1px !important;
+  box-shadow: none !important;
+}
+.crp-form ul.typeahead.dropdown-menu,
+#containerRequest ul.typeahead.dropdown-menu {
+  z-index: 3000 !important;
+  display: none;
+  box-sizing: border-box;
+  max-width: calc(100vw - 16px);
+  max-height: 320px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin: 4px 0 0;
+  padding: 4px;
+  border: 1px solid var(--crp-border) !important;
+  border-radius: 10px !important;
+  background: #fff !important;
+  box-shadow: 0 6px 22px rgba(11, 19, 35, .14) !important;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--crp-text);
+}
+.crp-form ul.typeahead.dropdown-menu > li,
+#containerRequest ul.typeahead.dropdown-menu > li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.crp-form ul.typeahead.dropdown-menu > li > a,
+#containerRequest ul.typeahead.dropdown-menu > li > a {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 8px 10px !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 6px !important;
+  background: transparent !important;
+  color: var(--crp-text) !important;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 400 !important;
+  line-height: 1.45;
+  white-space: normal !important;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  text-decoration: none !important;
+  cursor: pointer;
+}
+.crp-form ul.typeahead.dropdown-menu > li:hover > a,
+.crp-form ul.typeahead.dropdown-menu > li > a:hover,
+.crp-form ul.typeahead.dropdown-menu > li.active > a,
+#containerRequest ul.typeahead.dropdown-menu > li:hover > a,
+#containerRequest ul.typeahead.dropdown-menu > li > a:hover,
+#containerRequest ul.typeahead.dropdown-menu > li.active > a {
+  background: var(--crp-soft) !important;
+  color: var(--crp-primary) !important;
+  outline: none !important;
+}
+.crp-form ul.typeahead.dropdown-menu > li > a strong,
+#containerRequest ul.typeahead.dropdown-menu > li > a strong {
+  color: var(--crp-primary) !important;
+  font-weight: 600 !important;
+}
+

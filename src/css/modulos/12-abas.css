@@ -1,0 +1,146 @@
+/* Abas: aparência de botão, contadores em selo e foco visível. */
+#containerRequest.crp-workspace .crp-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+#containerRequest.crp-workspace .crp-tabs button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-sizing: border-box;
+  min-height: 44px;
+  max-width: 100%;
+  margin: 0;
+  padding: 10px 16px;
+  border: 1px solid #c7d4ea;
+  border-radius: 10px;
+  background: #eaf0f8;
+  color: #053f88;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease,
+    color 0.15s ease, box-shadow 0.15s ease;
+}
+
+#containerRequest.crp-workspace .crp-tabs button:hover {
+  border-color: #053f88;
+  background: #dde7f5;
+}
+
+#containerRequest.crp-workspace .crp-tabs button:active {
+  background: #d3e0f2;
+}
+
+#containerRequest.crp-workspace .crp-tabs button:focus-visible {
+  outline: 3px solid #053f88 !important;
+  outline-offset: 2px !important;
+}
+
+/* Aba aberta. */
+#containerRequest.crp-workspace
+.crp-tabs button[aria-selected='true'] {
+  border-color: #053f88;
+  background: #053f88;
+  color: #ffffff;
+}
+
+#containerRequest.crp-workspace
+.crp-tabs button[aria-selected='true']:hover {
+  border-color: #03336f;
+  background: #03336f;
+}
+
+/* Selo do contador. */
+#containerRequest.crp-workspace .crp-tabs .crp-tab-count {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 7px;
+  border: 1px solid #b9c9e4;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #053f88;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+#containerRequest.crp-workspace
+.crp-tabs button[aria-selected='true'] .crp-tab-count {
+  border-color: #ffffff;
+  background: #ffffff;
+  color: #053f88;
+}
+
+/* Texto apenas para leitores de tela da aba de anexos. */
+#containerRequest.crp-workspace .crp-tabs .crp-tab-desc {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Dica ao passar o mouse: quantidade por extenso e aviso de pendência. */
+#containerRequest.crp-workspace
+.crp-tabs button[data-crp-dica]:hover::before {
+  content: attr(data-crp-dica);
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 20;
+  box-sizing: border-box;
+  max-width: 260px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #0b1323;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+  text-align: left;
+  white-space: normal;
+  box-shadow: 0 6px 18px rgba(11, 19, 35, 0.24);
+}
+
+/* Bolinhas de status mantidas, agora dentro da caixa do botão. */
+#containerRequest.crp-workspace
+.crp-tabs button[data-crp-tem-conteudo='true']::after,
+#containerRequest.crp-workspace
+.crp-tabs button[data-crp-anexos='pendente']::after,
+#containerRequest.crp-workspace
+.crp-tabs button[data-crp-anexos='ok']::after {
+  top: 6px;
+  right: 6px;
+}
+
+@media (max-width: 640px) {
+#containerRequest.crp-workspace .crp-tabs {
+  gap: 8px;
+}
+
+#containerRequest.crp-workspace .crp-tabs button {
+  flex: 1 1 140px;
+  padding: 10px 12px;
+  font-size: 13px;
+}
+}
+

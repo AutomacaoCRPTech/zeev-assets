@@ -1,0 +1,151 @@
+/* Card de orientações acima das ações */
+#containerRequest.crp-workspace #crp-instructions-card {
+  margin-bottom: 18px;
+  padding: 22px 24px;
+  background: #FFFFFF;
+  border: 1px solid #E1E7F0;
+  border-radius: 8px;
+}
+
+/* Título no padrão dos demais cards */
+#containerRequest.crp-workspace
+#crp-instructions-card > .crp-card-title {
+  margin: 0 0 14px;
+  color: #1C3557;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* Texto sem o fundo azul do antigo Resumo */
+#containerRequest.crp-workspace
+#crp-instructions-card .instructions-text {
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0;
+  background: transparent !important;
+  color: #526786;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+#containerRequest.crp-workspace
+#crp-instructions-card .instructions-text > div,
+#containerRequest.crp-workspace
+#crp-instructions-card .instructions-text > p {
+  margin: 0 0 12px;
+}
+
+#containerRequest.crp-workspace
+#crp-instructions-card .instructions-text > :last-child {
+  margin-bottom: 0;
+}
+
+#containerRequest.crp-workspace
+#crp-instructions-card .instructions-text strong {
+  color: #253B59;
+  font-weight: 600;
+}
+
+#containerRequest.crp-workspace
+#crp-instructions-card .instructions-text p:empty {
+  display: none;
+}
+/* Card de orientações */
+#containerRequest.crp-workspace #crp-instructions-card {
+  position: relative;
+  padding: 24px !important;
+  border: 1px solid #DCE5F1;
+  border-top: 3px solid #053F88;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #F8FAFE 0%, #FFFFFF 65%);
+  box-shadow: 0 4px 16px rgba(5, 63, 136, 0.04);
+}
+
+/* Cabeçalho com ícone */
+#containerRequest.crp-workspace
+#crp-instructions-card > .crp-card-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 18px;
+  color: #053F88;
+  font-size: 16px;
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+#containerRequest.crp-workspace
+#crp-instructions-card > .crp-card-title::before {
+  content: "";
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  border: 1px solid #DCE5F1;
+  border-radius: 10px;
+  background-color: #EAF0F8;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23053F88' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='5' y='4' width='14' height='17' rx='2'/%3E%3Crect x='9' y='2' width='6' height='4' rx='1' fill='%23EAF0F8'/%3E%3Cpath d='m8 12 2 2 5-5M9 18h6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 21px;
+}
+
+/* Texto principal */
+#containerRequest.crp-workspace
+#crp-instructions-card .instructions-text {
+  color: #526786;
+  font-size: 13px;
+  line-height: 1.75;
+}
+
+/* Introdução com fundo suave */
+#containerRequest.crp-workspace
+#crp-instructions-card .instructions-text > div:first-child {
+  margin: 0 0 18px;
+  padding: 12px 14px;
+  border: 1px solid #E1E8F3;
+  border-radius: 8px;
+  background: #F0F4FA;
+  color: #526786;
+}
+
+/* Subtítulo: Esta tarefa consiste em */
+#containerRequest.crp-workspace
+#crp-instructions-card .instructions-text > p:has(> strong:only-child) {
+  margin: 0 0 8px;
+}
+
+/* Também contempla o subtítulo seguido de <br> */
+#containerRequest.crp-workspace
+#crp-instructions-card .instructions-text > p:has(> strong + br:last-child) {
+  margin: 0 0 8px;
+}
+
+#containerRequest.crp-workspace
+#crp-instructions-card .instructions-text strong {
+  color: #253B59;
+  font-weight: 600;
+}
+
+/* Espaçamento dos parágrafos */
+#containerRequest.crp-workspace
+#crp-instructions-card .instructions-text > p {
+  margin: 0 0 12px;
+}
+
+#containerRequest.crp-workspace
+#crp-instructions-card .instructions-text > p:empty {
+  display: none;
+}
+
+/* Links, caso existam nas orientações */
+#containerRequest.crp-workspace
+#crp-instructions-card .instructions-text a {
+  color: #053F88;
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 640px) {
+  #containerRequest.crp-workspace #crp-instructions-card {
+    padding: 18px !important;
+  }
+}

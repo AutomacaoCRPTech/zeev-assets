@@ -1,0 +1,147 @@
+/* Oculta a navegação duplicada abaixo das abas */
+#containerRequest.crp-workspace #commands {
+  display: none !important;
+}
+/* Outras opções e Salvar juntos à esquerda */
+#containerRequest.crp-workspace
+#controllers .crp-footer-secondary {
+  display: flex !important;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 auto 0 0 !important;
+}
+
+/* Mesmo padrão visual para as ações secundárias */
+#containerRequest.crp-workspace
+#controllers #inpOtherOptions,
+#containerRequest.crp-workspace
+#controllers .crp-save-button {
+  box-sizing: border-box;
+  width: auto !important;
+  min-height: 40px;
+  margin: 0 !important;
+  border: 1px solid #C7D4EA !important;
+  border-radius: 6px !important;
+  background-color: #FFFFFF !important;
+  color: #053F88 !important;
+  font-family: inherit;
+  font-size: 13px !important;
+  font-weight: 500;
+  line-height: 1.4;
+  box-shadow: none !important;
+}
+
+#containerRequest.crp-workspace
+#controllers #inpOtherOptions {
+  min-width: 165px;
+  padding: 9px 32px 9px 12px !important;
+  cursor: pointer;
+}
+
+#containerRequest.crp-workspace
+#controllers .crp-save-button {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  min-width: 90px;
+  padding: 9px 18px !important;
+  float: none !important;
+  text-decoration: none !important;
+}
+
+/* Interação */
+#containerRequest.crp-workspace
+#controllers #inpOtherOptions:not(:disabled):hover,
+#containerRequest.crp-workspace
+#controllers .crp-save-button:not(:disabled):not(.disabled):hover {
+  background-color: #EAF0F8 !important;
+  border-color: #053F88 !important;
+}
+
+#containerRequest.crp-workspace
+#controllers #inpOtherOptions:focus-visible,
+#containerRequest.crp-workspace
+#controllers .crp-save-button:focus-visible {
+  outline: 2px solid #6B83B5 !important;
+  outline-offset: 2px;
+}
+
+/* Títulos dos grupos na área editável — mesmo padrão dos títulos de tabela
+   (18px/600, azul escuro), sem ícones, faixas ou linhas; 24px entre grupos e
+   12px entre título e campos. */
+#containerRequest.crp-workspace
+.crp-action-content table.form > tbody > tr.group > td.group {
+  padding: 12px 0 12px !important;
+  border: 0 !important;
+  background: transparent !important;
+  text-align: left !important;
+}
+#containerRequest.crp-workspace .crp-action-content table.form:has(> tbody > tr.group) {
+  margin-bottom: 24px !important;
+}
+
+#containerRequest.crp-workspace
+.crp-action-content table.form > tbody > tr.group > td.group > b {
+  display: block;
+  margin: 0;
+  padding: 0;
+  border: 0 !important;
+  background: transparent !important;
+  color: #053F88 !important;
+  font-family: inherit;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  line-height: 1.3;
+  text-transform: none !important;
+  overflow-wrap: anywhere;
+}
+#containerRequest.crp-workspace
+#controllers #inpOtherOptions {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+
+  text-align: center !important;
+  text-align-last: center !important;
+  padding: 9px 30px !important;
+
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23053F88' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 10px center !important;
+  background-size: 16px 16px !important;
+}
+
+/* Menu aberto: seta para cima */
+#containerRequest.crp-workspace
+#controllers #inpOtherOptions:open {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23053F88' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 15 6-6 6 6'/%3E%3C/svg%3E") !important;
+}
+
+/* Itens do menu alinhados à esquerda */
+#containerRequest.crp-workspace
+#controllers #inpOtherOptions option {
+  text-align: left;
+  text-align-last: left;
+}
+/* Transição suave */
+#containerRequest.crp-workspace #buttons .crp-action-review,
+#containerRequest.crp-workspace #buttons #btnFinish {
+  transition: background-color 0.18s ease,
+              border-color 0.18s ease;
+}
+
+/* Solicitar revisão */
+#containerRequest.crp-workspace
+#buttons .crp-action-review:not(:disabled):not(.disabled):hover {
+  background-color: #D98A00 !important;
+  border-color: #D98A00 !important;
+  color: #0B1323 !important;
+}
+
+/* Concluir */
+#containerRequest.crp-workspace
+#buttons #btnFinish:not(:disabled):not(.disabled):hover {
+  background-color: #03336F !important;
+  border-color: #03336F !important;
+  color: #FFFFFF !important;
+}

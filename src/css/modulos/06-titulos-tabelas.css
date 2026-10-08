@@ -1,0 +1,40 @@
+/* Título das tabelas multivaloradas (caption) — padrão CRP.
+   Usa table-caption (nao flex) para ocupar toda a largura da tabela e nao
+   quebrar o titulo. */
+#containerRequest.crp-workspace
+#ContainerForm table[mult="S"] > caption {
+  display: table-caption !important;
+  width: 100% !important;
+  box-sizing: border-box;
+  caption-side: top !important;
+  text-align: left !important;
+  margin: 0 !important;
+  padding: 16px 20px !important;
+  border: 0 !important;
+  border-bottom: 1px solid #EAF0F8 !important;
+  border-left: 0 !important;
+  background: #FFFFFF !important;
+  color: #0B1323 !important;
+  font-family: inherit !important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  line-height: 1.3 !important;
+  text-transform: none !important;
+  overflow-wrap: anywhere;
+}
+#containerRequest.crp-workspace #ContainerForm table[mult="S"] > caption .crp-mult-count {
+  display: inline-block !important;
+  margin-left: 10px;
+  vertical-align: middle;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  color: #526786 !important;
+}
+
+
+/* Sem borda-top extra entre título e tabela */
+#containerRequest.crp-workspace
+#ContainerForm table[mult="S"]:has(> caption) {
+  border-top: 0 !important;
+  background-clip: padding-box;
+}

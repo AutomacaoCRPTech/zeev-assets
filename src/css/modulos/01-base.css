@@ -1,0 +1,284 @@
+/* CRP — base visual geral. Carregar antes do CSS específico. */
+/* Anexos obrigatórios: mantém a estrutura original do Zeev no painel Anexos. */
+#containerRequest.crp-workspace #containerFiles .crp-required-files-title {
+  display: block !important;
+  margin: 18px 0 0;
+  padding: 20px 22px 0;
+  border: 1px solid #C7D4EA;
+  border-bottom: 0;
+  border-radius: 12px 12px 0 0;
+  background: #fff;
+  color: #0B1323;
+  font-size: 16px;
+  font-weight: 650;
+}
+
+#containerRequest.crp-workspace #containerFiles #mandatoryAnnex.crp-required-files {
+  margin: 0 0 22px;
+  padding: 16px 22px 20px;
+  border: 1px solid #C7D4EA;
+  border-top: 0;
+  border-radius: 0 0 12px 12px;
+  background: #fff;
+}
+
+#containerRequest.crp-workspace #mandatoryAnnex #customizedUpload {
+  max-width: 100%;
+}
+
+#containerRequest.crp-workspace #mandatoryAnnex [cod][onclick*="capture.upload"] {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  white-space: normal;
+}
+
+#containerRequest.crp-workspace #mandatoryAnnex [cod][onclick*="capture.upload"] > svg {
+  display: none;
+}
+
+#containerRequest.crp-workspace #mandatoryAnnex [cod][onclick*="capture.upload"]::before {
+  content: "+";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  border: 1px solid #053F88;
+  border-radius: 50%;
+  color: #053F88;
+  font: 600 17px/1 Arial, sans-serif;
+}
+
+#containerRequest.crp-form {
+  --crp-primary: #053F88;
+  --crp-hover: #03336F;
+  --crp-secondary: #2A4B8D;
+  --crp-muted: #6B83B5;
+  --crp-text: #0B1323;
+  --crp-bg: #F3F6FB;
+  --crp-soft: #EAF0F8;
+  --crp-border: #C7D4EA;
+  --crp-danger: #E6373B;
+  --crp-warning: #F6A730;
+  --crp-width: 1000px;
+  --crp-radius: 18px;
+  --crp-shadow: 0 1px 2px #14284008, 0 8px 24px #1428400a;
+  background: var(--crp-bg);
+  color: var(--crp-text);
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+.crp-form .container-task { background: var(--crp-bg); }
+.crp-form .crp-main {
+  flex: 1 1 0;
+  min-width: 0;
+  width: 100%;
+  max-width: var(--crp-width);
+  margin: 0 auto;
+  padding: 0 16px 100px;
+  box-sizing: border-box;
+}
+.crp-form .crp-header {
+  box-sizing: border-box;
+  width: calc(100% - 32px);
+  max-width: calc(var(--crp-width) - 32px);
+  margin: 24px auto;
+  padding: 22px 28px !important;
+  background: #fff;
+  border: 1px solid var(--crp-border);
+  border-radius: var(--crp-radius);
+  box-shadow: var(--crp-shadow);
+}
+.crp-form .crp-header h1 {
+  margin: 4px 0;
+  padding-left: 16px;
+  border-left: 4px solid var(--crp-primary);
+  color: var(--crp-text);
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+.crp-form .crp-header h5 { font-size: 12px; color: var(--crp-muted); }
+.crp-form .crp-card {
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0 0 22px;
+  padding: 24px 28px;
+  border: 1px solid var(--crp-border);
+  border-radius: var(--crp-radius);
+  background: #fff;
+  box-shadow: var(--crp-shadow);
+}
+.crp-form .crp-card > h5,
+.crp-form .crp-panel > h5 {
+  margin: 0 0 18px;
+  color: var(--crp-text);
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: none;
+}
+.crp-form .crp-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--crp-border);
+}
+.crp-form .crp-tabs button {
+  padding: 8px 0 10px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--crp-muted);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.crp-form .crp-tabs button[aria-selected="true"] {
+  border-bottom-color: var(--crp-primary);
+  color: var(--crp-primary);
+  font-weight: 600;
+}
+.crp-form .crp-panel {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.crp-form .crp-panel[hidden] { display: none !important; }
+.crp-form .instructions-text {
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--crp-soft);
+  color: var(--crp-secondary);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.crp-form #ContainerConclusionCheckList .orquestra-checklist,
+.crp-form #ContainerConclusionCheckList .form-group {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.crp-form #ContainerConclusionCheckList .form-group + .form-group {
+  margin-top: 12px !important;
+}
+.crp-form #BoxFrmExecute { padding: 0 !important; }
+.crp-form #FrmExecute,
+.crp-form table.form { width: 100%; }
+.crp-form table.form > tbody > tr > td {
+  padding: 10px 8px;
+  vertical-align: top;
+}
+.crp-form table.form > tbody > tr > td.col0 {
+  color: var(--crp-text);
+  font-size: 13px;
+  font-weight: 600;
+}
+.crp-form table.form .group { color: var(--crp-primary); }
+.crp-form .form-control:not([type="radio"]):not([type="checkbox"]):not([type="hidden"]) {
+  box-sizing: border-box;
+  min-height: 42px;
+  max-width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--crp-border);
+  border-radius: 8px;
+  background: #FBFCFE;
+  color: var(--crp-text);
+  font-family: inherit;
+  font-size: 13px;
+  box-shadow: none;
+}
+.crp-form .form-control:focus {
+  border-color: var(--crp-primary);
+  outline: 2px solid var(--crp-soft);
+  outline-offset: 1px;
+}
+.crp-form .form-control:disabled,
+.crp-form .form-control[readonly] { background: var(--crp-soft); }
+.crp-form .form-text { color: var(--crp-muted); font-size: 12px; }
+/* Rádios nativos: mantém círculo e texto separados. */
+.crp-form #ContainerForm .form-check:has(input[type="radio"]) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 0;
+  margin: 0 0 8px;
+}
+.crp-form #ContainerForm .form-check input[type="radio"] {
+  position: static !important;
+  float: none !important;
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  margin: 0 !important;
+  transform: none !important;
+  accent-color: var(--crp-primary);
+}
+.crp-form #ContainerForm .form-check:has(input[type="radio"]) .form-check-label {
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+}
+/* Tabelas multivaloradas continuam tabelas. */
+.crp-form .table-responsive { max-width: 100%; overflow-x: auto; }
+.crp-form table[mult="S"] { border-color: var(--crp-border); }
+.crp-form table[mult="S"] .header > td,
+.crp-form table[mult="S"] th {
+  background: var(--crp-soft);
+  color: var(--crp-primary);
+}
+.crp-form #controllers {
+  box-sizing: border-box;
+  padding: 14px 24px !important;
+  background: #fff !important;
+  border-top: 1px solid var(--crp-border);
+}
+.crp-form #controllers #buttons { justify-content: flex-end; gap: 10px; }
+/* Classes opcionais para os scripts específicos. */
+.crp-form #BtnSend,
+.crp-form #btnAddMessage,
+.crp-form .crp-action-primary {
+  background: var(--crp-primary) !important;
+  border-color: var(--crp-primary) !important;
+  color: #fff !important;
+  border-radius: 999px;
+  padding: 9px 18px;
+}
+.crp-form #BtnSend:not(:disabled):not(.disabled):hover,
+.crp-form #btnAddMessage:not(:disabled):not(.disabled):hover,
+.crp-form .crp-action-primary:not(:disabled):not(.disabled):hover {
+  background: var(--crp-hover) !important;
+  border-color: var(--crp-hover) !important;
+}
+.crp-form .crp-action-review {
+  background: var(--crp-warning) !important;
+  border-color: var(--crp-warning) !important;
+  color: var(--crp-text) !important;
+}
+.crp-form .crp-action-danger {
+  background: var(--crp-danger) !important;
+  border-color: var(--crp-danger) !important;
+  color: #fff !important;
+}
+.crp-form .btn:disabled,
+.crp-form .btn.disabled { opacity: .55; }
+.crp-form button:focus-visible,
+.crp-form a:focus-visible { outline: 2px solid var(--crp-muted); outline-offset: 3px; }
+@media (max-width: 640px) {
+  .crp-form .crp-card,
+  .crp-form .crp-header { padding: 18px !important; }
+  .crp-form table.form > tbody > tr > td.col0,
+  .crp-form table.form > tbody > tr > td.col1 {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 6px 0;
+  }
+}
+
+.crp-form #crp-info-card[hidden] { display: none !important; }
+

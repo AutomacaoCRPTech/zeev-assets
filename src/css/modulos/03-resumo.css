@@ -1,0 +1,137 @@
+/* ===== Resumo (Informações da solicitação): repaginação visual =====
+   Seções bem definidas (título azul + ícone, separador fino), rótulo sobre
+   o valor, distribuição em 1–2 colunas conforme a largura e anexo completo
+   em faixa própria. Escopo restrito ao conteúdo do #crp-summary. */
+#containerRequest.crp-workspace #crp-summary .crp-readonly-group {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+/* Separação entre grupos só por espaçamento (sem linhas divisórias),
+   apenas entre grupos visíveis e com conteúdo. */
+#containerRequest.crp-workspace #crp-summary .crp-readonly-group:not(.crp-empty) + .crp-readonly-group:not(.crp-empty) {
+  margin-top: 24px;
+  padding-top: 0;
+  border-top: 0;
+}
+#containerRequest.crp-workspace #crp-summary .crp-readonly-group.crp-empty { display: none !important; }
+#containerRequest.crp-workspace #crp-summary .crp-readonly-group table.form { width: 100%; }
+#containerRequest.crp-workspace #crp-summary .crp-readonly-group table.form > tbody {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px 18px;
+  align-items: start;
+}
+#containerRequest.crp-workspace #crp-summary .crp-readonly-group table.form > tbody > tr {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+/* Cabeçalho do grupo: só título azul (caixa alta por CSS), sem linha,
+   fundo, borda ou ícone. */
+#containerRequest.crp-workspace #crp-summary .crp-readonly-group table.form > tbody > tr.group {
+  grid-column: 1 / -1;
+  display: block;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+#containerRequest.crp-workspace #crp-summary .crp-readonly-group table.form > tbody > tr.group > td.group {
+  display: block !important;
+  width: 100%;
+  padding: 0 !important;
+  border: 0 !important;
+  text-align: left !important;
+}
+#containerRequest.crp-workspace #crp-summary .crp-readonly-group td.group b,
+#containerRequest.crp-workspace #crp-summary .crp-readonly-group .group b {
+  color: #053F88;
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+/* Campos extensos (nome, e-mail, descrição), anexos e textareas em linha cheia */
+#containerRequest.crp-workspace #crp-summary .crp-readonly-group table.form > tbody > tr.crp-full,
+#containerRequest.crp-workspace #crp-summary .crp-readonly-group table.form > tbody > tr:has(.containerFormFileLink),
+#containerRequest.crp-workspace #crp-summary .crp-readonly-group table.form > tbody > tr:has([xtype="TEXTAREA"]) {
+  grid-column: 1 / -1;
+}
+/* Rótulo sobre o valor */
+#containerRequest.crp-workspace #crp-summary .crp-readonly-group table.form > tbody > tr > td {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  text-align: left;
+}
+#containerRequest.crp-workspace #crp-summary .crp-readonly-group table.form > tbody > tr > td.col0 {
+  margin: 0 0 5px;
+  font-size: 12.5px;
+  font-weight: 400;
+  line-height: 1.35;
+  color: #526786;
+}
+#containerRequest.crp-workspace #crp-summary .crp-readonly-group td.col0::after { content: none !important; }
+#containerRequest.crp-workspace #crp-summary .crp-readonly-group table.form > tbody > tr > td.col1,
+#containerRequest.crp-workspace #crp-summary .crp-readonly-group table.form > tbody > tr > td.col1 > div {
+  color: #0B1323;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+/* Lateral estreita: tudo em uma coluna */
+@media (max-width: 991.98px) {
+  #containerRequest.crp-workspace #crp-summary .crp-readonly-group table.form > tbody {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.crp-workspace .crp-action-content table.form > tbody > tr > td.col0,
+.crp-workspace .crp-action-content table.form > tbody > tr > td.col1 {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 6px 0;
+  text-align: left;
+}
+.crp-workspace .crp-action-content table.form { margin-bottom: 18px; }
+.crp-workspace .crp-action-content .form-control { width: 100%; }
+.crp-workspace table[mult="S"] { font-size: 12px; }
+.crp-workspace table[mult="S"] th,
+.crp-workspace table[mult="S"] td { padding: 10px 8px; }
+.crp-workspace .crp-auxiliary {
+  width: 100%;
+  max-width: none;
+  padding: 0;
+}
+.crp-workspace .crp-auxiliary > .box {
+  padding: 16px;
+  margin: 0 0 16px;
+  border: 1px solid var(--crp-border);
+  border-radius: 8px;
+  box-shadow: none;
+}
+.crp-workspace #commands { position: static !important; }
+.crp-workspace #commands ul { flex-direction: row !important; flex-wrap: wrap; gap: 4px; }
+.crp-workspace #commands a { padding: 5px 7px; font-size: 11px; }
+.crp-workspace #controllers { left: 0; right: 0; width: 100%; }
+.crp-workspace #controllers .btn,
+.crp-workspace #btnAddMessage {
+  border-radius: 6px;
+  font-size: 12px;
+  padding: 9px 14px;
+}
+.crp-workspace #controllers #buttons { max-width: none; margin: 0; }
+.crp-workspace #btnFinish {
+  background: var(--crp-primary) !important;
+  border-color: var(--crp-primary) !important;
+  color: #fff !important;
+}
+@media (max-width: 900px) {
+  .crp-workspace #BoxFrmExecute.crp-work-grid { grid-template-columns: minmax(0, 1fr); }
+  .crp-workspace .crp-header { flex-wrap: wrap; padding: 18px !important; }
+  .crp-workspace .crp-main { padding: 0 16px 130px; }
+}

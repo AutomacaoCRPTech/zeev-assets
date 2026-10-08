@@ -1,0 +1,180 @@
+/* ===== Anexos: card compacto em grid (substitui flex/colunas) ===== */
+#containerRequest.crp-workspace #containerFiles #tblFile tr,
+#containerRequest.crp-workspace #containerFiles #tblNewFile tr {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr) auto auto;
+  grid-template-areas:
+    "avatar nome    nome    nome    processo"
+    "avatar icone   arquivo baixar  acoes"
+    "desc   desc    desc    desc    desc"
+    "rodape rodape  rodape  rodape  rodape";
+  column-gap: 8px;
+  row-gap: 8px;
+  align-items: center;
+  align-content: start;
+  padding: 12px;
+  height: auto;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+#containerRequest.crp-workspace #containerFiles #tblFile tr * ,
+#containerRequest.crp-workspace #containerFiles #tblNewFile tr * {
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+#containerRequest.crp-workspace #containerFiles #tblFile td,
+#containerRequest.crp-workspace #containerFiles #tblNewFile td {
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+#containerRequest.crp-workspace #containerFiles #tblFile td.avatar,
+#containerRequest.crp-workspace #containerFiles #tblNewFile td.avatar { grid-area: avatar; align-self: start; width: auto; }
+#containerRequest.crp-workspace #containerFiles #tblFile td.message,
+#containerRequest.crp-workspace #containerFiles #tblNewFile td.message { display: contents !important; }
+#containerRequest.crp-workspace #containerFiles #tblFile td.message .message-box,
+#containerRequest.crp-workspace #containerFiles #tblNewFile td.message .message-box { display: contents !important; }
+#containerRequest.crp-workspace #containerFiles #tblFile td.message .message-box > .row,
+#containerRequest.crp-workspace #containerFiles #tblNewFile td.message .message-box > .row { display: contents !important; }
+#containerRequest.crp-workspace #containerFiles #tblFile td.message .message-box .col-lg-2,
+#containerRequest.crp-workspace #containerFiles #tblNewFile td.message .message-box .col-lg-2 { display: contents !important; }
+#containerRequest.crp-workspace #containerFiles #tblFile td.message > div:first-child,
+#containerRequest.crp-workspace #containerFiles #tblNewFile td.message > div:first-child { grid-area: nome; min-width: 0; }
+#containerRequest.crp-workspace #containerFiles #tblFile td.message .message-box .d-md-flex,
+#containerRequest.crp-workspace #containerFiles #tblNewFile td.message .message-box .d-md-flex { grid-area: icone; align-self: center; }
+#containerRequest.crp-workspace #containerFiles #tblFile td.message .message-box > .row > .col,
+#containerRequest.crp-workspace #containerFiles #tblNewFile td.message .message-box > .row > .col { grid-area: arquivo; min-width: 0; }
+#containerRequest.crp-workspace #containerFiles #tblFile td.message .message-box a,
+#containerRequest.crp-workspace #containerFiles #tblNewFile td.message .message-box a {
+  overflow-wrap: break-word;
+  word-break: normal;
+  white-space: normal;
+  font-size: 14px;
+  font-weight: 600 !important;
+  color: #053F88 !important;
+}
+#containerRequest.crp-workspace #containerFiles #tblFile td.message .message-box .badge,
+#containerRequest.crp-workspace #containerFiles #tblNewFile td.message .message-box .badge {
+  grid-area: desc;
+  justify-self: stretch;
+  align-self: start;
+  display: block !important;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 4px 8px;
+  border: 1px solid #D7E0EC;
+  border-radius: 8px;
+  background: #E7EEF8 !important;
+  color: #526786 !important;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  overflow-wrap: break-word;
+  word-break: normal;
+  text-align: left;
+  height: auto;
+}
+#containerRequest.crp-workspace #containerFiles #tblFile td.message > .text-right,
+#containerRequest.crp-workspace #containerFiles #tblNewFile td.message > .text-right {
+  grid-area: rodape;
+  min-width: 0;
+  text-align: left;
+}
+#containerRequest.crp-workspace #containerFiles #tblFile td.message > .text-right .small,
+#containerRequest.crp-workspace #containerFiles #tblFile td.message > .text-right span,
+#containerRequest.crp-workspace #containerFiles #tblNewFile td.message > .text-right .small,
+#containerRequest.crp-workspace #containerFiles #tblNewFile td.message > .text-right span {
+  color: #526786 !important;
+  font-size: 12px;
+  white-space: normal;
+}
+#containerRequest.crp-workspace #containerFiles #tblFile td.download {
+  grid-area: baixar;
+  display: block !important;
+  align-self: center;
+  justify-self: end;
+  flex: 0 0 auto;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+#containerRequest.crp-workspace #containerFiles #tblFile td.download a,
+#containerRequest.crp-workspace #containerFiles #tblFile td.download a::after {
+  white-space: nowrap !important;
+  word-break: normal !important;
+  flex-shrink: 0;
+}
+#containerRequest.crp-workspace #containerFiles #tblFile td.lock,
+#containerRequest.crp-workspace #containerFiles #tblFile td.del {
+  grid-area: acoes;
+  align-self: center;
+  justify-self: end;
+  padding: 0 !important;
+}
+
+@media (max-width: 575.98px) {
+  #containerRequest.crp-workspace #containerFiles #tblFile tr,
+  #containerRequest.crp-workspace #containerFiles #tblNewFile tr {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      "avatar nome"
+      "processo processo"
+      "icone  arquivo"
+      "baixar baixar"
+      "desc   desc"
+      "rodape rodape";
+    align-items: start;
+  }
+  #containerRequest.crp-workspace #containerFiles #tblFile td.download { justify-self: start; }
+}
+
+/* ===== Anexos: selo do processo no topo direito ===== */
+#containerRequest.crp-workspace #containerFiles #tblFile td.message > .text-right,
+#containerRequest.crp-workspace #containerFiles #tblNewFile td.message > .text-right {
+  display: contents !important;
+}
+#containerRequest.crp-workspace #containerFiles #tblFile td.message > .text-right > .small,
+#containerRequest.crp-workspace #containerFiles #tblNewFile td.message > .text-right > .small {
+  grid-area: rodape;
+  min-width: 0;
+  text-align: left;
+}
+#containerRequest.crp-workspace #containerFiles #tblFile td.message > .text-right > .badge,
+#containerRequest.crp-workspace #containerFiles #tblNewFile td.message > .text-right > .badge {
+  grid-area: processo;
+  justify-self: end;
+  align-self: center;
+  display: inline-block;
+  width: auto;
+  max-width: max-content;
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 3px 8px;
+  border: 0;
+  border-radius: 999px;
+  background: #EAF0F8 !important;
+  color: #526786 !important;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.4;
+  white-space: nowrap !important;
+  overflow-wrap: normal;
+  word-break: normal;
+  height: auto;
+}
+#containerRequest.crp-workspace #containerFiles #tblFile td.message > .text-right > .badge a {
+  color: #526786 !important;
+  text-decoration: underline;
+  cursor: pointer;
+}
+@media (max-width: 575.98px) {
+  #containerRequest.crp-workspace #containerFiles #tblFile td.message > .text-right > .badge { justify-self: start; }
+}
+

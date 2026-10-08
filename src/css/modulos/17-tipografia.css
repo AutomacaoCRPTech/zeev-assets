@@ -1,0 +1,55 @@
+/* ===================================================================
+   Hierarquia visual de campos (labels x valores)
+   Rótulos em azul CRP semibold; valores em peso normal; grupos mais
+   destacados que os rótulos. Não afeta botões, abas nem textos de ajuda.
+   =================================================================== */
+
+/* 1) Títulos de grupo: azul CRP, semibold, caixa alta por CSS. */
+#containerRequest.crp-workspace #crp-info-card td.group > b,
+#containerRequest.crp-workspace .crp-readonly-group .group b,
+#containerRequest.crp-workspace .crp-action-content table.form > tbody > tr.group > td.group > b {
+  color: #053F88 !important;
+  font-weight: 600 !important;
+  font-size: 13.5px !important;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+/* Área editável: título de grupo no padrão dos títulos de tabela (18px), sem
+   caixa alta. Sobrescreve a regra de hierarquia acima (mesma especificidade,
+   declarada depois). */
+#containerRequest.crp-workspace .crp-action-content table.form > tbody > tr.group > td.group > b {
+  font-size: 18px !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+  line-height: 1.3 !important;
+}
+
+/* 2) Rótulos dos campos (col0) no Resumo: tom escuro, peso 600. */
+#containerRequest.crp-workspace #crp-summary table.form:not([mult="S"]) > tbody > tr:not(.group) > td.col0 {
+  color: #263650 !important;
+  font-weight: 600 !important;
+  font-size: 12.5px;
+  line-height: 1.35;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* 3) Valores/conteúdo (col1) no Resumo: texto neutro, peso normal. */
+#containerRequest.crp-workspace #crp-summary table.form:not([mult="S"]) > tbody > tr:not(.group) > td.col1,
+#containerRequest.crp-workspace #crp-summary table.form:not([mult="S"]) > tbody > tr:not(.group) > td.col1 > div {
+  color: #0B1323 !important;
+  font-weight: 400 !important;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* 4) Campos longos (textarea / texto somente leitura) no Resumo. */
+#containerRequest.crp-workspace #crp-summary table.form:not([mult="S"]) > tbody > tr > td.col1 textarea,
+#containerRequest.crp-workspace #crp-summary table.form:not([mult="S"]) > tbody > tr > td.col1 [xtype="TEXTAREA"] {
+  font-weight: 400 !important;
+  line-height: 1.5;
+}

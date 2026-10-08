@@ -1,0 +1,40 @@
+/* ===== CRP | Tabela multivalorada sem conteudo (somente leitura): nao exibir card vazio ===== */
+#containerRequest.crp-workspace table[mult="S"].crp-mult-empty,
+#containerRequest.crp-workspace .table-responsive.crp-mult-empty {
+  display: none !important;
+}
+
+/* ===== CRP | Resumo: respeitar o atributo hidden ao alternar as abas ===== */
+#containerRequest.crp-workspace #crp-summary[hidden],
+#containerRequest.crp-workspace #crp-summary.crp-approval-summary-visible[hidden],
+#containerRequest.crp-approval-view #crp-summary[hidden],
+#containerRequest.crp-approval-view #crp-summary.crp-approval-summary-visible[hidden] {
+  display: none !important;
+}
+
+/* ===== CRP | Historico: status "Subprocesso" (registro de abertura de subprocesso) ===== */
+#containerRequest.crp-workspace #containerHistoryRender .badge[data-crp-status="subprocesso"] {
+  border-color: #F6C775;
+  background: #FFF3DD !important;
+  color: #925600 !important;
+}
+
+/* ===== CRP | Campos (area editavel): legendas/hints nao transbordam (quebram linha) ===== */
+#containerRequest.crp-workspace .crp-action-content table.form > tbody > tr > td.col0,
+#containerRequest.crp-workspace .crp-action-content table.form > tbody > tr > td.col1,
+#containerRequest.crp-workspace .crp-action-content table.form > tbody > tr > td .form-text {
+  white-space: normal !important;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* ===== CRP | Tabelas: espacamento entre tabelas (quando houver mais de uma) ===== */
+#containerRequest.crp-workspace .table-responsive:has(> table[mult="S"]):not(.crp-mult-empty) {
+  margin-bottom: 16px;
+}
+#containerRequest.crp-workspace table[mult="S"]:not(.crp-mult-empty) {
+  margin-bottom: 16px;
+}
+#containerRequest.crp-workspace .table-responsive:has(> table[mult="S"]:not(.crp-mult-empty)):last-child {
+  margin-bottom: 0;
+}

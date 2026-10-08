@@ -1,0 +1,8 @@
+// @include "core/main.js"
+// @include "modulos/salvar.js"
+// @include "modulos/sem-acao.js"
+// @include "modulos/nfse.js"
+// @include "modulos/autocomplete.js"
+// @include "modulos/nome-curto-anexo.js"
+// @include "modulos/resumo.js"
+// @include "modulos/tabelas.js"

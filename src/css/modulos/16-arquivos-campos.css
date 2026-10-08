@@ -1,0 +1,245 @@
+/* ===== Resumo: arquivos anexados em campos do formulário ===== */
+/* Título do campo acima do arquivo */
+#containerRequest.crp-workspace .crp-readonly-group table.form > tbody > tr:has(.containerFormFileLink) > td.col0,
+#containerRequest.crp-workspace .crp-action-content table.form > tbody > tr:has(.containerFormFileLink) > td.col0 {
+  margin-bottom: 6px;
+  color: #253B59;
+  font-size: 13px;
+  font-weight: 600;
+}
+/* Duas colunas com intervalo de 12px */
+#containerRequest.crp-workspace .crp-readonly-group table.form:has(.containerFormFileLink) > tbody,
+#containerRequest.crp-workspace .crp-action-content table.form:has(.containerFormFileLink) > tbody {
+  column-gap: 12px;
+  row-gap: 12px;
+}
+/* Bloco compacto do arquivo.
+   !important vence o style="display:inline" que o Zeev grava no elemento,
+   inclusive dentro de tabelas multivaloradas (onde o card 'sumia' e o
+   botão de baixar escapava do card). */
+#containerRequest.crp-workspace .containerFormFileLink {
+  display: flex !important;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 10px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 10px;
+  border: 1px solid #C7D4EA;
+  border-radius: 8px;
+  background: #F3F6FB;
+  height: auto;
+  min-height: 0;
+  overflow: hidden;
+}
+/* Colunas de tabela multivalorada: card compacto que NÃO alarga a coluna.
+   O nome vira "começo do nome..." (5 letras + reticências, via JS) e o botão
+   de baixar fica minimalista, dentro do card. */
+#containerRequest.crp-workspace table[mult="S"] .containerFormFileLink {
+  display: inline-flex !important;
+  width: auto;
+  max-width: 100%;
+  padding: 6px 8px;
+}
+/* A coluna do anexo (somente leitura) se ajusta ao conteúdo do card, em vez
+   de esticar com o espaço restante da tabela. Em table-layout:auto, largura
+   em % faz o navegador reservar o mínimo para essa célula e redistribuir o
+   restante entre as demais colunas. Células com botão "Anexar arquivo"
+   (edição) ficam de fora para não comprimir o botão. */
+#containerRequest.crp-workspace table[mult="S"] > tbody > tr > td:has(.containerFormFileLink):not(:has(button[onclick*="fileUpload"])) {
+  width: 1%;
+  white-space: nowrap;
+}
+#containerRequest.crp-workspace table[mult="S"] .containerFormFileLink > a.small {
+  flex: 0 1 auto;
+  min-width: 0;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+#containerRequest.crp-workspace table[mult="S"] .containerFormFileLink > a[donwload],
+#containerRequest.crp-workspace table[mult="S"] .containerFormFileLink > a[download] {
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  min-height: 28px;
+  background-size: 15px 15px;
+}
+#containerRequest.crp-workspace .containerFormFileLink + .containerFormFileLink { margin-top: 8px; }
+#containerRequest.crp-workspace .containerFormFileLink:empty { display: none !important; }
+/* Ícone de arquivo à esquerda */
+#containerRequest.crp-workspace .containerFormFileLink::before {
+  content: "";
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23053F88' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/%3E%3Cpath d='M14 2v6h6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+/* Nome do arquivo (preserva a extensão e o link nativo) */
+#containerRequest.crp-workspace .containerFormFileLink > a.small {
+  flex: 1 1 auto;
+  min-width: 0;
+  color: #053F88 !important;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  overflow-wrap: break-word;
+  word-break: normal;
+  white-space: normal;
+}
+/* Botão de download discreto (36x36) */
+#containerRequest.crp-workspace .containerFormFileLink > a[donwload],
+#containerRequest.crp-workspace .containerFormFileLink > a[download] {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  min-height: 36px;
+  margin: 0 !important;
+  padding: 0;
+  border: 1px solid #C7D4EA;
+  border-radius: 8px;
+  background-color: #FFFFFF;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23053F88' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3v12'/%3E%3Cpath d='m7 10 5 5 5-5'/%3E%3Cpath d='M5 21h14'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 18px 18px;
+  text-decoration: none;
+}
+#containerRequest.crp-workspace .containerFormFileLink > a[donwload] svg,
+#containerRequest.crp-workspace .containerFormFileLink > a[download] svg { display: none !important; }
+#containerRequest.crp-workspace .containerFormFileLink > a[donwload]:hover,
+#containerRequest.crp-workspace .containerFormFileLink > a[download]:hover {
+  background-color: #EAF0F8;
+  border-color: #053F88;
+}
+@media (max-width: 575.98px) {
+  #containerRequest.crp-workspace .crp-readonly-group table.form:has(.containerFormFileLink) > tbody {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Resumo: evita overflow horizontal das tabelas em telas pequenas */
+@media (max-width: 575.98px) {
+  #containerRequest.crp-workspace #crp-summary table.form { margin-left: 0 !important; }
+}
+
+/* ===== Ações: anexos de campos com o mesmo padrão dos cards ===== */
+/* Grade de 2 colunas para o grupo que contém arquivos */
+#containerRequest.crp-workspace .crp-action-content table.form:has(.containerFormFileLink) > tbody {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+#containerRequest.crp-workspace .crp-action-content table.form:has(.containerFormFileLink) > tbody > tr {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+#containerRequest.crp-workspace .crp-action-content table.form:has(.containerFormFileLink) > tbody > tr.group { grid-column: 1 / -1; }
+#containerRequest.crp-workspace .crp-action-content table.form:has(.containerFormFileLink) > tbody > tr > td {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+}
+/* Botão Anexar arquivo */
+#containerRequest.crp-workspace table.form:has(.containerFormFileLink) button[onclick*="fileUpload"] {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: auto !important;
+  max-width: max-content;
+  min-height: 40px;
+  margin: 8px 0 0 !important;
+  padding: 0 14px;
+  border: 1px solid #C7D4EA;
+  border-radius: 8px;
+  background: #EAF0F8 !important;
+  color: #053F88 !important;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  text-transform: none;
+}
+#containerRequest.crp-workspace table.form:has(.containerFormFileLink) button[onclick*="fileUpload"]::before {
+  content: "";
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23053F88' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 16V4'/%3E%3Cpath d='m7 9 5-5 5 5'/%3E%3Cpath d='M4 20h16'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+#containerRequest.crp-workspace table.form:has(.containerFormFileLink) button[onclick*="fileUpload"]:hover {
+  background: #DCE7F5 !important;
+  border-color: #053F88;
+}
+#containerRequest.crp-workspace table.form:has(.containerFormFileLink) button[onclick*="fileUpload"]:focus-visible {
+  outline: 2px solid #053F88;
+  outline-offset: 2px;
+}
+
+/* Remover arquivo (apenas quando o campo oferecer a ação) */
+#containerRequest.crp-workspace td.col1:has(.containerFormFileLink) a[onclick*="files.delete"],
+#containerRequest.crp-workspace td.col1:has(.containerFormFileLink) a[onclick*="fileUpload.delete"],
+#containerRequest.crp-workspace .containerFormFileLink a[onclick*="files.delete"],
+#containerRequest.crp-workspace .containerFormFileLink a[onclick*="fileUpload.delete"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background-color: transparent;
+  color: #E6373B !important;
+  text-decoration: none !important;
+}
+#containerRequest.crp-workspace td.col1:has(.containerFormFileLink) a[onclick*="files.delete"]:hover,
+#containerRequest.crp-workspace td.col1:has(.containerFormFileLink) a[onclick*="fileUpload.delete"]:hover,
+#containerRequest.crp-workspace .containerFormFileLink a[onclick*="files.delete"]:hover,
+#containerRequest.crp-workspace .containerFormFileLink a[onclick*="fileUpload.delete"]:hover { background-color: #FFF0F1; }
+
+/* Campo editável: bloco único branco (arquivo + ações de baixar/excluir + anexar) */
+#containerRequest.crp-workspace td.col1:has(button[onclick*="fileUpload"]) {
+  display: block !important;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0 !important;
+  padding: 12px !important;
+  border: 1px solid #C7D4EA !important;
+  border-radius: 8px !important;
+  background: #FFFFFF !important;
+}
+#containerRequest.crp-workspace td.col1:has(button[onclick*="fileUpload"]) > .containerFormFileLink {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+#containerRequest.crp-workspace td.col1:has(button[onclick*="fileUpload"]) > button[onclick*="fileUpload"] {
+  margin: 8px 0 0 !important;
+}
+@media (max-width: 575.98px) {
+  #containerRequest.crp-workspace .crp-action-content table.form:has(.containerFormFileLink) > tbody { grid-template-columns: minmax(0, 1fr); }
+  #containerRequest.crp-workspace .crp-action-content table.form:has(.containerFormFileLink) { margin-left: 0 !important; }
+}
+

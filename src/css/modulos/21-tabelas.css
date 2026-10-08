@@ -1,0 +1,247 @@
+/* ===== Tabelas multivaloradas (table[mult="S"]) | padrao geral CRP ===== */
+#containerRequest.crp-workspace table[mult="S"] {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid #C7D4EA;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #FFFFFF;
+  box-shadow: 0 1px 2px rgba(20,40,64,.05);
+  font-size: 13px;
+}
+/* Contêiner de rolagem horizontal do proprio componente */
+#containerRequest.crp-workspace .table-responsive:has(> table[mult="S"]) {
+  border: 1px solid #C7D4EA;
+  border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(20,40,64,.05);
+  overflow-x: auto;
+  overflow-y: visible;
+  background: #FFFFFF;
+}
+#containerRequest.crp-workspace .table-responsive:has(> table[mult="S"]) > table[mult="S"] {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+/* Título (caption) com indicador de registros ao lado */
+#containerRequest.crp-workspace table[mult="S"] > caption {
+  display: flex !important;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  caption-side: top !important;
+  text-align: left !important;
+  margin: 0 !important;
+  padding: 12px 14px !important;
+  border: 0 !important;
+  border-bottom: 1px solid #EAF0F8 !important;
+  border-left: 0 !important;
+  background: #FFFFFF !important;
+  color: #0B1323 !important;
+  font-family: inherit !important;
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  line-height: 1.4 !important;
+  text-transform: none !important;
+  overflow-wrap: anywhere;
+}
+#containerRequest.crp-workspace table[mult="S"] > caption .crp-mult-count {
+  display: inline-block;
+  padding: 2px 8px;
+  border: 1px solid #C7D4EA;
+  border-radius: 999px;
+  background: #EAF0F8;
+  color: #053F88;
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+/* Cabeçalho real (tr.header dentro do tbody) */
+#containerRequest.crp-workspace table[mult="S"] > tbody > tr.header > td {
+  background: #053F88 !important;
+  color: #FFFFFF !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  padding: 12px 14px !important;
+  border: 0 !important;
+  border-right: 1px solid rgba(255,255,255,.16) !important;
+  vertical-align: top;
+  text-align: left;
+  white-space: nowrap;
+  overflow-wrap: normal;
+  word-break: keep-all;
+}
+#containerRequest.crp-workspace table[mult="S"] > tbody > tr.header > td:last-child {
+  border-right: 0 !important;
+}
+/* Coluna de ações (primeira célula, sem column-name): discreta */
+#containerRequest.crp-workspace table[mult="S"] > tbody > tr > td:not([column-name]) {
+  width: 1% !important;
+  background: transparent;
+  padding: 8px !important;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+/* Celula de acoes no cabecalho: mantem o azul, formando faixa continua.
+   O botao Inserir e branco sobre o azul. */
+#containerRequest.crp-workspace table[mult="S"] > tbody > tr.header > td:not([column-name]) {
+  background: #053F88 !important;
+  padding: 8px !important;
+  vertical-align: middle !important;
+}
+/* Linhas de dados */
+#containerRequest.crp-workspace table[mult="S"] > tbody > tr:not(.header) > td {
+  padding: 12px !important;
+  border: 0 !important;
+  border-bottom: 1px solid #EEF3F9 !important;
+  vertical-align: top;
+  color: #0B1323;
+  background: #FFFFFF;
+  overflow-wrap: anywhere;
+}
+#containerRequest.crp-workspace table[mult="S"] > tbody > tr:not(.header) > td:not([column-name]) {
+  border-right: 1px solid #EEF3F9 !important;
+}
+#containerRequest.crp-workspace table[mult="S"] > tbody > tr:nth-child(even):not(.header) > td {
+  background: #FFFFFF;
+}
+#containerRequest.crp-workspace table[mult="S"] > tbody > tr:not(.header):hover > td {
+  background: #FFFFFF;
+}
+#containerRequest.crp-workspace table[mult="S"] > tbody > tr:last-child > td {
+  border-bottom: 0 !important;
+}
+/* Campos dentro das células */
+#containerRequest.crp-workspace table[mult="S"] tbody td .form-control,
+#containerRequest.crp-workspace table[mult="S"] tbody td input[type="text"],
+#containerRequest.crp-workspace table[mult="S"] tbody td input[type="number"],
+#containerRequest.crp-workspace table[mult="S"] tbody td select {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 1px solid #C7D4EA;
+  border-radius: 6px;
+  background: #FFFFFF;
+  color: #0B1323;
+  font-family: inherit;
+  font-size: 13px;
+  box-shadow: none;
+}
+#containerRequest.crp-workspace table[mult="S"] tbody td textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 80px;
+  padding: 8px 10px;
+  border: 1px solid #C7D4EA;
+  border-radius: 6px;
+  background: #FFFFFF;
+  color: #0B1323;
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1.5;
+  resize: vertical;
+}
+#containerRequest.crp-workspace table[mult="S"] tbody td .form-control:focus,
+#containerRequest.crp-workspace table[mult="S"] tbody td input:focus,
+#containerRequest.crp-workspace table[mult="S"] tbody td select:focus,
+#containerRequest.crp-workspace table[mult="S"] tbody td textarea:focus {
+  border-color: #053F88;
+  outline: 2px solid #EAF0F8;
+  outline-offset: 1px;
+}
+/* Textos longos / consulta dentro das células */
+#containerRequest.crp-workspace table[mult="S"] tbody td > div[xtype],
+#containerRequest.crp-workspace table[mult="S"] tbody td .crp-readonly-value {
+  color: #0B1323;
+  overflow-wrap: anywhere;
+}
+#containerRequest.crp-workspace table[mult="S"] tbody td[align="right"],
+#containerRequest.crp-workspace table[mult="S"] tbody td.crp-num {
+  text-align: right;
+}
+/* Botões nativos de Inserir/Excluir reposicionados visualmente */
+#containerRequest.crp-workspace #ContainerForm table[mult="S"] button.btn-insert-mv,
+#containerRequest.crp-workspace #ContainerForm table[mult="S"] .btn.btn-insert-mv {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: 34px;
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid #C7D4EA !important;
+  border-radius: 6px !important;
+  background: #FFFFFF !important;
+  background-color: #FFFFFF !important;
+  color: #053F88 !important;
+  font-family: inherit !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: none !important;
+  text-decoration: none !important;
+  text-transform: none !important;
+}
+#containerRequest.crp-workspace #ContainerForm table[mult="S"] button.btn-insert-mv:hover,
+#containerRequest.crp-workspace #ContainerForm table[mult="S"] .btn.btn-insert-mv:hover {
+  background: #EAF0F8 !important;
+  background-color: #EAF0F8 !important;
+  color: #053F88 !important;
+  border-color: #C7D4EA !important;
+}
+#containerRequest.crp-workspace #ContainerForm table[mult="S"] button.btn-insert-mv:focus-visible,
+#containerRequest.crp-workspace #ContainerForm table[mult="S"] .btn.btn-insert-mv:focus-visible {
+  outline: 3px solid #053F88 !important;
+  outline-offset: 2px !important;
+}
+#containerRequest.crp-workspace table[mult="S"] .btn-delete-mv {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: 34px;
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid #E6373B !important;
+  border-radius: 6px !important;
+  background: #FFFFFF !important;
+  color: #E6373B !important;
+  font-size: 13px;
+  font-weight: 600 !important;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: none !important;
+  text-decoration: none !important;
+}
+#containerRequest.crp-workspace table[mult="S"] .btn-delete-mv:hover {
+  background: #FFF0F1 !important;
+}
+#containerRequest.crp-workspace table[mult="S"] .btn-insert-mv:focus-visible,
+#containerRequest.crp-workspace table[mult="S"] .btn-delete-mv:focus-visible {
+  outline: 3px solid #053F88 !important;
+  outline-offset: 2px !important;
+}
+
+/* Modo consulta: todas as colunas somente leitura -> sem acoes nem coluna de
+   acoes; valores como texto (sem cara de input desabilitado). */
+#containerRequest.crp-workspace table[mult="S"].crp-mult-readonly > tbody > tr > td:not([column-name]) {
+  display: none !important;
+}
+#containerRequest.crp-workspace table[mult="S"].crp-mult-readonly tbody td input[readonly],
+#containerRequest.crp-workspace table[mult="S"].crp-mult-readonly tbody td input[disabled],
+#containerRequest.crp-workspace table[mult="S"].crp-mult-readonly tbody td select[disabled],
+#containerRequest.crp-workspace table[mult="S"].crp-mult-readonly tbody td textarea[readonly] {
+  border: 0 !important;
+  background: transparent !important;
+  padding-left: 0 !important;
+  box-shadow: none !important;
+  color: #0B1323 !important;
+  -webkit-appearance: none;
+  appearance: none;
+}

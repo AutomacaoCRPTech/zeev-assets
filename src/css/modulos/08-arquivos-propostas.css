@@ -1,0 +1,52 @@
+/* Nome da proposta e exclusão lado a lado */
+#containerRequest.crp-workspace .crp-proposal-file {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+/* Nome visual do arquivo */
+#containerRequest.crp-workspace .crp-proposal-link {
+  color: #053F88 !important;
+  font-family: inherit;
+  font-size: 13px !important;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+#containerRequest.crp-workspace .crp-proposal-link:hover {
+  color: #03336F !important;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Ícone original de excluir arquivo */
+#containerRequest.crp-workspace .crp-proposal-delete {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  margin: 0 !important;
+  padding: 0;
+  border-radius: 6px;
+  color: #E6373B !important;
+  text-decoration: none !important;
+  transition: background-color 0.18s ease;
+}
+
+#containerRequest.crp-workspace .crp-proposal-delete:hover {
+  background: #FFF0F1;
+}
+
+#containerRequest.crp-workspace .crp-proposal-delete svg {
+  width: 16px;
+  height: 16px;
+  margin: 0 !important;
+  color: inherit !important;
+}
