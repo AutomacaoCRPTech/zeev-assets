@@ -31,7 +31,11 @@
       var edicao = temColunaEditavel(t);
       t.classList.toggle("crp-mult-readonly", !edicao);
       var n = contarRegistros(t);
-      var vazio = !edicao && (getComputedStyle(t).display === "none" || n === 0);
+      // "ocultaNativo": o Zeev ocultou a tabela. Nao considerar o display:none
+      // causado pela NOSSA propria classe crp-mult-empty (senao a tabela nunca
+      // volta a aparecer quando recebe registros depois de ter ficado vazia).
+      var ocultaNativo = !t.classList.contains("crp-mult-empty") && getComputedStyle(t).display === "none";
+      var vazio = !edicao && (ocultaNativo || n === 0);
       t.classList.toggle("crp-mult-empty", vazio);
       var wrap = t.closest(".table-responsive");
       if (wrap) wrap.classList.toggle("crp-mult-empty", vazio);
