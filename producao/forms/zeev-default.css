@@ -284,7 +284,7 @@
 
 /* CRP v2 — composição inspirada no painel de referência */
 #containerRequest.crp-workspace {
-  --crp-width: 1440px;
+  --crp-width: 2400px;
   --crp-radius: 8px;
   --crp-border: #E1E7F0;
   --crp-shadow: none;
@@ -336,7 +336,7 @@
 }
 .crp-workspace #BoxFrmExecute.crp-work-grid {
   display: grid;
-  grid-template-columns: minmax(280px, .38fr) minmax(0, .62fr);
+  grid-template-columns: minmax(320px, .40fr) minmax(0, .60fr);
   align-items: start;
   gap: 22px;
   width: 100%;
