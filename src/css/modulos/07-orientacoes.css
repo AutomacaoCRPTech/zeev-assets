@@ -23,7 +23,7 @@
   padding: 0 !important;
   border: 0;
   background: transparent !important;
-  color: #526786;
+  color: #0B1323;
   font-size: 15px;
   line-height: 1.65;
 }
@@ -92,7 +92,7 @@
 /* Texto principal */
 #containerRequest.crp-workspace
 #crp-instructions-card .instructions-text {
-  color: #526786;
+  color: #0B1323;
   font-size: 15px;
   line-height: 1.75;
 }
@@ -105,7 +105,7 @@
   border: 1px solid #E1E8F3;
   border-radius: 8px;
   background: #F0F4FA;
-  color: #526786;
+  color: #0B1323;
 }
 
 /* Subtítulo: Esta tarefa consiste em */
