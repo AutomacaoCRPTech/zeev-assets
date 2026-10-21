@@ -4,6 +4,12 @@
   display: none !important;
 }
 
+/* ===== CRP | Tabela multivalorada oculta pelo Zeev: nao deixar a borda do wrapper (linha vazia) ===== */
+#containerRequest.crp-workspace .table-responsive:has(> table[mult="S"][style*="display: none"]),
+#containerRequest.crp-workspace .table-responsive:has(> table[mult="S"][hidden]) {
+  display: none !important;
+}
+
 /* ===== CRP | Resumo: respeitar o atributo hidden ao alternar as abas ===== */
 #containerRequest.crp-workspace #crp-summary[hidden],
 #containerRequest.crp-workspace #crp-summary.crp-approval-summary-visible[hidden],
