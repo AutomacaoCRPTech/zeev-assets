@@ -70,7 +70,7 @@
   vertical-align: top;
   text-align: left;
   white-space: normal;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
   word-break: normal;
 }
 #containerRequest.crp-workspace table[mult="S"] > tbody > tr.header > td:last-child {
