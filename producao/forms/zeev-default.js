@@ -649,13 +649,12 @@
       // card de anexos obrigatórios.
       var destinoIns = semAcaoAtual ? s.left : s.right;
       if (destinoIns === s.left) {
-        s.left.appendChild(instructionsCard);
+        if (instructionsCard.parentNode !== s.left) {
+          s.left.appendChild(instructionsCard);
+        }
       } else if (
         instructionsCard.parentNode !== s.right ||
-        !(
-          s.actions.compareDocumentPosition(instructionsCard) &
-          Node.DOCUMENT_POSITION_FOLLOWING
-        )
+        instructionsCard.nextElementSibling !== s.actions
       ) {
         s.right.insertBefore(instructionsCard, s.actions);
       }
