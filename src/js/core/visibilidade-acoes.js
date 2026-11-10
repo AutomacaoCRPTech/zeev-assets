@@ -76,21 +76,10 @@
       );
     }
 
-    // Tabela multivalorada somente leitura também é conteúdo do card: se ela
-    // estiver visível e tiver registros, o card não pode ser ocultado (aprovação).
+    // Tabela multivalorada somente leitura também é conteúdo do card. A regra
+    // é compartilhada com o módulo "sem ação" para os dois não divergirem.
     if (!temAcao) {
-      temAcao = Array.prototype.some.call(
-        conteudo.querySelectorAll('table[mult="S"]'),
-        function (t) {
-          if (!estaVisivel(t)) return false;
-          if (t.classList.contains('crp-mult-empty')) return false;
-          var linhas = t.querySelectorAll('tbody > tr');
-          return Array.prototype.some.call(linhas, function (tr) {
-            if (tr.classList.contains('header') || tr.classList.contains('template') || tr.hidden) return false;
-            return getComputedStyle(tr).display !== 'none';
-          });
-        }
-      );
+      temAcao = window.crpTemTabelaConteudo(conteudo, estaVisivel);
     }
 
 

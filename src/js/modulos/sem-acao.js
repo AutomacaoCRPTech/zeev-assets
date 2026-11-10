@@ -73,6 +73,9 @@
       }
     );
     if (temControle) return true;
+    // Multivalorada visível com registros também é conteúdo: usa a MESMA regra
+    // do visibilidade-acoes.js (senão um módulo esconde e o outro mostra).
+    if (window.crpTemTabelaConteudo(conteudo, estaVisivel)) return true;
     // Anexo (já enviado ou com botão de upload) também conta como ação, para o
     // card não sumir logo após anexar o arquivo.
     return Array.prototype.some.call(
