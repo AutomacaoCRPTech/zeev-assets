@@ -20,7 +20,7 @@ function expand(file, kind, stack = []) {
 for (const kind of ['js', 'css']) {
   const result = expand(resolve(root, 'src', kind, 'main.' + kind), kind);
   if (kind === 'js') new Script(result, { filename: 'crp-form.js' });
-  const destination = resolve(root, 'homologacao', 'forms', 'zeev-default.' + kind);
+  const destination = resolve(root, 'producao', 'forms', 'zeev-default.' + kind);
   if (check) {
     if (readFileSync(destination, 'utf8') !== result) throw new Error('Dist desatualizado: ' + destination);
   } else {

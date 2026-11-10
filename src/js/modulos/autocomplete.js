@@ -9,6 +9,33 @@
   window.__crpSuggestAjuste = true;
 
   var GAP = 4;
+  var SELETOR_SUGESTAO =
+    "input[data-special-type='suggest'],input[data-fieldformat='SUGGEST2']";
+  var PLACEHOLDER = 'Digite pelo menos 3 letras para buscar';
+
+  // Campos de sugestão: sinaliza no placeholder que é uma seleção e exige
+  // ao menos 3 letras para disparar a busca.
+  function prepararCampo(campo) {
+    if (!campo || campo.disabled || campo.readOnly) return;
+    var atual = campo.getAttribute('placeholder') || '';
+    if (!/3 letras/i.test(atual)) {
+      campo.setAttribute('placeholder', PLACEHOLDER);
+    }
+    var $ = window.jQuery;
+    if ($) {
+      var ta = $(campo).data('typeahead');
+      if (ta && ta.options && ta.options.minLength !== 3) {
+        ta.options.minLength = 3;
+      }
+    }
+  }
+
+  function prepararTodos() {
+    Array.prototype.forEach.call(
+      document.querySelectorAll(SELETOR_SUGESTAO),
+      prepararCampo
+    );
+  }
 
   function listaDoCampo(campo) {
     var prox = campo.nextElementSibling;
@@ -63,6 +90,7 @@
     if (campo && campo.matches && campo.matches(
       "[data-special-type='suggest'],[data-fieldformat='SUGGEST2']")) {
       campoAtivo = campo;
+      prepararCampo(campo);
     }
   }, true);
   document.addEventListener("scroll", function () {
@@ -70,6 +98,26 @@
   }, true);
   window.addEventListener("resize", function () {
     if (campoAtivo) posicionar(campoAtivo);
+  });
+
+  // Aplica nos campos já existentes e nos que o Zeev inserir depois.
+  var agendado = false;
+  function agendarPreparo() {
+    if (agendado) return;
+    agendado = true;
+    requestAnimationFrame(function () {
+      agendado = false;
+      prepararTodos();
+    });
+  }
+
+  prepararTodos();
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', prepararTodos);
+  }
+  new MutationObserver(agendarPreparo).observe(document.documentElement, {
+    childList: true,
+    subtree: true
   });
 
   ciclo();

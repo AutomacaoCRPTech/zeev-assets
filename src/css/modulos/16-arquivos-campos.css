@@ -39,9 +39,10 @@
    O nome vira "começo do nome..." (5 letras + reticências, via JS) e o botão
    de baixar fica minimalista, dentro do card. */
 #containerRequest.crp-workspace table[mult="S"] .containerFormFileLink {
-  display: inline-flex !important;
-  width: auto;
+  display: flex !important;
+  width: 100%;
   max-width: 100%;
+  box-sizing: border-box;
   padding: 6px 8px;
 }
 /* A coluna do anexo (somente leitura) se ajusta ao conteúdo do card, em vez
@@ -69,6 +70,7 @@
   height: 28px;
   min-width: 28px;
   min-height: 28px;
+  margin-left: auto !important;
   background-size: 15px 15px;
 }
 #containerRequest.crp-workspace .containerFormFileLink + .containerFormFileLink { margin-top: 8px; }

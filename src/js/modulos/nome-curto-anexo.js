@@ -1,5 +1,5 @@
 /* CRP | Nome do anexo na tabela multivalorada.
-   Mostra apenas as 5 primeiras letras seguidas de "..." e mantem o nome
+   Mostra apenas as 10 primeiras letras seguidas de "..." e mantem o nome
    COMPLETO no atributo data-crp-nome-completo/title (tooltip).
    Nao mexe em links de "Proposta" nem em outras telas. */
 (function () {
@@ -14,7 +14,7 @@
       if (!completo) return;
       if (!a.getAttribute('data-crp-nome-completo')) a.setAttribute('data-crp-nome-completo', completo);
       if (a.getAttribute('title') !== completo) a.setAttribute('title', completo);
-      var curto = completo.length > 5 ? completo.slice(0, 5) + '...' : completo;
+      var curto = completo.length > 10 ? completo.slice(0, 10) + '...' : completo;
       if (a.textContent !== curto) a.textContent = curto;
     });
   }

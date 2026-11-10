@@ -208,6 +208,14 @@
     }
 
     atualizarAvisoAnexos(s);
+    garantirCabecalhos(s);
+
+    // Resumo sem conteúdo (ex.: tarefa de abertura do processo): esconde
+    // apenas o card de resumo. A aba "Geral" continua existindo (é nela que
+    // ficam as ações do usuário) e as demais abas também permanecem.
+    var temResumo = s.summary.querySelectorAll('.crp-readonly-group').length > 0;
+    s.root.classList.toggle('crp-resumo-vazio', !temResumo);
+
     render();
     classificarStatusHistorico();
     ajustarNumeroProcesso();

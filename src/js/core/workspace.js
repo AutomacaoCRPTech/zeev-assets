@@ -7,7 +7,7 @@
     if (!body || !main) return;
     if (state && state.body === body) return state;
 
-    root.classList.add('crp-form', 'crp-workspace');
+    root.classList.add('crp-form', 'crp-workspace', 'crp-proto');
     main.classList.add('crp-main');
 
     var header = root.querySelector('.page-title');
@@ -70,7 +70,7 @@
       active: null
     };
 
-    addTab(summary, 'Resumo');
+    addTab(summary, 'Geral');
 
     return state;
   }

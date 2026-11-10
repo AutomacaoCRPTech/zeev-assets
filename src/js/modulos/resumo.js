@@ -12,12 +12,67 @@
       return t === "";
     } catch (e) { return false; }
   }
+  // Cabeçalho recolhível do grupo: título + "N campos" + seta. Os elementos
+  // são criados uma única vez; depois só o texto e os atributos mudam quando
+  // necessário (evita loop com o MutationObserver).
+  function grupoRecolhivel(g, tabela, vis) {
+    var head = tabela.querySelector(':scope > tbody > tr.group');
+    var td = head && (head.querySelector(':scope > td.group') || head.firstElementChild);
+    if (!td) return;
+    // Nem sempre a célula do título tem a classe "group": marca com uma
+    // classe própria para o CSS do cabeçalho.
+    if (!head.classList.contains('crp-grupo-linha')) head.classList.add('crp-grupo-linha');
+    if (!td.classList.contains('crp-grupo-head')) td.classList.add('crp-grupo-head');
+
+    if (td.getAttribute('data-crp-grupo') !== '1') {
+      td.setAttribute('data-crp-grupo', '1');
+      var qtd = document.createElement('span');
+      qtd.className = 'crp-grupo-qtd';
+      var seta = document.createElement('span');
+      seta.className = 'crp-grupo-seta';
+      seta.setAttribute('aria-hidden', 'true');
+      td.appendChild(qtd);
+      td.appendChild(seta);
+      td.setAttribute('role', 'button');
+      td.tabIndex = 0;
+
+      var alternar = function () {
+        var recolher = !g.classList.contains('crp-recolhido');
+        g.classList.toggle('crp-recolhido', recolher);
+        td.setAttribute('aria-expanded', String(!recolher));
+      };
+      td.addEventListener('click', alternar);
+      td.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); alternar(); }
+      });
+    }
+
+    var recolhido = g.classList.contains('crp-recolhido');
+    var expandido = String(!recolhido);
+    if (td.getAttribute('aria-expanded') !== expandido) td.setAttribute('aria-expanded', expandido);
+
+    // Conta só com o grupo aberto e visível (recolhido, as linhas ficam ocultas
+    // pelo CSS e a contagem zeraria); fora disso reaproveita a última contagem.
+    if (vis && !recolhido) {
+      var n = 0;
+      Array.prototype.forEach.call(tabela.querySelectorAll(':scope > tbody > tr'), function (tr) {
+        if (tr.classList.contains('group')) return;
+        if (getComputedStyle(tr).display !== 'none') n++;
+      });
+      if (g.getAttribute('data-crp-qtd') !== String(n)) g.setAttribute('data-crp-qtd', String(n));
+    }
+    var total = Number(g.getAttribute('data-crp-qtd') || 0);
+    var texto = total === 1 ? '1 campo' : total + ' campos';
+    var alvo = td.querySelector(':scope > .crp-grupo-qtd');
+    if (alvo && alvo.textContent !== texto) alvo.textContent = texto;
+  }
   function aplicar() {
     var resumo = document.getElementById('crp-summary'); if (!resumo) return;
     var vis = getComputedStyle(resumo).display !== 'none';
     var grupos = resumo.querySelectorAll('.crp-readonly-group');
     Array.prototype.forEach.call(grupos, function (g) {
-      var tabela = g.querySelector('table.form'); if (!tabela) return;
+      // O grupo pode ser a própria table.form ou uma tabela externa que a contém.
+      var tabela = g.matches('table.form') ? g : g.querySelector('table.form'); if (!tabela) return;
       var lc = tabela.querySelectorAll("tbody > tr");
       Array.prototype.forEach.call(lc, function (tr) {
         if (tr.classList.contains("group")) return;
@@ -26,7 +81,8 @@
         if (iframeOrigemVazio(ifr)) { if (tr.style.display !== "none") tr.style.display = "none"; }
         else if (tr.style.display === "none") tr.style.display = "";
       });
-      if (vis) { var linhas = tabela.querySelectorAll("tbody > tr"); var tem=false;
+      // Recolhido, as linhas ficam ocultas pelo CSS: não recalcular "vazio".
+      if (vis && !g.classList.contains("crp-recolhido")) { var linhas = tabela.querySelectorAll("tbody > tr"); var tem=false;
         Array.prototype.forEach.call(linhas, function(tr){ if(tr.classList.contains("group"))return; if(getComputedStyle(tr).display!=="none") tem=true; });
         if (g.classList.contains("crp-empty") === tem) g.classList.toggle("crp-empty", !tem); }
       Array.prototype.forEach.call(lc, function (tr) {
@@ -37,6 +93,7 @@
         var cheio = RE_FULL.test(rot) || (val && val.trim().length > 34);
         if (cheio && !tr.classList.contains("crp-full")) tr.classList.add("crp-full");
       });
+      grupoRecolhivel(g, tabela, vis);
     });
     if (vis) {
       var arr = Array.prototype.slice.call(resumo.querySelectorAll(':scope > .crp-readonly-group')).filter(function (g) { return getComputedStyle(g).display !== 'none'; });

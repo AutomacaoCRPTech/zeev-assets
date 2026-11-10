@@ -46,6 +46,44 @@
       }
     );
 
+    // Campo de anexo do formulário (fora das multivaloradas): marca a célula
+    // com crp-file-field e o estado (vazio|anexado) para o CSS do protótipo.
+    // Nada do Zeev é movido nem recriado; só classe e atributos, e apenas
+    // quando mudam (a função roda a cada ciclo do MutationObserver).
+    var celulasArquivo = [];
+    Array.prototype.forEach.call(
+      root.querySelectorAll(
+        '.crp-action-content button[onclick*="fileUpload"],' +
+        '.crp-action-content .containerFormFileLink a[onclick*="fileUpload.delete"],' +
+        '.crp-action-content .containerFormFileLink a[onclick*="files.delete"],' +
+        '.crp-action-content td:has(> .containerFormFileLink) > a[onclick*="fileUpload.delete"],' +
+        '.crp-action-content td:has(> .containerFormFileLink) > a[onclick*="files.delete"]'
+      ),
+      function (el) {
+        if (el.closest('table[mult="S"]')) return;
+        var td = el.closest('td');
+        if (td && celulasArquivo.indexOf(td) < 0) celulasArquivo.push(td);
+      }
+    );
+    celulasArquivo.forEach(function (td) {
+      if (!td.classList.contains('crp-file-field')) td.classList.add('crp-file-field');
+
+      var link = td.querySelector('.containerFormFileLink a.small, .containerFormFileLink a[href*="/document/preview/"]');
+      var estado = link && (link.textContent || '').trim() ? 'anexado' : 'vazio';
+      if (td.getAttribute('data-crp-file-state') !== estado) td.setAttribute('data-crp-file-state', estado);
+
+      var remover = td.querySelector('a[onclick*="fileUpload.delete"], a[onclick*="files.delete"]');
+      var podeRemover = remover ? 'sim' : 'nao';
+      if (td.getAttribute('data-crp-file-remove') !== podeRemover) td.setAttribute('data-crp-file-remove', podeRemover);
+
+      // O botão original continua sendo o que dispara o upload; só ganha
+      // o nome acessível do novo texto visual.
+      var anexar = td.querySelector('button[onclick*="fileUpload"]');
+      if (anexar && anexar.getAttribute('aria-label') !== 'Clique para anexar') {
+        anexar.setAttribute('aria-label', 'Clique para anexar');
+      }
+    });
+
     // CRP | Campos de arquivo em tabelas multivaloradas: o controle nativo de
     // remocao vira um botao-icone (icone desenhado via CSS ::before),
     // preservando handler, URL e atributos.

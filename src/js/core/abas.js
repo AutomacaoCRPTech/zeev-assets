@@ -238,6 +238,7 @@
       }
 
       item.descricao.textContent = textoCompleto;
+      atualizarSeloPainel(item, quantidade, temContador);
 
       if (textoCompleto) {
         item.button.setAttribute(
@@ -250,5 +251,7 @@
         item.button.removeAttribute('aria-describedby');
       }
     });
+
+    marcarAbaAtiva();
   }
 

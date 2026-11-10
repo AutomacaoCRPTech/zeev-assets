@@ -11,6 +11,7 @@
 // @include "dom.js"
 // @include "workspace.js"
 // @include "abas.js"
+// @include "prototipo.js"
 // @include "visibilidade-acoes.js"
 // @include "aviso-anexos.js"
 // @include "atualizacao.js"

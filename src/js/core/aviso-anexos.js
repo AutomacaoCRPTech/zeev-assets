@@ -7,10 +7,11 @@
       aviso.style.top = 'auto';
       aviso.style.bottom = (altura + 16) + 'px';
     } else {
+      // Fixo no topo da janela: acompanha a rolagem sem depender da
+      // posição do cabeçalho (que sai da tela ao rolar). 64px deixa
+      // livre o botão X (fechar tarefa) do Zeev no canto superior direito.
       aviso.style.bottom = 'auto';
-      if (header) {
-        aviso.style.top = Math.round(header.getBoundingClientRect().bottom + 12) + 'px';
-      }
+      aviso.style.top = '64px';
     }
   }
 
@@ -47,41 +48,27 @@
       aviso = el('div', 'crp-anexos-aviso');
       aviso.id = 'crp-anexos-aviso';
       aviso.setAttribute('role', 'status');
+      // Visual no CSS (24-prototipo.css, seção "Aviso de anexos").
+      // Aqui ficam só o posicionamento e o ícone.
       aviso.style.position = 'fixed';
       aviso.style.right = '24px';
       aviso.style.zIndex = '1090';
-      aviso.style.display = 'flex';
-      aviso.style.alignItems = 'center';
-      aviso.style.gap = '10px';
-      aviso.style.maxWidth = '340px';
-      aviso.style.padding = '10px 14px';
-      aviso.style.border = '1px solid #f0c36d';
-      aviso.style.borderRadius = '10px';
-      aviso.style.background = '#fff8e6';
-      aviso.style.boxShadow = '0 6px 18px rgba(120,80,0,0.14)';
-      aviso.style.fontSize = '13px';
-      aviso.style.lineHeight = '1.4';
-      aviso.style.color = '#7a5600';
 
-      aviso.appendChild(
-        el(
-          'span',
-          'crp-anexos-aviso-texto',
-          'Há anexos obrigatórios pendentes nesta tarefa.'
-        )
+      var icone = el('span', 'crp-anexos-aviso-icone');
+      icone.setAttribute('aria-hidden', 'true');
+      aviso.appendChild(icone);
+
+      var texto = el('div', 'crp-anexos-aviso-texto');
+      texto.appendChild(
+        el('strong', 'crp-anexos-aviso-titulo', 'Anexo obrigatório pendente')
       );
+      texto.appendChild(
+        el('span', 'crp-anexos-aviso-desc', 'Envie os documentos na aba Anexos.')
+      );
+      aviso.appendChild(texto);
 
-      var botao = el('button', 'crp-anexos-aviso-acao', 'Clique aqui e veja');
+      var botao = el('button', 'crp-anexos-aviso-acao', 'Ver anexos');
       botao.type = 'button';
-      botao.style.border = '0';
-      botao.style.borderRadius = '8px';
-      botao.style.padding = '6px 10px';
-      botao.style.background = '#053f88';
-      botao.style.color = '#fff';
-      botao.style.fontSize = '12px';
-      botao.style.fontWeight = '600';
-      botao.style.whiteSpace = 'nowrap';
-      botao.style.cursor = 'pointer';
 
       botao.addEventListener('click', function () {
         var item = s.items.filter(function (i) {
@@ -94,16 +81,10 @@
 
       aviso.appendChild(botao);
 
-      var fechar = el('button', 'crp-anexos-aviso-fechar', '×');
+      var fechar = el('button', 'crp-anexos-aviso-fechar');
       fechar.type = 'button';
       fechar.setAttribute('aria-label', 'Fechar aviso');
-      fechar.style.border = '0';
-      fechar.style.background = 'transparent';
-      fechar.style.color = '#7a5600';
-      fechar.style.fontSize = '18px';
-      fechar.style.lineHeight = '1';
-      fechar.style.cursor = 'pointer';
-      fechar.style.padding = '0 2px';
+      fechar.setAttribute('title', 'Fechar aviso');
       fechar.addEventListener('click', function () {
         avisoFechado = true;
         aviso.hidden = true;

@@ -1,0 +1,2027 @@
+/* =====================================================================
+   CRP | Layout do protótipo (Figma ZEEV-CRP)
+   Coluna única: cabeçalho, Orientações, Checklist, Abas e o conteúdo da
+   aba ativa. Na aba Geral aparecem Resumo + Ações; nas demais, só o painel.
+   Este módulo vem por último e sobrescreve os anteriores.
+   Escopo: #containerRequest.crp-proto (classe adicionada pelo workspace.js).
+   ===================================================================== */
+
+/* ---------- 1. Tokens ---------- */
+#containerRequest.crp-proto {
+  --p-navy: #1F3F8E;
+  --p-navy-hover: #18326F;
+  --p-label: #5B6B8C;
+  --p-desc: #4A5A80;
+  --p-text: #22304F;
+  --p-light: #E4ECFB;
+  --p-bar: #2150D8;
+  --p-inner: #F5F7FC;
+  --p-inner-border: #E3E8F3;
+  --p-block: #FAFBFE;
+  --p-block-border: #EBEFF6;
+  --p-card-border: #E6EBF6;
+  --p-divider: #DCE2EE;
+  --p-row-divider: #EEF1F7;
+  --p-placeholder: #8A97B4;
+  --p-dashed: #C9D3E8;
+  --p-orange: #F6A730;
+  --p-orange-bg: #FDF0DC;
+  --p-orange-text: #9A5B06;
+  --p-red: #F63030;
+  --p-red-bg: #FDECEC;
+  --p-red-text: #C62828;
+  --p-green-bg: #E6F4EA;
+  --p-green-text: #2E7D32;
+  --p-radius: 16px;
+  --p-radius-inner: 12px;
+  --p-radius-ctrl: 10px;
+  --p-shadow: 0 1px 2px rgba(31, 63, 142, .06), 0 8px 24px rgba(31, 63, 142, .06);
+  --p-gap: 20px;
+  --p-pad-y: 22px;
+  --p-pad-x: 24px;
+
+  /* Variáveis antigas apontando para a paleta nova */
+  --crp-primary: var(--p-navy);
+  --crp-hover: var(--p-navy-hover);
+  --crp-secondary: var(--p-navy);
+  --crp-muted: var(--p-label);
+  --crp-text: var(--p-text);
+  --crp-bg: var(--p-inner);
+  --crp-soft: var(--p-light);
+  --crp-border: var(--p-inner-border);
+  --crp-width: 1600px;
+
+  background: var(--p-inner) !important;
+  color: var(--p-text);
+  font-family: Roboto, "Segoe UI", Arial, sans-serif !important;
+}
+#containerRequest.crp-proto .container-task { background: var(--p-inner); }
+#containerRequest.crp-proto button,
+#containerRequest.crp-proto input,
+#containerRequest.crp-proto select,
+#containerRequest.crp-proto textarea { font-family: inherit; }
+
+/* ---------- 2. Coluna única ---------- */
+#containerRequest.crp-proto.crp-workspace .crp-main {
+  box-sizing: border-box;
+  flex: 1 1 100% !important;
+  width: 100% !important;
+  max-width: var(--crp-width) !important;
+  margin: 0 auto !important;
+  padding: 0 24px 120px;
+}
+#containerRequest.crp-proto.crp-workspace #ContainerForm.crp-form-shell,
+#containerRequest.crp-proto.crp-workspace #BoxFrmExecute.crp-work-grid {
+  box-sizing: border-box;
+  width: 100%;
+}
+#containerRequest.crp-proto.crp-workspace #BoxFrmExecute.crp-work-grid {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: var(--p-gap) !important;
+  padding: 0 !important;
+}
+#containerRequest.crp-proto.crp-workspace .crp-context-column,
+#containerRequest.crp-proto.crp-workspace .crp-action-column {
+  display: contents;
+}
+#containerRequest.crp-proto.crp-workspace .crp-approval-hero { order: 0; }
+#containerRequest.crp-proto.crp-workspace #crp-instructions-card { order: 1; }
+#containerRequest.crp-proto.crp-workspace #ContainerConclusionCheckList { order: 2; }
+#containerRequest.crp-proto.crp-workspace #crp-info-card { order: 3; }
+#containerRequest.crp-proto.crp-workspace .crp-actions { order: 4; }
+#containerRequest.crp-proto.crp-workspace .crp-auxiliary { order: 5; }
+
+/* Fora da aba Geral, o card de ações sai de cena (o formulário continua no DOM). */
+#containerRequest.crp-proto:not(.crp-aba-geral) .crp-actions { display: none !important; }
+
+/* ---------- 3. Card padrão ---------- */
+#containerRequest.crp-proto.crp-workspace .crp-card,
+#containerRequest.crp-proto.crp-workspace .crp-approval-hero,
+#containerRequest.crp-proto.crp-workspace #crp-info-card > .crp-panel,
+#containerRequest.crp-proto.crp-workspace #crp-info-card > .crp-tabs {
+  box-sizing: border-box;
+  margin: 0 !important;
+  padding: var(--p-pad-y) var(--p-pad-x) !important;
+  border: 1px solid var(--p-card-border) !important;
+  border-radius: var(--p-radius) !important;
+  background: #FFFFFF !important;
+  box-shadow: var(--p-shadow) !important;
+}
+
+/* O card "Informações da solicitação" vira só um agrupador: abas e painéis
+   aparecem como cards independentes. */
+#containerRequest.crp-proto.crp-workspace #crp-info-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--p-gap);
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+#containerRequest.crp-proto.crp-workspace #crp-info-card > .crp-card-title { display: none !important; }
+
+/* Títulos antigos substituídos pelo cabeçalho novo (continuam no DOM). */
+#containerRequest.crp-proto.crp-workspace #crp-instructions-card > .crp-card-title,
+#containerRequest.crp-proto.crp-workspace #ContainerConclusionCheckList > h5,
+#containerRequest.crp-proto.crp-workspace #ContainerConclusionCheckList > .crp-card-title,
+#containerRequest.crp-proto.crp-workspace .crp-actions > .crp-action-title,
+#containerRequest.crp-proto.crp-workspace #containerMessages > h5,
+#containerRequest.crp-proto.crp-workspace #containerFiles > h5,
+#containerRequest.crp-proto.crp-workspace #containerHistory > h5 {
+  display: none !important;
+}
+
+/* ---------- 4. Cabeçalho dos cards ---------- */
+#containerRequest.crp-proto.crp-workspace .crp-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0 0 18px;
+  padding: 0 0 18px;
+  border-bottom: 1px solid var(--p-divider);
+}
+#containerRequest.crp-proto.crp-workspace .crp-head-icon {
+  position: relative;
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--p-navy);
+}
+#containerRequest.crp-proto.crp-workspace .crp-head-icon::after {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  background: #FFFFFF;
+  -webkit-mask: var(--p-icon) center / contain no-repeat;
+  mask: var(--p-icon) center / contain no-repeat;
+}
+#containerRequest.crp-proto .crp-head-icon[data-icon="resumo"] { --p-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 3v4a1 1 0 0 0 1 1h4'/%3E%3Cpath d='M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z'/%3E%3Cpath d='M9 13h6M9 17h6'/%3E%3C/svg%3E"); }
+#containerRequest.crp-proto .crp-head-icon[data-icon="acoes"] { --p-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 20h4L18.5 9.5a2.8 2.8 0 0 0-4-4L4 16v4'/%3E%3Cpath d='M13.5 6.5l4 4'/%3E%3C/svg%3E"); }
+#containerRequest.crp-proto .crp-head-icon[data-icon="mensagens"] { --p-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 9h8M8 13h6'/%3E%3Cpath d='M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3h-5l-5 3v-3H6a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3z'/%3E%3C/svg%3E"); }
+#containerRequest.crp-proto .crp-head-icon[data-icon="anexos"] { --p-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 7l-6.5 6.5a1.5 1.5 0 0 0 3 3L18 10a3 3 0 0 0-6-6l-6.5 6.5a4.5 4.5 0 0 0 9 9L21 13'/%3E%3C/svg%3E"); }
+#containerRequest.crp-proto .crp-head-icon[data-icon="historico"] { --p-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 7v5l3 3'/%3E%3C/svg%3E"); }
+#containerRequest.crp-proto .crp-head-icon[data-icon="orientacoes"] { --p-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 8h.01M11 12h1v4h1'/%3E%3C/svg%3E"); }
+#containerRequest.crp-proto .crp-head-icon[data-icon="checklist"] { --p-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='4' width='16' height='16' rx='3'/%3E%3Cpath d='M9 12l2 2 4-4'/%3E%3C/svg%3E"); }
+
+#containerRequest.crp-proto.crp-workspace .crp-head-text {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+#containerRequest.crp-proto.crp-workspace .crp-head-label {
+  color: var(--p-label);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .04em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+#containerRequest.crp-proto.crp-workspace .crp-head-title {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  color: var(--p-navy);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+#containerRequest.crp-proto.crp-workspace .crp-head-title[hidden],
+#containerRequest.crp-proto.crp-workspace .crp-head-badge[hidden] { display: none !important; }
+#containerRequest.crp-proto.crp-workspace .crp-head-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--p-light);
+  color: var(--p-navy);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+#containerRequest.crp-proto.crp-workspace .crp-head-badge[data-tom="pendente"] {
+  background: var(--p-red-bg);
+  color: var(--p-red-text);
+}
+#containerRequest.crp-proto.crp-workspace .crp-head-badge[data-tom="pendente"]::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--p-red);
+}
+
+/* ---------- 5. Cabeçalho da página (navbar) ---------- */
+#containerRequest.crp-proto.crp-workspace .crp-header {
+  box-sizing: border-box;
+  width: calc(100% - 48px);
+  max-width: calc(var(--crp-width) - 48px);
+  margin: 24px auto var(--p-gap) !important;
+  padding: 18px 24px !important;
+  justify-content: flex-start !important;
+  gap: 16px;
+  border: 1px solid var(--p-card-border) !important;
+  border-radius: var(--p-radius) !important;
+  background: #FFFFFF !important;
+  box-shadow: var(--p-shadow) !important;
+}
+#containerRequest.crp-proto.crp-workspace .crp-header::before {
+  content: "";
+  flex: 0 0 46px;
+  width: 46px;
+  height: 52px;
+  background: var(--p-navy) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FFFFFF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='6' height='6' rx='1'/%3E%3Crect x='15' y='15' width='6' height='6' rx='1'/%3E%3Cpath d='M6 9v3a3 3 0 0 0 3 3h6'/%3E%3C/svg%3E") center / 22px no-repeat;
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+}
+#containerRequest.crp-proto.crp-workspace .crp-header #RequesterInfo { margin-left: auto; }
+#containerRequest.crp-proto.crp-workspace .crp-header h1 {
+  margin: 2px 0 0;
+  color: var(--p-navy);
+  font-size: 20px;
+  font-weight: 700;
+}
+#containerRequest.crp-proto.crp-workspace .crp-header h5 {
+  margin: 0;
+  color: var(--p-label);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+/* Número do processo: selo em destaque abaixo do título da tarefa.
+   O selo nativo do Zeev (ao lado do nome do processo) fica escondido. */
+#containerRequest.crp-proto.crp-workspace .crp-header .crp-header-numero-nativo { display: none !important; }
+#containerRequest.crp-proto.crp-workspace .crp-header .crp-header-numero {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  margin: 8px 0 0 !important;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--p-navy);
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: .02em;
+  text-decoration: none !important;
+}
+/* Clicável quando o Zeev oferece o link do relatório. */
+#containerRequest.crp-proto.crp-workspace .crp-header a.crp-header-numero[href] {
+  gap: 6px;
+  cursor: pointer;
+  transition: background-color .15s ease;
+}
+#containerRequest.crp-proto.crp-workspace .crp-header a.crp-header-numero[href]::after {
+  content: "";
+  width: 12px;
+  height: 12px;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+#containerRequest.crp-proto.crp-workspace .crp-header a.crp-header-numero[href]:hover {
+  background: var(--p-navy-hover);
+  color: #FFFFFF;
+}
+#containerRequest.crp-proto.crp-workspace .crp-header a.crp-header-numero[href]:focus-visible {
+  outline: 3px solid rgba(31, 63, 142, .3);
+  outline-offset: 2px;
+}
+#containerRequest.crp-proto.crp-workspace .crp-header .crp-header-numero[hidden] { display: none !important; }
+
+/* ---------- 6. Orientações ---------- */
+/* Ícone à esquerda; rótulo e texto empilhados à direita. */
+#containerRequest.crp-proto.crp-workspace #crp-instructions-card {
+  display: grid !important;
+  grid-template-columns: 40px minmax(0, 1fr);
+  column-gap: 14px;
+  row-gap: 4px;
+  align-items: start;
+  border-top-width: 1px !important;
+}
+#containerRequest.crp-proto.crp-workspace #crp-instructions-card > .crp-head,
+#containerRequest.crp-proto.crp-workspace #crp-instructions-card > .crp-head > .crp-head-text {
+  display: contents;
+}
+#containerRequest.crp-proto.crp-workspace #crp-instructions-card .crp-head-icon {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+}
+#containerRequest.crp-proto.crp-workspace #crp-instructions-card .crp-head-label { grid-column: 2; padding-top: 2px; }
+#containerRequest.crp-proto.crp-workspace #crp-instructions-card > :not(.crp-head) { grid-column: 2; }
+#containerRequest.crp-proto.crp-workspace #crp-instructions-card .instructions-text {
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  color: var(--p-desc) !important;
+  font-size: 14px;
+  line-height: 1.6;
+}
+#containerRequest.crp-proto.crp-workspace #crp-instructions-card .instructions-text > div:first-child {
+  margin: 0 0 10px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--p-desc);
+}
+#containerRequest.crp-proto.crp-workspace #crp-instructions-card .instructions-text strong {
+  color: var(--p-navy);
+}
+
+/* ---------- 7. Checklist ---------- */
+#containerRequest.crp-proto.crp-workspace #ContainerConclusionCheckList > .crp-head .crp-head-title {
+  color: var(--p-desc);
+  font-size: 14px;
+  font-weight: 400;
+}
+/* Lista simples: uma coluna, um item por linha, divisória entre linhas */
+#containerRequest.crp-proto.crp-workspace #ContainerConclusionCheckList :has(> .form-group) {
+  display: flex !important;
+  flex-direction: column;
+  gap: 0;
+}
+#containerRequest.crp-proto.crp-workspace #ContainerConclusionCheckList .form-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  margin: 0 !important;
+  padding: 12px 2px !important;
+  border: 0;
+  border-bottom: 1px solid var(--p-row-divider);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  cursor: pointer;
+  transition: background-color .15s ease;
+}
+#containerRequest.crp-proto.crp-workspace #ContainerConclusionCheckList .form-group:not(:has(~ .form-group)) {
+  border-bottom: 0;
+}
+#containerRequest.crp-proto.crp-workspace #ContainerConclusionCheckList .form-group:hover {
+  background: var(--p-inner);
+}
+#containerRequest.crp-proto.crp-workspace #ContainerConclusionCheckList .form-group label {
+  margin: 0;
+  color: var(--p-navy);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  cursor: pointer;
+}
+/* custom-control dentro de .form-group: espaço para o quadrado (left: -30px) */
+#containerRequest.crp-proto.crp-workspace #ContainerConclusionCheckList .form-group .custom-control {
+  margin: 0 !important;
+  padding-left: 30px !important;
+}
+
+/* ---------- 8. Caixas de seleção e radios ---------- */
+#containerRequest.crp-proto.crp-workspace input[type="checkbox"]:not(.custom-control-input),
+#containerRequest.crp-proto.crp-workspace input[type="radio"]:not(.custom-control-input) {
+  -webkit-appearance: none;
+  appearance: none;
+  position: static !important;
+  float: none !important;
+  flex: 0 0 20px;
+  width: 20px !important;
+  height: 20px !important;
+  margin: 0 !important;
+  border: 2px solid var(--p-dashed);
+  background: #FFFFFF;
+  vertical-align: middle;
+  cursor: pointer;
+  transform: none !important;
+  transition: border-color .15s ease, background-color .15s ease;
+}
+#containerRequest.crp-proto.crp-workspace input[type="checkbox"]:not(.custom-control-input) { border-radius: 6px; }
+#containerRequest.crp-proto.crp-workspace input[type="radio"]:not(.custom-control-input) { border-radius: 50%; }
+#containerRequest.crp-proto.crp-workspace input[type="checkbox"]:not(.custom-control-input):checked {
+  border-color: var(--p-navy);
+  background: var(--p-navy) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FFFFFF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5L20 7'/%3E%3C/svg%3E") center / 14px no-repeat;
+}
+#containerRequest.crp-proto.crp-workspace input[type="radio"]:not(.custom-control-input):checked {
+  border-color: var(--p-navy);
+  background: radial-gradient(circle, var(--p-navy) 0 4px, #FFFFFF 5px);
+}
+#containerRequest.crp-proto.crp-workspace input[type="checkbox"]:not(.custom-control-input):hover,
+#containerRequest.crp-proto.crp-workspace input[type="radio"]:not(.custom-control-input):hover {
+  border-color: var(--p-navy);
+}
+#containerRequest.crp-proto.crp-workspace input[type="checkbox"]:focus-visible,
+#containerRequest.crp-proto.crp-workspace input[type="radio"]:focus-visible {
+  outline: 3px solid rgba(31, 63, 142, .2);
+  outline-offset: 2px;
+}
+#containerRequest.crp-proto.crp-workspace input[type="checkbox"]:disabled,
+#containerRequest.crp-proto.crp-workspace input[type="radio"]:disabled {
+  cursor: not-allowed;
+  opacity: .5;
+}
+/* Radios lado a lado, como no protótipo */
+#containerRequest.crp-proto.crp-workspace #ContainerForm td.col1:has(> .form-check input[type="radio"]),
+#containerRequest.crp-proto.crp-workspace #ContainerForm td.col1:has(> div > .form-check input[type="radio"]) {
+  display: flex !important;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 28px;
+  /* Mesma altura dos inputs/selects (44px): os rádios ficam centralizados
+     na linha e alinhados com o campo da coluna ao lado. */
+  box-sizing: border-box;
+  min-height: 44px;
+}
+#containerRequest.crp-proto.crp-workspace #ContainerForm .form-check:has(input[type="radio"]) {
+  gap: 10px;
+  margin: 0 !important;
+}
+#containerRequest.crp-proto.crp-workspace #ContainerForm .form-check:has(input[type="radio"]) .form-check-label {
+  color: var(--p-desc);
+  font-size: 14px;
+}
+#containerRequest.crp-proto.crp-workspace #ContainerForm .form-check:has(input[type="radio"]:checked) .form-check-label {
+  color: var(--p-navy);
+  font-weight: 500;
+}
+
+/* Checkbox do Bootstrap (custom-control), usado no Checklist do Zeev */
+#containerRequest.crp-proto.crp-workspace .custom-control-label::before {
+  left: -30px;
+  width: 20px;
+  height: 20px;
+  top: 0;
+  border: 2px solid var(--p-dashed);
+  background-color: #FFFFFF;
+  box-shadow: none !important;
+}
+#containerRequest.crp-proto.crp-workspace .custom-checkbox .custom-control-label::before { border-radius: 6px; }
+#containerRequest.crp-proto.crp-workspace .custom-control-label::after { left: -30px; width: 20px; height: 20px; top: 0; }
+#containerRequest.crp-proto.crp-workspace .custom-control-input:checked ~ .custom-control-label::before {
+  border-color: var(--p-navy);
+  background-color: var(--p-navy);
+}
+#containerRequest.crp-proto.crp-workspace .custom-checkbox .custom-control-input:checked ~ .custom-control-label::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FFFFFF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5L20 7'/%3E%3C/svg%3E");
+  background-size: 14px;
+}
+#containerRequest.crp-proto.crp-workspace .custom-control-input:focus ~ .custom-control-label::before {
+  outline: 3px solid rgba(31, 63, 142, .2);
+}
+#containerRequest.crp-proto.crp-workspace #ContainerConclusionCheckList :has(> .custom-control) {
+  display: flex !important;
+  flex-direction: column;
+  gap: 0;
+}
+/* Linha da lista: 2px de respiro + 30px para o quadrado desenhado em ::before/::after */
+#containerRequest.crp-proto.crp-workspace #ContainerConclusionCheckList .custom-control:not(.form-group .custom-control) {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  margin: 0 !important;
+  padding: 12px 2px 12px 32px !important;
+  border: 0;
+  border-bottom: 1px solid var(--p-row-divider);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  cursor: pointer;
+  transition: background-color .15s ease;
+}
+#containerRequest.crp-proto.crp-workspace #ContainerConclusionCheckList .custom-control:not(.form-group .custom-control):not(:has(~ .custom-control)) {
+  border-bottom: 0;
+}
+#containerRequest.crp-proto.crp-workspace #ContainerConclusionCheckList .custom-control:not(.form-group .custom-control):hover {
+  background: var(--p-inner);
+}
+#containerRequest.crp-proto.crp-workspace #ContainerConclusionCheckList .custom-control-label {
+  margin: 0;
+  color: var(--p-navy);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  cursor: pointer;
+}
+
+/* ---------- 9. Abas ---------- */
+#containerRequest.crp-proto.crp-workspace #crp-info-card > .crp-tabs {
+  display: flex !important;
+  flex-wrap: nowrap;
+  gap: 6px !important;
+  padding: 8px !important;
+}
+#containerRequest.crp-proto.crp-workspace #crp-info-card .crp-tabs button {
+  flex: 1 1 0;
+  justify-content: center;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 0 !important;
+  border-radius: var(--p-radius-ctrl) !important;
+  background: transparent !important;
+  color: var(--p-label) !important;
+  font-size: 14px;
+  font-weight: 500;
+}
+#containerRequest.crp-proto.crp-workspace #crp-info-card .crp-tabs button:hover {
+  background: var(--p-inner) !important;
+  color: var(--p-navy) !important;
+}
+#containerRequest.crp-proto.crp-workspace #crp-info-card .crp-tabs button[aria-selected="true"],
+#containerRequest.crp-proto.crp-workspace #crp-info-card .crp-tabs button[aria-selected="true"]:hover {
+  border: 0 !important;
+  background: var(--p-navy) !important;
+  color: #FFFFFF !important;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(31, 63, 142, .25) !important;
+}
+#containerRequest.crp-proto.crp-workspace #crp-info-card .crp-tabs .crp-tab-count { display: none !important; }
+#containerRequest.crp-proto.crp-workspace #crp-info-card .crp-tabs .crp-tab-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+#containerRequest.crp-proto.crp-workspace #crp-info-card .crp-tabs .crp-tab-label::before {
+  content: "";
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  background: currentColor;
+  -webkit-mask: var(--p-icon) center / contain no-repeat;
+  mask: var(--p-icon) center / contain no-repeat;
+}
+#containerRequest.crp-proto #crp-tab-crp-summary { --p-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 3v4a1 1 0 0 0 1 1h4'/%3E%3Cpath d='M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z'/%3E%3Cpath d='M9 13h6M9 17h6'/%3E%3C/svg%3E"); }
+#containerRequest.crp-proto #crp-tab-containerMessages { --p-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 9h8M8 13h6'/%3E%3Cpath d='M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3h-5l-5 3v-3H6a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3z'/%3E%3C/svg%3E"); }
+#containerRequest.crp-proto #crp-tab-containerFiles { --p-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 7l-6.5 6.5a1.5 1.5 0 0 0 3 3L18 10a3 3 0 0 0-6-6l-6.5 6.5a4.5 4.5 0 0 0 9 9L21 13'/%3E%3C/svg%3E"); }
+#containerRequest.crp-proto #crp-tab-containerHistory { --p-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 7v5l3 3'/%3E%3C/svg%3E"); }
+/* Bolinha de status logo depois do nome, como no protótipo */
+#containerRequest.crp-proto.crp-workspace #crp-info-card .crp-tabs button[data-crp-tem-conteudo="true"]::after,
+#containerRequest.crp-proto.crp-workspace #crp-info-card .crp-tabs button[data-crp-anexos="pendente"]::after,
+#containerRequest.crp-proto.crp-workspace #crp-info-card .crp-tabs button[data-crp-anexos="ok"]::after {
+  position: static !important;
+  flex: 0 0 7px;
+  width: 7px;
+  height: 7px;
+  margin-left: 8px;
+  border: 0 !important;
+}
+#containerRequest.crp-proto.crp-workspace #crp-info-card .crp-tabs button[data-crp-tem-conteudo="true"]::after { background-color: var(--p-orange); }
+#containerRequest.crp-proto.crp-workspace #crp-info-card .crp-tabs button[data-crp-anexos="pendente"]::after { background-color: var(--p-red); }
+@media (max-width: 720px) {
+  #containerRequest.crp-proto.crp-workspace #crp-info-card > .crp-tabs { flex-wrap: wrap; }
+  #containerRequest.crp-proto.crp-workspace #crp-info-card .crp-tabs button { flex: 1 1 40%; }
+}
+
+/* ---------- 10. Resumo ---------- */
+/* Um grupo por linha (coluna única). Os campos dentro de cada grupo
+   continuam em duas colunas. */
+#containerRequest.crp-proto.crp-workspace #crp-summary:not([hidden]) {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+#containerRequest.crp-proto.crp-workspace #crp-summary > .crp-head,
+#containerRequest.crp-proto.crp-workspace #crp-summary > .crp-readonly-group.crp-last-span,
+#containerRequest.crp-proto.crp-workspace #crp-summary > :not(.crp-readonly-group):not(.crp-head) {
+  grid-column: 1 / -1;
+}
+#containerRequest.crp-proto.crp-workspace #crp-summary > .crp-head { margin: 0 0 2px; }
+/* Grupo = card branco recolhível: faixa de cabeçalho (título + "N campos" +
+   seta) e os campos embaixo, em duas colunas. Sem ícones, porque os grupos
+   variam muito. O cabeçalho clicável e a contagem vêm do resumo.js. */
+#containerRequest.crp-proto.crp-workspace #crp-summary .crp-readonly-group,
+#containerRequest.crp-proto.crp-workspace #crp-summary .crp-readonly-group:not(.crp-empty) + .crp-readonly-group:not(.crp-empty) {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden;
+  border: 1px solid var(--p-block-border) !important;
+  border-radius: var(--p-radius-inner) !important;
+  background: #FFFFFF !important;
+}
+/* Grupo com tabela externa (table#FrmExecute > ... > table.form): a
+   estrutura externa vira bloco simples. */
+#containerRequest.crp-proto.crp-workspace #crp-summary .crp-readonly-group:not(table.form) > tbody,
+#containerRequest.crp-proto.crp-workspace #crp-summary .crp-readonly-group:not(table.form) > tbody > tr,
+#containerRequest.crp-proto.crp-workspace #crp-summary .crp-readonly-group:not(table.form) > tbody > tr > td {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+#containerRequest.crp-proto.crp-workspace #crp-summary .crp-readonly-group table.form {
+  display: block;
+  width: 100%;
+  margin: 0 !important;
+}
+/* Colunas estreitas e próximas: os campos vão preenchendo da esquerda para
+   a direita e só descem de linha quando não cabem mais. */
+#containerRequest.crp-proto.crp-workspace #crp-summary .crp-readonly-group table.form > tbody,
+#containerRequest.crp-proto.crp-workspace #crp-summary table.form.crp-readonly-group > tbody {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 260px));
+  justify-content: space-between;
+  gap: 16px 32px;
+  align-items: start;
+  padding: 0 20px 18px;
+}
+/* Faixa do cabeçalho: sangra até as bordas do card (margem negativa). */
+#containerRequest.crp-proto.crp-workspace #crp-summary .crp-readonly-group table.form > tbody > tr.group,
+#containerRequest.crp-proto.crp-workspace #crp-summary table.form.crp-readonly-group > tbody > tr.group {
+  grid-column: 1 / -1;
+  display: block;
+  margin: 0 -20px 2px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--p-inner-border) !important;
+  background: var(--p-inner) !important;
+}
+#containerRequest.crp-proto.crp-workspace #crp-summary .crp-readonly-group tr.crp-grupo-linha {
+  height: auto !important;
+  min-height: 0 !important;
+}
+#containerRequest.crp-proto.crp-workspace #crp-summary .crp-readonly-group tr.group > td.group,
+#containerRequest.crp-proto.crp-workspace #crp-summary .crp-readonly-group td.crp-grupo-head {
+  display: flex !important;
+  height: auto !important;
+  align-items: center;
+  gap: 10px;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 54px;
+  padding: 12px 20px !important;
+  border: 0 !important;
+  background: transparent !important;
+  text-align: left !important;
+  cursor: pointer;
+  user-select: none;
+}
+#containerRequest.crp-proto.crp-workspace #crp-summary .crp-readonly-group td.crp-grupo-head:hover { background: var(--p-light) !important; }
+#containerRequest.crp-proto.crp-workspace #crp-summary .crp-readonly-group td.crp-grupo-head:focus-visible {
+  outline: 3px solid rgba(31, 63, 142, .2);
+  outline-offset: -3px;
+}
+#containerRequest.crp-proto.crp-workspace #crp-summary .crp-grupo-qtd {
+  flex: 0 0 auto;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--p-light);
+  color: var(--p-navy);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+#containerRequest.crp-proto.crp-workspace #crp-summary .crp-grupo-qtd:empty { display: none; }
+#containerRequest.crp-proto.crp-workspace #crp-summary .crp-grupo-seta {
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  margin-left: auto;
+  background: var(--p-label);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") center / contain no-repeat;
+  transition: transform .2s ease;
+}
+/* Recolhido: só a faixa do cabeçalho, seta apontando para o lado. */
+#containerRequest.crp-proto.crp-workspace #crp-summary .crp-readonly-group.crp-recolhido table.form > tbody,
+#containerRequest.crp-proto.crp-workspace #crp-summary table.form.crp-readonly-group.crp-recolhido > tbody { padding-bottom: 0; }
+#containerRequest.crp-proto.crp-workspace #crp-summary .crp-readonly-group.crp-recolhido table.form > tbody > tr:not(.group),
+#containerRequest.crp-proto.crp-workspace #crp-summary table.form.crp-readonly-group.crp-recolhido > tbody > tr:not(.group) { display: none !important; }
+#containerRequest.crp-proto.crp-workspace #crp-summary .crp-readonly-group.crp-recolhido tr.group {
+  margin-bottom: 0 !important;
+  border-bottom: 0 !important;
+}
+#containerRequest.crp-proto.crp-workspace #crp-summary .crp-readonly-group.crp-recolhido .crp-grupo-seta { transform: rotate(-90deg); }
+@media (max-width: 640px) {
+  #containerRequest.crp-proto.crp-workspace #crp-summary .crp-readonly-group table.form > tbody,
+  #containerRequest.crp-proto.crp-workspace #crp-summary table.form.crp-readonly-group > tbody {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 0 16px 16px;
+  }
+  #containerRequest.crp-proto.crp-workspace #crp-summary .crp-readonly-group table.form > tbody > tr.group,
+  #containerRequest.crp-proto.crp-workspace #crp-summary table.form.crp-readonly-group > tbody > tr.group { margin: 0 -16px 2px !important; }
+  #containerRequest.crp-proto.crp-workspace #crp-summary .crp-readonly-group td.crp-grupo-head { padding: 12px 16px !important; }
+}
+/* Resumo sem conteúdo (ex.: tarefa de abertura do processo): esconde só o
+   card de resumo. A aba "Geral" continua (nela ficam as ações do usuário). */
+#containerRequest.crp-proto.crp-workspace.crp-resumo-vazio #crp-summary {
+  display: none !important;
+}
+/* Quando o próprio table.form é o grupo (sem tabela externa) */
+#containerRequest.crp-proto.crp-workspace #crp-summary table.form.crp-readonly-group { display: block; }
+#containerRequest.crp-proto.crp-workspace #crp-summary table.form.crp-readonly-group > tbody > tr {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+#containerRequest.crp-proto.crp-workspace #crp-summary table.form.crp-readonly-group > tbody > tr.group,
+#containerRequest.crp-proto.crp-workspace #crp-summary table.form.crp-readonly-group > tbody > tr.crp-full {
+  grid-column: 1 / -1;
+}
+#containerRequest.crp-proto.crp-workspace #crp-summary table.form.crp-readonly-group > tbody > tr > td {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  text-align: left;
+}
+#containerRequest.crp-proto.crp-workspace #crp-summary .crp-readonly-group td.group > b,
+#containerRequest.crp-proto.crp-workspace #crp-summary .crp-readonly-group .group b {
+  color: var(--p-navy) !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  letter-spacing: normal !important;
+  text-transform: none !important;
+}
+#containerRequest.crp-proto.crp-workspace #crp-summary table.form:not([mult="S"]) > tbody > tr:not(.group) > td.col0 {
+  margin: 0 0 4px;
+  color: var(--p-label) !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+#containerRequest.crp-proto.crp-workspace #crp-summary table.form:not([mult="S"]) > tbody > tr:not(.group) > td.col1,
+#containerRequest.crp-proto.crp-workspace #crp-summary table.form:not([mult="S"]) > tbody > tr:not(.group) > td.col1 > div {
+  color: var(--p-navy) !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
+}
+@media (max-width: 900px) {
+  #containerRequest.crp-proto.crp-workspace #crp-summary:not([hidden]) { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ---------- 11. Ações ---------- */
+#containerRequest.crp-proto.crp-workspace .crp-action-content table.form:has(> tbody > tr.group) {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0 !important;
+  padding: 18px 20px;
+  border: 1px solid var(--p-block-border);
+  border-radius: var(--p-radius-inner);
+  background: var(--p-block);
+}
+/* Espaço entre grupos. Cada grupo do Zeev vem dentro da própria tabela
+   externa (table#FrmExecute), então o espaço vai no bloco de nível superior
+   do conteúdo: do segundo grupo em diante, 16px acima. */
+#containerRequest.crp-proto.crp-workspace .crp-action-content > :is(:has(table.form > tbody > tr.group), table.form:has(> tbody > tr.group), :has(table[mult="S"]), table[mult="S"])
+  ~ :is(:has(table.form > tbody > tr.group), table.form:has(> tbody > tr.group), :has(table[mult="S"]), table[mult="S"]) {
+  margin-top: 16px !important;
+}
+/* Tabela multivalorada depois de outros campos no mesmo grupo: respiro extra
+   acima (a borda e o título da tabela ficavam colados no campo anterior). */
+#containerRequest.crp-proto.crp-workspace .crp-action-content table.form > tbody > tr:has(table[mult="S"]):not(:first-child):not(tr.group + tr) {
+  margin-top: 10px;
+}
+#containerRequest.crp-proto.crp-workspace .crp-action-content table.form:has(> tbody > tr.group) > tbody {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 20px;
+}
+#containerRequest.crp-proto.crp-workspace .crp-action-content table.form:has(> tbody > tr.group) > tbody > tr {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+#containerRequest.crp-proto.crp-workspace .crp-action-content table.form > tbody > tr.group,
+#containerRequest.crp-proto.crp-workspace .crp-action-content table.form > tbody > tr.crp-full,
+#containerRequest.crp-proto.crp-workspace .crp-action-content table.form > tbody > tr:has(table[mult="S"]),
+#containerRequest.crp-proto.crp-workspace .crp-action-content table.form > tbody > tr:has(textarea),
+#containerRequest.crp-proto.crp-workspace .crp-action-content table.form > tbody > tr:has(.containerFormFileLink) {
+  grid-column: 1 / -1;
+}
+
+/* Visualizador de arquivo (pré-visualização do PDF/imagem anexado): ocupa a
+   linha inteira, sozinho, logo abaixo do campo onde o arquivo foi anexado.
+   Vale para a área de Ações e para os grupos do Resumo. */
+#containerRequest.crp-proto.crp-workspace .crp-action-content table.form > tbody > tr:has(iframe, embed, object, [data-fieldformat="FILE_VIEW"], #docViewTd),
+#containerRequest.crp-proto.crp-workspace #crp-summary table.form > tbody > tr:has(iframe, embed, object, [data-fieldformat="FILE_VIEW"], #docViewTd) {
+  grid-column: 1 / -1;
+}
+/* Campo de anexo do formulário: ocupa uma coluna só, como os demais campos
+   (desfaz a linha inteira herdada de tr:has(.containerFormFileLink)).
+   Linhas com visualizador continuam na linha inteira. */
+#containerRequest.crp-proto.crp-workspace .crp-action-content table.form > tbody > tr:has(> td.crp-file-field):not(:has(iframe, embed, object, [data-fieldformat="FILE_VIEW"], #docViewTd)) {
+  grid-column: auto;
+}
+#containerRequest.crp-proto.crp-workspace table.form > tbody > tr > td.col1 :is(iframe, embed, object) {
+  display: block;
+  box-sizing: border-box;
+  width: 100% !important;
+  max-width: 100%;
+  border: 1px solid var(--p-inner-border);
+  border-radius: var(--p-radius-inner);
+}
+#containerRequest.crp-proto.crp-workspace .crp-action-content table.form > tbody > tr > td.col0,
+#containerRequest.crp-proto.crp-workspace .crp-action-content table.form > tbody > tr > td.col1 {
+  padding: 0 !important;
+}
+#containerRequest.crp-proto.crp-workspace .crp-action-content table.form > tbody > tr:not(.group) > td.col0 {
+  color: var(--p-label) !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+#containerRequest.crp-proto.crp-workspace .crp-action-content table.form > tbody > tr.group > td.group {
+  padding: 0 0 4px !important;
+}
+#containerRequest.crp-proto.crp-workspace .crp-action-content table.form > tbody > tr.group > td.group > b {
+  color: var(--p-navy) !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+}
+@media (max-width: 900px) {
+  #containerRequest.crp-proto.crp-workspace .crp-action-content table.form:has(> tbody > tr.group) > tbody { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ---------- 12. Campos ---------- */
+#containerRequest.crp-proto.crp-workspace .form-control:not([type="radio"]):not([type="checkbox"]):not([type="hidden"]) {
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid var(--p-inner-border) !important;
+  border-radius: var(--p-radius-ctrl) !important;
+  background-color: #FFFFFF;
+  color: var(--p-text);
+  font-size: 14px;
+  box-shadow: none !important;
+}
+#containerRequest.crp-proto.crp-workspace .form-control::placeholder,
+#containerRequest.crp-proto.crp-workspace textarea::placeholder { color: var(--p-placeholder); }
+#containerRequest.crp-proto.crp-workspace .form-control:focus {
+  border-color: var(--p-navy) !important;
+  outline: 3px solid rgba(31, 63, 142, .15);
+  outline-offset: 0;
+}
+#containerRequest.crp-proto.crp-workspace .form-control:disabled,
+#containerRequest.crp-proto.crp-workspace .form-control[readonly] { background-color: var(--p-inner); }
+#containerRequest.crp-proto.crp-workspace select.form-control:not([multiple]) {
+  -webkit-appearance: none;
+  appearance: none;
+  padding-right: 40px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231F3F8E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 16px;
+}
+#containerRequest.crp-proto.crp-workspace .form-text { color: var(--p-desc); font-size: 12px; }
+/* Campos de data (input nativo do flatpickr-mobile): texto e ícone de
+   calendário no padrão do layout. O ícone nativo é substituído pelo nosso
+   no próprio indicador, que continua clicável. */
+#containerRequest.crp-proto.crp-workspace input[type="date"].form-control,
+#containerRequest.crp-proto.crp-workspace input.form-control-date {
+  color: var(--p-text);
+  padding-right: 40px !important;
+  font-family: inherit;
+}
+#containerRequest.crp-proto.crp-workspace input[type="date"]::-webkit-calendar-picker-indicator {
+  width: 18px;
+  height: 18px;
+  margin-left: 6px;
+  padding: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231F3F8E' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2'/%3E%3Cpath d='M16 2v4M8 2v4M3 10h18'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 18px 18px;
+  opacity: .85;
+  cursor: pointer;
+}
+#containerRequest.crp-proto.crp-workspace input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+#containerRequest.crp-proto.crp-workspace input[type="date"]::-webkit-datetime-edit {
+  color: var(--p-text);
+  font-family: inherit;
+}
+#containerRequest.crp-proto.crp-workspace input[type="date"]::-webkit-datetime-edit-text {
+  color: var(--p-label);
+  padding: 0 2px;
+}
+#containerRequest.crp-proto.crp-workspace input[type="date"]::-webkit-datetime-edit-fields-wrapper {
+  color: inherit;
+}
+
+/* ---------- 13. Tabelas multivaloradas ---------- */
+#containerRequest.crp-proto.crp-workspace table[mult="S"],
+#containerRequest.crp-proto.crp-workspace .table-responsive:has(> table[mult="S"]) {
+  border-color: var(--p-inner-border) !important;
+  border-radius: var(--p-radius-inner) !important;
+  box-shadow: none !important;
+}
+#containerRequest.crp-proto.crp-workspace table[mult="S"] > caption {
+  color: var(--p-navy) !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  border-bottom-color: var(--p-inner-border) !important;
+}
+#containerRequest.crp-proto.crp-workspace table[mult="S"] > caption .crp-mult-count {
+  border: 0;
+  background: var(--p-light);
+  color: var(--p-navy);
+}
+#containerRequest.crp-proto.crp-workspace table[mult="S"] > tbody > tr.header > td,
+#containerRequest.crp-proto.crp-workspace table[mult="S"] > tbody > tr.header > td:not([column-name]) {
+  padding: 12px 14px !important;
+  border-right: 0 !important;
+  background: var(--p-light) !important;
+  color: var(--p-label) !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+#containerRequest.crp-proto.crp-workspace table[mult="S"] > tbody > tr:not(.header) > td {
+  border-bottom: 1px solid var(--p-inner-border) !important;
+}
+#containerRequest.crp-proto.crp-workspace table[mult="S"] > tbody > tr:not(.header) > td:not([column-name]) {
+  border-right: 0 !important;
+}
+#containerRequest.crp-proto.crp-workspace table[mult="S"] > tbody > tr:last-child > td { border-bottom: 0 !important; }
+#containerRequest.crp-proto.crp-workspace table[mult="S"] tbody td .form-control,
+#containerRequest.crp-proto.crp-workspace table[mult="S"] tbody td input[type="text"],
+#containerRequest.crp-proto.crp-workspace table[mult="S"] tbody td input[type="number"],
+#containerRequest.crp-proto.crp-workspace table[mult="S"] tbody td select,
+#containerRequest.crp-proto.crp-workspace table[mult="S"] tbody td textarea {
+  border-color: var(--p-inner-border) !important;
+  border-radius: 8px !important;
+  background-color: var(--p-inner);
+}
+/* Arquivo na célula: o bloco ocupa a largura da coluna e o botão de download
+   vai para a direita, ficando alinhado em todas as linhas (independente do
+   tamanho do nome). */
+#containerRequest.crp-proto.crp-workspace table[mult="S"] .containerFormFileLink,
+#containerRequest.crp-proto.crp-workspace table[mult="S"] .containerFormFileLink .containerFormFileLink {
+  display: flex !important;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+}
+#containerRequest.crp-proto.crp-workspace table[mult="S"] .containerFormFileLink > a[donwload],
+#containerRequest.crp-proto.crp-workspace table[mult="S"] .containerFormFileLink > a[download] {
+  margin-left: auto !important;
+}
+#containerRequest.crp-proto.crp-workspace #ContainerForm table[mult="S"] .btn-insert-mv {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 0 !important;
+  border-radius: 8px !important;
+  background: var(--p-navy) !important;
+  color: #FFFFFF !important;
+  font-weight: 500;
+}
+#containerRequest.crp-proto.crp-workspace #ContainerForm table[mult="S"] .btn-insert-mv:hover { background: var(--p-navy-hover) !important; }
+#containerRequest.crp-proto.crp-workspace table[mult="S"] .btn-delete-mv {
+  border: 0 !important;
+  border-radius: 8px !important;
+  background: var(--p-red-bg) !important;
+  color: var(--p-red-text) !important;
+}
+
+/* ---------- 14. Mensagens ---------- */
+#containerRequest.crp-proto.crp-workspace #containerMessages #tblMessageBody > tr {
+  padding: 16px !important;
+  border: 1px solid var(--p-inner-border) !important;
+  border-radius: var(--p-radius-inner) !important;
+  background: #FFFFFF !important;
+  column-gap: 14px;
+}
+#containerRequest.crp-proto.crp-workspace #containerMessages #tblMessageBody > tr > td.avatar .user,
+#containerRequest.crp-proto.crp-workspace #containerMessages #tblMessageBody > tr > td.avatar .user-photo {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px;
+  border-radius: 50%;
+}
+#containerRequest.crp-proto.crp-workspace #containerMessages #tblMessageBody > tr > td.message > div:first-child h5 {
+  color: var(--p-navy) !important;
+  font-size: 15px;
+  font-weight: 700;
+  text-transform: none;
+}
+#containerRequest.crp-proto.crp-workspace #containerMessages .crp-msg-data { color: var(--p-label); font-size: 13px; }
+#containerRequest.crp-proto.crp-workspace #containerMessages #tblMessageBody > tr > td.message .message-box {
+  color: var(--p-desc) !important;
+  font-size: 14px;
+}
+#containerRequest.crp-proto.crp-workspace #containerMessages .crp-msg-processo,
+#containerRequest.crp-proto.crp-workspace #containerMessages .crp-msg-processo a {
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--p-light);
+  color: var(--p-navy) !important;
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: none !important;
+}
+#containerRequest.crp-proto.crp-workspace #containerMessages .crp-msg-processo a { padding: 0; background: transparent; }
+#containerRequest.crp-proto.crp-workspace #containerMessages #tblMessageBody > tr > td.del a,
+#containerRequest.crp-proto.crp-workspace #containerMessages #tblMessageBody > tr > td.del button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: var(--p-red-bg);
+  color: var(--p-red-text) !important;
+}
+#containerRequest.crp-proto.crp-workspace #containerMessages #inpDsMessage {
+  box-sizing: border-box;
+  width: 100% !important;
+  min-height: 110px;
+  padding: 14px 16px;
+  border: 1px solid var(--p-inner-border);
+  border-radius: var(--p-radius-inner);
+  color: var(--p-text);
+  font-size: 14px;
+}
+#containerRequest.crp-proto.crp-workspace #containerMessages #inpDsMessage:focus {
+  border-color: var(--p-navy);
+  outline: 3px solid rgba(31, 63, 142, .15);
+}
+#containerRequest.crp-proto.crp-workspace #containerMessages #btnAddMessage {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  float: right;
+  min-height: 42px;
+  margin-top: 12px;
+  padding: 0 20px !important;
+  border: 0 !important;
+  border-radius: var(--p-radius-ctrl) !important;
+  background: var(--p-navy) !important;
+  font-size: 14px !important;
+  font-weight: 500;
+}
+#containerRequest.crp-proto.crp-workspace #containerMessages #btnAddMessage::before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  background: #FFFFFF;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10 14L21 3'/%3E%3Cpath d='M21 3l-6.5 18a.55.55 0 0 1-1 0L10 14l-7-3.5a.55.55 0 0 1 0-1L21 3'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10 14L21 3'/%3E%3Cpath d='M21 3l-6.5 18a.55.55 0 0 1-1 0L10 14l-7-3.5a.55.55 0 0 1 0-1L21 3'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+#containerRequest.crp-proto.crp-workspace #containerMessages .d-none.d-lg-block .small {
+  color: var(--p-desc);
+  font-size: 12px;
+}
+
+/* ---------- 15. Anexos ---------- */
+#containerRequest.crp-proto.crp-workspace #containerFiles .crp-required-files-title { display: block !important; }
+#containerRequest.crp-proto.crp-workspace #containerFiles .title-container-files,
+#containerRequest.crp-proto.crp-workspace #containerFiles .crp-required-files-title {
+  margin: 0 0 12px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: var(--p-navy) !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+}
+#containerRequest.crp-proto.crp-workspace #containerFiles #mandatoryAnnex.crp-required-files {
+  margin: 0 0 20px;
+  padding: 16px !important;
+  border: 1px solid var(--p-block-border) !important;
+  border-radius: var(--p-radius-inner) !important;
+  background: var(--p-block) !important;
+}
+#containerRequest.crp-proto.crp-workspace #mandatoryAnnex [cod][onclick*="capture.upload"] {
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 1px solid var(--p-inner-border);
+  border-radius: var(--p-radius-ctrl);
+  background: #FFFFFF;
+  color: var(--p-navy);
+  font-weight: 500;
+}
+#containerRequest.crp-proto.crp-workspace #mandatoryAnnex [cod][onclick*="capture.upload"]::before {
+  border-color: var(--p-navy);
+  color: var(--p-navy);
+}
+/* Selecionar arquivos vira uma área de upload */
+#containerRequest.crp-proto.crp-workspace #containerFiles #btnAddFile {
+  flex-direction: column;
+  gap: 8px;
+  min-height: 120px;
+  border: 1.5px dashed var(--p-dashed) !important;
+  border-radius: var(--p-radius-inner) !important;
+  background: #FFFFFF !important;
+  color: var(--p-navy) !important;
+  font-size: 14px !important;
+  font-weight: 500;
+}
+#containerRequest.crp-proto.crp-workspace #containerFiles #btnAddFile:hover { border-color: var(--p-navy) !important; background: var(--p-inner) !important; }
+#containerRequest.crp-proto.crp-workspace #containerFiles #btnAddFile svg { display: none !important; }
+#containerRequest.crp-proto.crp-workspace #containerFiles #btnAddFile::before {
+  content: "";
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--p-light) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231F3F8E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 18a4.6 4.4 0 0 1 0-9 5 4.5 0 0 1 11 2h1a3.5 3.5 0 0 1 0 7h-1'/%3E%3Cpath d='M9 15l3-3 3 3M12 12v9'/%3E%3C/svg%3E") center / 22px no-repeat;
+}
+#containerRequest.crp-proto.crp-workspace #containerFiles #lnkViewAllFiles {
+  width: auto !important;
+  margin-left: auto !important;
+  border-color: var(--p-inner-border) !important;
+  border-radius: var(--p-radius-ctrl) !important;
+  color: var(--p-navy) !important;
+}
+#containerRequest.crp-proto.crp-workspace #containerFiles > .text-right { display: flex; justify-content: flex-end; }
+#containerRequest.crp-proto.crp-workspace #containerFiles label[for="fileOrder"] {
+  color: var(--p-label) !important;
+  font-size: 11px !important;
+  font-weight: 500;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+#containerRequest.crp-proto.crp-workspace #containerFiles #fileOrder {
+  min-height: 42px;
+  border: 1px solid var(--p-inner-border) !important;
+  border-radius: var(--p-radius-ctrl) !important;
+}
+#containerRequest.crp-proto.crp-workspace #containerFiles #tblFile tr,
+#containerRequest.crp-proto.crp-workspace #containerFiles #tblNewFile tr {
+  border: 1px solid var(--p-inner-border) !important;
+  border-radius: var(--p-radius-inner) !important;
+  background: #FFFFFF !important;
+}
+#containerRequest.crp-proto.crp-workspace #containerFiles #tblFile td.download a {
+  border: 1px solid var(--p-inner-border) !important;
+  border-radius: 8px;
+  background: #FFFFFF !important;
+  color: var(--p-navy) !important;
+}
+
+/* ---------- 15b. Campo de anexo do formulário ----------
+   Campo do tipo arquivo na área de Ações (fora das multivaloradas).
+   A célula recebe .crp-file-field e data-crp-file-state="vazio|anexado"
+   (arquivos-campos.js). O upload continua sendo o botão nativo do Zeev
+   (onclick fileUpload): no estado vazio ele próprio vira a área tracejada.
+   Não há input[type="file"] nativo, por isso não há arrastar e soltar. */
+#containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field {
+  display: block !important;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  white-space: nowrap;
+}
+
+/* Estado vazio: o botão original vira a área tracejada (44px). */
+#containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field[data-crp-file-state="vazio"] .containerFormFileLink { display: none !important; }
+#containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field button[onclick*="fileUpload"] {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-sizing: border-box;
+  width: 100% !important;
+  max-width: none !important;
+  height: 44px;
+  min-height: 44px;
+  margin: 0 !important;
+  padding: 0 16px !important;
+  border: 1.5px dashed var(--p-dashed) !important;
+  border-radius: var(--p-radius-ctrl) !important;
+  background: #FFFFFF !important;
+  color: var(--p-navy) !important;
+  font-size: 0 !important;
+  line-height: 1;
+  text-transform: none;
+  box-shadow: none !important;
+  cursor: pointer;
+  transition: border-color .15s ease, background-color .15s ease;
+}
+#containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field button[onclick*="fileUpload"] > * { display: none !important; }
+#containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field button[onclick*="fileUpload"]::before {
+  content: "";
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  background: currentColor !important;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 18a4.6 4.4 0 0 1 0-9 5 4.5 0 0 1 11 2h1a3.5 3.5 0 0 1 0 7h-1'/%3E%3Cpath d='M9 15l3-3 3 3M12 12v9'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 18a4.6 4.4 0 0 1 0-9 5 4.5 0 0 1 11 2h1a3.5 3.5 0 0 1 0 7h-1'/%3E%3Cpath d='M9 15l3-3 3 3M12 12v9'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+#containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field button[onclick*="fileUpload"]::after {
+  content: "Clique para anexar";
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+#containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field button[onclick*="fileUpload"]:hover {
+  border-color: var(--p-navy) !important;
+  background: var(--p-inner) !important;
+}
+#containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field button[onclick*="fileUpload"]:focus-visible {
+  outline: 3px solid rgba(31, 63, 142, .2) !important;
+  outline-offset: 2px !important;
+}
+
+/* Estado com arquivo: a célula vira a caixa (44px) com ícone, nome,
+   selo "Anexado" e o X de remoção nativo do Zeev (quando existir). */
+/* Seletor com table.form > tbody > tr > td para vencer o padding: 0 das
+   células da seção 11 (senão o ícone encosta na borda da caixa). */
+#containerRequest.crp-proto.crp-workspace .crp-action-content table.form > tbody > tr > td.crp-file-field[data-crp-file-state="anexado"] {
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0 8px !important;
+  border: 1px solid #B9CBEF !important;
+  border-radius: var(--p-radius-ctrl) !important;
+  background: #F3F7FF !important;
+}
+#containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field[data-crp-file-state="anexado"] button[onclick*="fileUpload"] { display: none !important; }
+#containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field[data-crp-file-state="anexado"] .containerFormFileLink {
+  display: flex !important;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 10px;
+  width: auto;
+  min-width: 0;
+  height: auto;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  overflow: hidden;
+}
+/* Elemento intermediário do Zeev entre a célula e o .containerFormFileLink:
+   ocupa o espaço disponível para o nome poder ser cortado com reticências. */
+#containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field[data-crp-file-state="anexado"] > :has(.containerFormFileLink) {
+  display: flex !important;
+  flex: 1 1 auto;
+  align-items: center;
+  min-width: 0;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+/* .containerFormFileLink aninhado: só o mais interno desenha ícone e selo. */
+#containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field .containerFormFileLink:has(.containerFormFileLink)::before,
+#containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field .containerFormFileLink:has(.containerFormFileLink)::after { content: none !important; }
+#containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field .containerFormFileLink::before {
+  order: 0;
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: var(--p-light) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231F3F8E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 3v4a1 1 0 0 0 1 1h4'/%3E%3Cpath d='M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z'/%3E%3C/svg%3E") center / 16px no-repeat !important;
+}
+#containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field .containerFormFileLink > a.small {
+  order: 1;
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--p-navy) !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  line-height: 1.3;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-decoration: none;
+}
+#containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field .containerFormFileLink > a.small:hover { text-decoration: underline; }
+/* Selo "Anexado" (pseudo-elemento: nada é inserido no contêiner do Zeev). */
+#containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field .containerFormFileLink::after {
+  content: "Anexado";
+  order: 2;
+  flex: 0 0 auto;
+  padding-left: 18px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232E7D32' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5L20 7'/%3E%3C/svg%3E") left center / 14px no-repeat;
+  color: var(--p-green-text);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+/* O nome já é o link do arquivo; o botão separado de baixar sai deste campo. */
+#containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field .containerFormFileLink > a[donwload]:not(.small),
+#containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field .containerFormFileLink > a[download]:not(.small) { display: none !important; }
+/* X de remoção nativo (dentro ou fora do .containerFormFileLink). */
+#containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field a[onclick*="fileUpload.delete"],
+#containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field a[onclick*="files.delete"] {
+  order: 3;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 28px;
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px !important;
+  margin: 0 0 0 auto !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 8px !important;
+  background: transparent !important;
+  color: var(--p-red-text) !important;
+  font-size: 0 !important;
+  text-decoration: none !important;
+  cursor: pointer;
+}
+#containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field a[onclick*="fileUpload.delete"] > *,
+#containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field a[onclick*="files.delete"] > * { display: none !important; }
+#containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field a[onclick*="fileUpload.delete"]::before,
+#containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field a[onclick*="files.delete"]::before {
+  content: "";
+  width: 14px;
+  height: 14px;
+  background: currentColor !important;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M7 7l10 10M17 7L7 17'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M7 7l10 10M17 7L7 17'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+#containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field a[onclick*="fileUpload.delete"]:hover,
+#containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field a[onclick*="files.delete"]:hover { background: var(--p-red-bg) !important; }
+#containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field a[onclick*="fileUpload.delete"]:focus-visible,
+#containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field a[onclick*="files.delete"]:focus-visible {
+  outline: 3px solid rgba(31, 63, 142, .2);
+  outline-offset: 1px;
+}
+
+/* Erro de validação do Zeev (campo obrigatório): borda e texto em vermelho,
+   mantendo o tracejado no estado vazio. As classes de erro do Zeev não estão
+   documentadas no repositório; cobrimos as mais comuns. */
+#containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field:is(.is-invalid, .has-error, .error) button[onclick*="fileUpload"],
+#containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field:has(.is-invalid, [aria-invalid="true"]) button[onclick*="fileUpload"],
+#containerRequest.crp-proto.crp-workspace .crp-action-content tr:is(.is-invalid, .has-error, .error) td.crp-file-field button[onclick*="fileUpload"] {
+  border-color: var(--p-red) !important;
+  color: var(--p-red-text) !important;
+}
+#containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field[data-crp-file-state="anexado"]:is(.is-invalid, .has-error, .error),
+#containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field[data-crp-file-state="anexado"]:has(.is-invalid, [aria-invalid="true"]) {
+  border-color: var(--p-red) !important;
+}
+
+/* ---------- 16. Histórico (linha do tempo) ---------- */
+#containerRequest.crp-proto.crp-workspace #containerHistoryRender {
+  position: relative;
+  padding-left: 46px;
+}
+#containerRequest.crp-proto.crp-workspace #containerHistoryRender > .row {
+  position: relative;
+  margin: 0 0 14px !important;
+  padding: 16px 18px;
+  border: 1px solid var(--p-inner-border) !important;
+  border-radius: var(--p-radius-inner) !important;
+  background: #FFFFFF !important;
+  overflow: visible;
+}
+#containerRequest.crp-proto.crp-workspace #containerHistoryRender > .row::before {
+  content: "";
+  position: absolute;
+  top: 16px;
+  left: -46px;
+  z-index: 1;
+  box-sizing: border-box;
+  width: 30px;
+  height: 30px;
+  border: 2px solid var(--p-dashed);
+  border-radius: 50%;
+  background: #FFFFFF;
+}
+#containerRequest.crp-proto.crp-workspace #containerHistoryRender > .row:has(.badge[data-crp-status="concluido"])::before {
+  border-color: var(--p-navy);
+  background: var(--p-navy) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FFFFFF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5L20 7'/%3E%3C/svg%3E") center / 16px no-repeat;
+}
+#containerRequest.crp-proto.crp-workspace #containerHistoryRender > .row:has(.badge[data-crp-status="revisao"])::before,
+#containerRequest.crp-proto.crp-workspace #containerHistoryRender > .row:has(.badge[data-crp-status="subprocesso"])::before {
+  border: 3px solid var(--p-orange);
+  background: radial-gradient(circle, var(--p-orange) 0 4px, #FFFFFF 5px);
+}
+#containerRequest.crp-proto.crp-workspace #containerHistoryRender > .row::after {
+  content: "";
+  position: absolute;
+  top: 46px;
+  bottom: -14px;
+  left: -32px;
+  width: 2px;
+  background: var(--p-dashed);
+}
+#containerRequest.crp-proto.crp-workspace #containerHistoryRender > .row:last-of-type::after { display: none; }
+#containerRequest.crp-proto.crp-workspace #containerHistoryRender > .row > .col.small {
+  color: var(--p-navy) !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+}
+#containerRequest.crp-proto.crp-workspace #containerHistoryRender > .row > .col-md-3 h5 {
+  color: var(--p-label) !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+}
+#containerRequest.crp-proto.crp-workspace #containerHistoryRender > .row > .col-md-2 { color: var(--p-desc) !important; font-size: 13px !important; }
+#containerRequest.crp-proto.crp-workspace #containerHistoryRender .badge {
+  padding: 5px 12px !important;
+  border: 0 !important;
+  background: var(--p-light) !important;
+  color: var(--p-navy) !important;
+  font-weight: 500 !important;
+}
+#containerRequest.crp-proto.crp-workspace #containerHistoryRender .badge[data-crp-status="concluido"] {
+  background: var(--p-green-bg) !important;
+  color: var(--p-green-text) !important;
+}
+#containerRequest.crp-proto.crp-workspace #containerHistoryRender .badge[data-crp-status="revisao"],
+#containerRequest.crp-proto.crp-workspace #containerHistoryRender .badge[data-crp-status="subprocesso"] {
+  background: var(--p-orange-bg) !important;
+  color: var(--p-orange-text) !important;
+}
+#containerRequest.crp-proto.crp-workspace #containerHistoryRender > .row > .col-2:not(.avatar) > .small {
+  border-color: var(--p-inner-border);
+  background: var(--p-inner);
+  color: var(--p-desc);
+}
+
+/* ---------- 17. Barra inferior ---------- */
+#containerRequest.crp-proto.crp-workspace #controllers {
+  padding: 14px 24px !important;
+  border-top: 1px solid var(--p-card-border) !important;
+  background: #FFFFFF !important;
+  box-shadow: 0 -4px 16px rgba(31, 63, 142, .06);
+}
+#containerRequest.crp-proto.crp-workspace #controllers .btn,
+#containerRequest.crp-proto.crp-workspace #controllers #inpOtherOptions,
+#containerRequest.crp-proto.crp-workspace #controllers .crp-save-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  border-radius: var(--p-radius-ctrl) !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+}
+/* Ícone + texto sempre centralizados no botão, inclusive quando ele estica
+   (barra em telas estreitas: os botões não são filhos diretos de #buttons,
+   então a regra da seção 18 não os alcançava). */
+#containerRequest.crp-proto.crp-workspace #controllers .btn,
+#containerRequest.crp-proto.crp-workspace #controllers .crp-action-review,
+#containerRequest.crp-proto.crp-workspace #controllers .crp-action-primary,
+#containerRequest.crp-proto.crp-workspace #controllers #btnFinish,
+#containerRequest.crp-proto.crp-workspace #controllers .crp-save-button {
+  justify-content: center !important;
+  text-align: center !important;
+}
+#containerRequest.crp-proto.crp-workspace #controllers #inpOtherOptions {
+  border: 1px solid var(--p-inner-border) !important;
+  background-color: var(--p-inner) !important;
+  color: var(--p-navy) !important;
+}
+#containerRequest.crp-proto.crp-workspace #controllers .crp-save-button {
+  min-width: 108px;
+  padding: 0 18px !important;
+  border: 1px solid var(--p-navy) !important;
+  background: var(--p-navy) !important;
+  color: #FFFFFF !important;
+  font-weight: 600 !important;
+  box-shadow: 0 2px 6px rgba(31, 63, 142, .22) !important;
+  transition: background-color .15s ease, border-color .15s ease,
+              box-shadow .15s ease, color .15s ease;
+}
+/* Sem alterações: estado neutro, sem chamar atenção */
+#containerRequest.crp-proto.crp-workspace #controllers .crp-save-button:disabled,
+#containerRequest.crp-proto.crp-workspace #controllers .crp-save-button.disabled {
+  border-color: var(--p-card-border) !important;
+  background: #F0F4FB !important;
+  color: #8A97B4 !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+  cursor: not-allowed;
+}
+#containerRequest.crp-proto.crp-workspace #controllers .crp-save-button::before {
+  content: "";
+  width: 18px;
+  height: 18px;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 4h10l4 4v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2'/%3E%3Ccircle cx='12' cy='14' r='2'/%3E%3Cpath d='M14 4v4H8V4'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 4h10l4 4v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2'/%3E%3Ccircle cx='12' cy='14' r='2'/%3E%3Cpath d='M14 4v4H8V4'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+#containerRequest.crp-proto.crp-workspace #controllers #inpOtherOptions:not(:disabled):hover {
+  border-color: var(--p-navy) !important;
+  background-color: var(--p-light) !important;
+}
+#containerRequest.crp-proto.crp-workspace #controllers .crp-save-button:not(:disabled):not(.disabled):hover {
+  border-color: var(--p-navy-hover) !important;
+  background-color: var(--p-navy-hover) !important;
+  box-shadow: 0 4px 12px rgba(31, 63, 142, .26) !important;
+}
+#containerRequest.crp-proto.crp-workspace #controllers .crp-save-button:focus-visible {
+  outline: 2px solid var(--p-navy) !important;
+  outline-offset: 2px;
+}
+#containerRequest.crp-proto.crp-workspace #buttons .crp-action-review {
+  padding: 0 18px !important;
+  border: 1px solid var(--p-orange) !important;
+  background: var(--p-orange-bg) !important;
+  color: var(--p-orange-text) !important;
+}
+#containerRequest.crp-proto.crp-workspace #buttons .crp-action-review::before {
+  content: "";
+  width: 18px;
+  height: 18px;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 9h8M8 13h6'/%3E%3Cpath d='M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3h-5l-5 3v-3H6a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 9h8M8 13h6'/%3E%3Cpath d='M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3h-5l-5 3v-3H6a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+#containerRequest.crp-proto.crp-workspace #buttons .crp-action-review:not(:disabled):not(.disabled):hover {
+  background: #FBE3BC !important;
+  border-color: #E8951A !important;
+  color: var(--p-orange-text) !important;
+}
+#containerRequest.crp-proto.crp-workspace #controllers .crp-action-primary,
+#containerRequest.crp-proto.crp-workspace #controllers #btnFinish {
+  padding: 0 20px !important;
+  border: 0 !important;
+  border-radius: var(--p-radius-ctrl) !important;
+  background: var(--p-navy) !important;
+  color: #FFFFFF !important;
+}
+#containerRequest.crp-proto.crp-workspace #controllers #btnFinish::before {
+  content: "";
+  width: 18px;
+  height: 18px;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5L20 7'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5L20 7'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+#containerRequest.crp-proto.crp-workspace #controllers .crp-action-primary:not(:disabled):not(.disabled):hover,
+#containerRequest.crp-proto.crp-workspace #controllers #btnFinish:not(:disabled):not(.disabled):hover {
+  background: var(--p-navy-hover) !important;
+}
+
+/* ---------- 17b. Aviso de anexos obrigatórios ----------
+   O aviso é inserido no <body> (fora do #containerRequest), por isso o
+   escopo usa :has() e os tokens são redeclarados aqui. A posição (top/bottom)
+   continua calculada no JS (aviso-anexos.js). */
+body:has(#containerRequest.crp-proto.crp-workspace) #crp-anexos-aviso {
+  --p-navy: #1F3F8E;
+  --p-navy-hover: #18326F;
+  --p-text: #22304F;
+  --p-desc: #4A5A80;
+  --p-label: #5B6B8C;
+  --p-inner: #F5F7FC;
+  --p-card-border: #E6EBF6;
+  --p-red: #F63030;
+  --p-red-bg: #FDECEC;
+  --p-red-text: #C62828;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 380px;
+  max-width: calc(100vw - 32px);
+  padding: 14px 12px 14px 16px;
+  border: 1px solid var(--p-card-border);
+  border-left: 4px solid var(--p-red);
+  border-radius: 12px;
+  background: #FFFFFF;
+  box-shadow: 0 1px 2px rgba(31, 63, 142, .06), 0 12px 32px rgba(31, 63, 142, .14);
+  color: var(--p-text);
+  font-size: 13px;
+  line-height: 1.4;
+  animation: crp-aviso-entrada .2s ease-out;
+}
+body:has(#containerRequest.crp-proto.crp-workspace) #crp-anexos-aviso[hidden] { display: none; }
+@keyframes crp-aviso-entrada {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: none; }
+}
+body:has(#containerRequest.crp-proto.crp-workspace) #crp-anexos-aviso .crp-anexos-aviso-icone {
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--p-red-bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23C62828' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 7l-6.5 6.5a1.5 1.5 0 0 0 3 3L18 10a3 3 0 0 0-6-6l-6.5 6.5a4.5 4.5 0 0 0 9 9L21 13'/%3E%3C/svg%3E") center / 18px no-repeat;
+}
+body:has(#containerRequest.crp-proto.crp-workspace) #crp-anexos-aviso .crp-anexos-aviso-texto {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+body:has(#containerRequest.crp-proto.crp-workspace) #crp-anexos-aviso .crp-anexos-aviso-titulo {
+  color: var(--p-navy);
+  font-size: 14px;
+  font-weight: 600;
+}
+body:has(#containerRequest.crp-proto.crp-workspace) #crp-anexos-aviso .crp-anexos-aviso-desc {
+  color: var(--p-desc);
+  font-size: 13px;
+}
+body:has(#containerRequest.crp-proto.crp-workspace) #crp-anexos-aviso .crp-anexos-aviso-acao {
+  flex: 0 0 auto;
+  height: 34px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--p-navy);
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color .15s ease;
+}
+body:has(#containerRequest.crp-proto.crp-workspace) #crp-anexos-aviso .crp-anexos-aviso-acao:hover { background: var(--p-navy-hover); }
+body:has(#containerRequest.crp-proto.crp-workspace) #crp-anexos-aviso .crp-anexos-aviso-fechar {
+  flex: 0 0 28px;
+  align-self: flex-start;
+  width: 28px;
+  height: 28px;
+  margin: -6px -4px 0 0;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--p-label);
+  cursor: pointer;
+  transition: background-color .15s ease, color .15s ease;
+}
+body:has(#containerRequest.crp-proto.crp-workspace) #crp-anexos-aviso .crp-anexos-aviso-fechar::before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M7 7l10 10M17 7L7 17'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M7 7l10 10M17 7L7 17'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+body:has(#containerRequest.crp-proto.crp-workspace) #crp-anexos-aviso .crp-anexos-aviso-fechar:hover {
+  background: var(--p-inner);
+  color: var(--p-navy);
+}
+body:has(#containerRequest.crp-proto.crp-workspace) #crp-anexos-aviso :focus-visible {
+  outline: 3px solid rgba(31, 63, 142, .2);
+  outline-offset: 2px;
+}
+
+/* ---------- 18. Telas pequenas ----------
+   Abaixo de 768px o Zeev empilha o .page-title (flex-column) — é a mesma
+   faixa em que o cabeçalho precisa virar a grade ícone + texto. */
+@media (max-width: 767.98px) {
+  #containerRequest.crp-proto { --p-gap: 14px; --p-pad-y: 18px; --p-pad-x: 16px; }
+  #containerRequest.crp-proto.crp-workspace .crp-main { padding: 0 12px 140px; }
+  /* Cabeçalho: hexágono à esquerda e rótulo + título empilhados à direita,
+     na mesma linha (mesmo esquema do card Orientações). */
+  /* No celular o Zeev empilha o .page-title em coluna (flex-direction:
+     column, CSS nativo); grade de 2 colunas resolve independente disso:
+     hexágono na coluna 1 (ocupando as duas linhas), rótulo e título na 2. */
+  #containerRequest.crp-proto.crp-workspace .crp-header {
+    display: grid !important;
+    grid-template-columns: 34px minmax(0, 1fr);
+    column-gap: 12px;
+    /* Sem row-gap: o hexágono ocupa linhas de sobra (span 4) e linhas vazias
+       ficam com altura 0, mantendo-o centralizado em relação aos textos. */
+    row-gap: 0;
+    align-items: center !important;
+    justify-items: start;
+    justify-content: stretch !important;
+    width: calc(100% - 24px);
+    padding: 14px 16px !important;
+    text-align: left !important;
+  }
+  #containerRequest.crp-proto.crp-workspace .crp-header::before {
+    grid-column: 1;
+    /* "1 / -1" não funciona com linhas implícitas (-1 = fim da grade
+       explícita, que não tem linhas): o ícone ficava preso à 1ª linha. */
+    grid-row: 1 / span 4;
+    width: 34px;
+    height: 38px;
+    margin: 0 !important;
+    align-self: center;
+    background-size: 17px;
+  }
+  /* Bloco de texto do Zeev (div com h5 + h1): sem caixa própria, para
+     rótulo e título entrarem direto na coluna 2 da grade. */
+  #containerRequest.crp-proto.crp-workspace .crp-header > div:not(#RequesterInfo):has(h1, h5) { display: contents !important; }
+  #containerRequest.crp-proto.crp-workspace .crp-header > :not(#RequesterInfo),
+  #containerRequest.crp-proto.crp-workspace .crp-header > div:has(h1, h5) > * {
+    grid-column: 2;
+    min-width: 0;
+    max-width: 100%;
+    margin: 0 !important;
+    text-align: left !important;
+  }
+  #containerRequest.crp-proto.crp-workspace .crp-header h1 {
+    padding-top: 2px;
+    font-size: 17px;
+    line-height: 1.25;
+    white-space: normal;
+    overflow-wrap: break-word;
+  }
+  #containerRequest.crp-proto.crp-workspace .crp-header h5 {
+    font-size: 10px;
+    line-height: 1.3;
+  }
+  #containerRequest.crp-proto.crp-workspace .crp-header #RequesterInfo { display: none !important; }
+  #containerRequest.crp-proto.crp-workspace .crp-head-badge { white-space: normal; }
+  #containerRequest.crp-proto.crp-workspace #controllers { padding: 10px 12px !important; }
+  #containerRequest.crp-proto.crp-workspace #controllers #buttons { flex-wrap: wrap; gap: 8px; }
+  #containerRequest.crp-proto.crp-workspace #controllers .crp-footer-secondary { flex: 1 1 100%; }
+  #containerRequest.crp-proto.crp-workspace #controllers #buttons > .btn { flex: 1 1 auto; justify-content: center; }
+}
+
+/* ---------- 19. Confirmação nativa do Zeev (colorbox) ----------
+   O colorbox fica fora de #containerRequest, então os tokens são
+   redefinidos aqui. Escopo restrito aos diálogos de confirmação. */
+#colorbox:has(.cryo-confirm-dialog) {
+  --p-navy: #1F3F8E;
+  --p-navy-hover: #18326F;
+  --p-light: #E4ECFB;
+  --p-inner: #F5F7FC;
+  --p-inner-border: #E3E8F3;
+  --p-text: #22304F;
+  --p-radius: 16px;
+  --p-radius-ctrl: 10px;
+  border-radius: var(--p-radius) !important;
+  box-shadow: 0 16px 48px rgba(31, 63, 142, .22) !important;
+  overflow: hidden !important;
+  background: #FFFFFF !important;
+  font-family: Roboto, "Segoe UI", Arial, sans-serif;
+}
+#colorbox:has(.cryo-confirm-dialog) #cboxWrapper,
+#colorbox:has(.cryo-confirm-dialog) #cboxContent,
+#colorbox:has(.cryo-confirm-dialog) #cboxLoadedContent {
+  background: #FFFFFF !important;
+  border-radius: var(--p-radius) !important;
+}
+#colorbox:has(.cryo-confirm-dialog) #cboxTopLeft,
+#colorbox:has(.cryo-confirm-dialog) #cboxTopCenter,
+#colorbox:has(.cryo-confirm-dialog) #cboxTopRight,
+#colorbox:has(.cryo-confirm-dialog) #cboxMiddleLeft,
+#colorbox:has(.cryo-confirm-dialog) #cboxMiddleRight,
+#colorbox:has(.cryo-confirm-dialog) #cboxBottomLeft,
+#colorbox:has(.cryo-confirm-dialog) #cboxBottomCenter,
+#colorbox:has(.cryo-confirm-dialog) #cboxBottomRight {
+  background: transparent !important;
+  border: 0 !important;
+}
+#colorbox:has(.cryo-confirm-dialog) .cryo-confirm-dialog { color: var(--p-text); }
+#colorbox:has(.cryo-confirm-dialog) .cryo-confirm-dialog .modal-header {
+  padding: 18px 22px !important;
+  border-bottom: 1px solid var(--p-inner-border) !important;
+  background: var(--p-inner) !important;
+}
+#colorbox:has(.cryo-confirm-dialog) .cryo-confirm-dialog .modal-header h3 {
+  margin: 0 !important;
+  color: var(--p-navy) !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  line-height: 1.3 !important;
+}
+#colorbox:has(.cryo-confirm-dialog) .cryo-confirm-dialog .modal-body {
+  padding: 20px 22px !important;
+  color: var(--p-text) !important;
+  font-size: 14px !important;
+  line-height: 1.55 !important;
+}
+#colorbox:has(.cryo-confirm-dialog) .cryo-confirm-dialog .modal-footer {
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
+  padding: 14px 22px 18px !important;
+  border-top: 1px solid var(--p-inner-border) !important;
+  background: #FFFFFF !important;
+}
+#colorbox:has(.cryo-confirm-dialog) .cryo-confirm-dialog .modal-footer .btn {
+  margin: 0 !important;
+  min-height: 40px;
+  padding: 9px 18px !important;
+  border-radius: var(--p-radius-ctrl) !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  line-height: 1.2 !important;
+  box-shadow: none !important;
+}
+#colorbox:has(.cryo-confirm-dialog) .cryo-confirm-dialog .modal-footer .btn-link {
+  border: 1px solid #C7D4EA !important;
+  background: #FFFFFF !important;
+  color: var(--p-navy) !important;
+  text-decoration: none !important;
+}
+#colorbox:has(.cryo-confirm-dialog) .cryo-confirm-dialog .modal-footer .btn-link:hover {
+  background: var(--p-light) !important;
+  border-color: var(--p-navy) !important;
+}
+#colorbox:has(.cryo-confirm-dialog) .cryo-confirm-dialog .modal-footer .btn-primary {
+  border: 1px solid var(--p-navy) !important;
+  background: var(--p-navy) !important;
+  color: #FFFFFF !important;
+}
+#colorbox:has(.cryo-confirm-dialog) .cryo-confirm-dialog .modal-footer .btn-primary:hover {
+  background: var(--p-navy-hover) !important;
+  border-color: var(--p-navy-hover) !important;
+}
+#colorbox:has(.cryo-confirm-dialog) .cryo-confirm-dialog .shortcut {
+  margin-left: 6px;
+  font-size: 11px;
+  opacity: .65;
+}
+#cboxOverlay { background: rgba(11, 19, 35, .55) !important; }
+/* Celular: o colorbox calcula largura e posição em px (inline) a partir do
+   conteúdo e passa da largura da tela, cortando os botões. Aqui ele ocupa
+   a largura da tela menos 12px de cada lado, e a altura acompanha o texto. */
+@media (max-width: 767.98px) {
+  #colorbox:has(.cryo-confirm-dialog) {
+    left: 12px !important;
+    right: 12px !important;
+    width: auto !important;
+    max-width: calc(100vw - 24px) !important;
+    /* Auto + filhos em fluxo: o colorbox cresce conforme o conteúdo.
+       Sem position:static nos filhos, eles ficam fora do fluxo e a altura
+       calcula 0 (a janela some). */
+    height: auto !important;
+    overflow: visible !important;
+  }
+  #colorbox:has(.cryo-confirm-dialog) #cboxWrapper {
+    position: static !important;
+    float: none !important;
+    box-sizing: border-box;
+    width: 100% !important;
+    height: auto !important;
+  }
+  #colorbox:has(.cryo-confirm-dialog) #cboxContent,
+  #colorbox:has(.cryo-confirm-dialog) #cboxLoadedContent {
+    position: static !important;
+    float: none !important;
+    box-sizing: border-box;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  #colorbox:has(.cryo-confirm-dialog) #cboxWrapper > div { height: auto !important; }
+  #colorbox:has(.cryo-confirm-dialog) #cboxTopLeft,
+  #colorbox:has(.cryo-confirm-dialog) #cboxTopCenter,
+  #colorbox:has(.cryo-confirm-dialog) #cboxTopRight,
+  #colorbox:has(.cryo-confirm-dialog) #cboxMiddleLeft,
+  #colorbox:has(.cryo-confirm-dialog) #cboxMiddleRight,
+  #colorbox:has(.cryo-confirm-dialog) #cboxBottomLeft,
+  #colorbox:has(.cryo-confirm-dialog) #cboxBottomCenter,
+  #colorbox:has(.cryo-confirm-dialog) #cboxBottomRight { display: none !important; }
+  #colorbox:has(.cryo-confirm-dialog) .cryo-confirm-dialog,
+  #colorbox:has(.cryo-confirm-dialog) .cryo-confirm-dialog .modal-footer .btn {
+    box-sizing: border-box;
+    max-width: 100%;
+  }
+  #colorbox:has(.cryo-confirm-dialog) .cryo-confirm-dialog { width: 100% !important; }
+  #colorbox:has(.cryo-confirm-dialog) .cryo-confirm-dialog .modal-footer { flex-wrap: wrap; }
+}
+
+/* ---------- 20. Modal "Finalizando a tarefa" ---------- */
+.modal.crp-processando .modal-dialog {
+  max-width: 420px;
+  margin: 1.75rem auto;
+}
+.modal-content.crp-processando {
+  border: 0 !important;
+  border-radius: 16px !important;
+  box-shadow: 0 16px 48px rgba(31, 63, 142, .22) !important;
+  background: #FFFFFF !important;
+  overflow: hidden;
+  font-family: Roboto, "Segoe UI", Arial, sans-serif;
+}
+.modal-content.crp-processando .modal-body {
+  padding: 34px 28px !important;
+  background: #FFFFFF;
+  color: #22304F;
+}
+.modal-content.crp-processando .container { color: #22304F; }
+.modal-content.crp-processando img {
+  width: auto !important;
+  height: auto !important;
+  max-width: 180px;
+  display: inline-block;
+  margin: 0 auto;
+}
+.modal-content.crp-processando h3 {
+  margin: 18px 0 6px !important;
+  color: #1F3F8E !important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  line-height: 1.3 !important;
+}
+.modal-content.crp-processando p {
+  margin: 0 !important;
+  color: #5B6B8C !important;
+  font-size: 14px !important;
+}
+
+/* ---------- 21. Lista das caixas de seleção (dropdown customizado) ----------
+   O menu é criado no <body>, fora de #containerRequest, por isso usa a
+   paleta em hexadecimal. */
+.crp-select-menu {
+  position: fixed;
+  z-index: 3000;
+  box-sizing: border-box;
+  max-height: 320px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 4px;
+  border: 1px solid #E3E8F3;
+  border-radius: 12px;
+  background: #FFFFFF;
+  box-shadow: 0 6px 22px rgba(31, 63, 142, .16);
+  font-family: Roboto, "Segoe UI", Arial, sans-serif;
+  font-size: 14px;
+  color: #22304F;
+}
+.crp-select-opcao {
+  padding: 9px 12px;
+  border-radius: 8px;
+  line-height: 1.4;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+.crp-select-opcao:hover,
+.crp-select-opcao.ativo {
+  background: #E4ECFB;
+  color: #1F3F8E;
+}
+.crp-select-opcao.selecionada {
+  color: #1F3F8E;
+  font-weight: 600;
+}
+.crp-select-opcao.selecionada::after {
+  content: "";
+  float: right;
+  width: 14px;
+  height: 14px;
+  margin: 3px 0 0 10px;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6L9 17l-5-5'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6L9 17l-5-5'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.crp-select-opcao.desabilitada {
+  opacity: .45;
+  cursor: default;
+}
+select.crp-select-aberto {
+  border-color: #1F3F8E !important;
+  outline: 3px solid rgba(31, 63, 142, .15);
+  outline-offset: 0;
+}
+
+/* ---------- 22. Confirmação "Atenção!" (ex.: checklist obrigatório) ---------- */
+.cryo-confirm-dialog.padded {
+  padding: 22px 24px;
+  font-family: Roboto, "Segoe UI", Arial, sans-serif;
+  color: #22304F;
+}
+.cryo-confirm-dialog.padded > h2 {
+  margin: 0 0 10px;
+  color: #1F3F8E;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.cryo-confirm-dialog.padded > p {
+  margin: 0 0 18px;
+  color: #22304F;
+  font-size: 14px;
+  line-height: 1.55;
+}
+.cryo-confirm-dialog.padded .spaced {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+.cryo-confirm-dialog.padded .btn-success {
+  min-height: 40px;
+  padding: 9px 22px !important;
+  border: 1px solid #1F3F8E !important;
+  border-radius: 10px !important;
+  background: #1F3F8E !important;
+  color: #FFFFFF !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  line-height: 1.2 !important;
+  box-shadow: none !important;
+}
+.cryo-confirm-dialog.padded .btn-success:hover,
+.cryo-confirm-dialog.padded .btn-success:focus-visible {
+  background: #18326F !important;
+  border-color: #18326F !important;
+}

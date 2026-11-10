@@ -18,6 +18,23 @@
     document.head.appendChild(style);
   }
 
+  // Toast/notificações do Zeev no padrão CRP (a página topo não carrega o
+  // zeev-default.css, por isso o estilo é injetado aqui).
+  function estilizarNotificacoes(){
+    if(document.getElementById('crp-notif-style')) return;
+    var style = document.createElement('style');
+    style.id = 'crp-notif-style';
+    style.textContent =
+      '.notification-system{background:#FFFFFF !important;color:#22304F !important;border:1px solid #E3E8F3 !important;border-left:4px solid #1F3F8E !important;border-radius:12px !important;box-shadow:0 10px 30px rgba(31,63,142,.16) !important;padding:14px 18px 14px 16px !important;font-family:Roboto,"Segoe UI",Arial,sans-serif !important;font-size:14px !important;line-height:1.5 !important;}' +
+      '.notification-system.alert-success{border-left-color:#2E7D32 !important;}' +
+      '.notification-system.alert-danger,.notification-system.alert-error{border-left-color:#C62828 !important;}' +
+      '.notification-system.alert-warning{border-left-color:#F6A730 !important;}' +
+      '.notification-system.alert-info{border-left-color:#1F3F8E !important;}' +
+      '.notification-system strong,.notification-system b,.notification-system .notification-title,.notification-system .title{color:#1F3F8E !important;font-weight:700 !important;}' +
+      '.notification-system .close,.notification-system .notification-close{color:#5B6B8C !important;opacity:.8 !important;text-shadow:none !important;}';
+    document.head.appendChild(style);
+  }
+
   function inserirLogin(){
     if(!location.href.includes('/login') || document.getElementById('bv-l')) return;
     var form = document.querySelector('form');
@@ -83,8 +100,9 @@
     parent.after(clone);
   }
 
-  new MutationObserver(function(){ estilizarLogin(); inserirLogin(); inserirSuporte(); }).observe(document.body, {childList: true, subtree: true});
+  new MutationObserver(function(){ estilizarLogin(); estilizarNotificacoes(); inserirLogin(); inserirSuporte(); }).observe(document.body, {childList: true, subtree: true});
   estilizarLogin();
+  estilizarNotificacoes();
   setTimeout(inserirLogin, 600);
   setTimeout(inserirSuporte, 1000);
 })();

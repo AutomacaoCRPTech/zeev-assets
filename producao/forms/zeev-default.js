@@ -38,7 +38,7 @@
     if (!body || !main) return;
     if (state && state.body === body) return state;
 
-    root.classList.add('crp-form', 'crp-workspace');
+    root.classList.add('crp-form', 'crp-workspace', 'crp-proto');
     main.classList.add('crp-main');
 
     var header = root.querySelector('.page-title');
@@ -101,7 +101,7 @@
       active: null
     };
 
-    addTab(summary, 'Resumo');
+    addTab(summary, 'Geral');
 
     return state;
   }
@@ -346,6 +346,7 @@
       }
 
       item.descricao.textContent = textoCompleto;
+      atualizarSeloPainel(item, quantidade, temContador);
 
       if (textoCompleto) {
         item.button.setAttribute(
@@ -358,22 +359,171 @@
         item.button.removeAttribute('aria-describedby');
       }
     });
+
+    marcarAbaAtiva();
+  }
+
+  // ===== Layout do protótipo (Figma ZEEV-CRP) =====
+  // Cabeçalho padrão dos cards: círculo azul-marinho com ícone, rótulo em
+  // caixa alta e título. Os blocos são criados uma única vez e reaproveitados
+  // a cada atualização; nada do Zeev é removido, apenas escondido por CSS.
+
+  function cabecalho(icone, rotulo, titulo) {
+    var head = el('div', 'crp-head');
+    head.setAttribute('data-crp-head', icone);
+
+    var ic = el('span', 'crp-head-icon');
+    ic.setAttribute('data-icon', icone);
+    ic.setAttribute('aria-hidden', 'true');
+    head.appendChild(ic);
+
+    var textos = el('div', 'crp-head-text');
+    textos.appendChild(el('span', 'crp-head-label', rotulo));
+    var h = el('h2', 'crp-head-title', titulo || '');
+    if (!titulo) h.hidden = true;
+    textos.appendChild(h);
+    head.appendChild(textos);
+
+    var selo = el('span', 'crp-head-badge');
+    selo.hidden = true;
+    head.appendChild(selo);
+
+    return head;
+  }
+
+  // Garante o cabeçalho como primeiro filho do container (ou antes de
+  // "antesDe", quando informado). Retorna o cabeçalho existente ou novo.
+  function garantirCabecalho(container, icone, rotulo, titulo, antesDe) {
+    if (!container) return null;
+
+    var head = container.querySelector(':scope > .crp-head');
+
+    if (!head) {
+      head = cabecalho(icone, rotulo, titulo);
+    }
+
+    var ref = antesDe && antesDe.parentNode === container ? antesDe : null;
+
+    if (ref) {
+      if (head.parentNode !== container || head.nextSibling !== ref) {
+        container.insertBefore(head, ref);
+      }
+    } else if (container.firstChild !== head) {
+      container.insertBefore(head, container.firstChild);
+    }
+
+    return head;
+  }
+
+  function definirTitulo(head, texto) {
+    if (!head) return;
+    var h = head.querySelector('.crp-head-title');
+    if (!h) return;
+    if (h.textContent !== texto) h.textContent = texto;
+    var vazio = !texto;
+    if (h.hidden !== vazio) h.hidden = vazio;
+  }
+
+  function definirSelo(head, texto, tom) {
+    if (!head) return;
+    var selo = head.querySelector('.crp-head-badge');
+    if (!selo) return;
+    if (selo.textContent !== (texto || '')) selo.textContent = texto || '';
+    var vazio = !texto;
+    if (selo.hidden !== vazio) selo.hidden = vazio;
+    var t = tom || 'neutro';
+    if (selo.getAttribute('data-tom') !== t) selo.setAttribute('data-tom', t);
+  }
+
+  function resumoChecklist(checklist) {
+    var caixas = checklist.querySelectorAll('input[type="checkbox"]');
+    var total = caixas.length;
+    if (!total) return '';
+    var feitos = Array.prototype.filter.call(caixas, function (c) {
+      return c.checked;
+    }).length;
+    return feitos + ' de ' + total + (total === 1 ? ' item concluído' : ' itens concluídos');
+  }
+
+  function garantirCabecalhos(s) {
+    // Resumo (aba Geral).
+    garantirCabecalho(s.summary, 'resumo', 'Resumo', 'Dados da solicitação');
+
+    // Ações: o título antigo continua no DOM, escondido por CSS.
+    var tituloAcoes = s.actions.querySelector(':scope > .crp-action-title');
+    garantirCabecalho(s.actions, 'acoes', 'Ações', 'Preencha para concluir a tarefa', tituloAcoes);
+
+    // Painéis nativos do Zeev.
+    garantirCabecalho(
+      s.root.querySelector('#containerMessages'),
+      'mensagens', 'Mensagens', 'Conversa da solicitação'
+    );
+    garantirCabecalho(
+      s.root.querySelector('#containerFiles'),
+      'anexos', 'Anexos', 'Arquivos da solicitação'
+    );
+    garantirCabecalho(
+      s.root.querySelector('#containerHistory'),
+      'historico', 'Histórico', 'Linha do tempo da solicitação'
+    );
+
+    // Orientações: só rótulo; o texto das instruções vem logo abaixo.
+    var orientacoes = s.root.querySelector('#crp-instructions-card');
+    if (orientacoes) {
+      garantirCabecalho(orientacoes, 'orientacoes', 'Orientações', '');
+    }
+
+    // Checklist: rótulo + "X de Y itens concluídos".
+    var checklist = s.root.querySelector('#ContainerConclusionCheckList');
+    if (checklist) {
+      var headChk = garantirCabecalho(checklist, 'checklist', 'Checklist', '');
+      definirTitulo(headChk, resumoChecklist(checklist));
+    }
+  }
+
+  // Selo à direita do cabeçalho dos painéis (contagem e pendência).
+  function atualizarSeloPainel(item, quantidade, temContador) {
+    var head = item.panel.querySelector(':scope > .crp-head');
+    if (!head) return;
+
+    if (item.panel.id === 'containerFiles') {
+      var status = statusAnexos(state.root);
+      if (status === 'pendente') {
+        definirSelo(head, 'Anexo obrigatório pendente', 'pendente');
+        return;
+      }
+    }
+
+    if (temContador) {
+      definirSelo(head, quantidade + ' ' + palavraContagem(item, quantidade !== 1), 'neutro');
+    } else {
+      definirSelo(head, '', 'neutro');
+    }
+  }
+
+  // A aba Geral mostra Resumo + Ações; as demais escondem o card de ações.
+  function marcarAbaAtiva() {
+    var geral = !!(state.active && state.active.panel === state.summary);
+    if (state.root.classList.contains('crp-aba-geral') !== geral) {
+      state.root.classList.toggle('crp-aba-geral', geral);
+    }
   }
 
   function atualizarVisibilidadeAcoes(s) {
     var card = s.actions;
     var conteudo = s.content;
 
-    // Reabre para verificar os campos após mudanças condicionais.
-    card.hidden = false;
-    card.style.removeProperty('display');
-
+    // Visibilidade que IGNORA o próprio esconderijo do modo "sem ação".
+    // Não mexemos no DOM para medir (evita o card piscar); usamos a cadeia de
+    // estilos e não getClientRects (que seria 0 com o card oculto).
     function estaVisivel(elemento) {
       var atual = elemento;
-
       while (atual && atual.nodeType === 1) {
+        if (atual === card || (atual.classList && atual.classList.contains('crp-approval-hidden'))) {
+          atual = atual.parentElement;
+          continue;
+        }
         var estilo = getComputedStyle(atual);
-
         if (
           atual.hidden ||
           estilo.display === 'none' ||
@@ -382,11 +532,9 @@
         ) {
           return false;
         }
-
         atual = atual.parentElement;
       }
-
-      return elemento.getClientRects().length > 0;
+      return true;
     }
 
         var seletores = [
@@ -395,9 +543,7 @@
       'textarea',
       'button',
       '[role="button"]',
-      '[contenteditable="true"]',
-      '[xtype]',                     // <- representação de leitura (modo visualização)
-      'table[mult="S"]'              // <- tabela multivalorada (mesmo só leitura)
+      '[contenteditable="true"]'
     ].join(',');
 
     var temAcao = Array.prototype.some.call(
@@ -425,10 +571,31 @@
       }
     );
 
-    card.hidden = !temAcao;
-
+    // Campo de anexo (com arquivo já anexado ou botão de upload) também é
+    // ação — senão, ao anexar, o botão some e o card era escondido.
     if (!temAcao) {
+      temAcao = Array.prototype.some.call(
+        conteudo.querySelectorAll('[data-fieldformat="FILE"],[data-fieldformat="FILE_VIEW"]'),
+        function (campo) {
+          // Só conta como ação o anexo EDITÁVEL (tem botão de upload). Listas
+          // de documentos somente leitura não devem manter o card visível.
+          var linha = campo.closest('tr') || campo.parentElement;
+          var botao = linha && linha.querySelector('button[onclick*="fileUpload"]');
+          if (!botao) return false;
+          return estaVisivel(linha || campo);
+        }
+      );
+    }
+
+    // Aplica só o estado desejado e apenas quando muda (sem alternar/piscar).
+    if (temAcao) {
+      if (card.hidden) card.hidden = false;
+      if (card.style.display === 'none') card.style.removeProperty('display');
+      if (card.classList.contains('crp-approval-hidden')) card.classList.remove('crp-approval-hidden');
+    } else {
+      if (!card.hidden) card.hidden = true;
       card.style.setProperty('display', 'none', 'important');
+      if (!card.classList.contains('crp-approval-hidden')) card.classList.add('crp-approval-hidden');
     }
   }
 
@@ -443,10 +610,11 @@
       aviso.style.top = 'auto';
       aviso.style.bottom = (altura + 16) + 'px';
     } else {
+      // Fixo no topo da janela: acompanha a rolagem sem depender da
+      // posição do cabeçalho (que sai da tela ao rolar). 64px deixa
+      // livre o botão X (fechar tarefa) do Zeev no canto superior direito.
       aviso.style.bottom = 'auto';
-      if (header) {
-        aviso.style.top = Math.round(header.getBoundingClientRect().bottom + 12) + 'px';
-      }
+      aviso.style.top = '64px';
     }
   }
 
@@ -483,41 +651,27 @@
       aviso = el('div', 'crp-anexos-aviso');
       aviso.id = 'crp-anexos-aviso';
       aviso.setAttribute('role', 'status');
+      // Visual no CSS (24-prototipo.css, seção "Aviso de anexos").
+      // Aqui ficam só o posicionamento e o ícone.
       aviso.style.position = 'fixed';
       aviso.style.right = '24px';
       aviso.style.zIndex = '1090';
-      aviso.style.display = 'flex';
-      aviso.style.alignItems = 'center';
-      aviso.style.gap = '10px';
-      aviso.style.maxWidth = '340px';
-      aviso.style.padding = '10px 14px';
-      aviso.style.border = '1px solid #f0c36d';
-      aviso.style.borderRadius = '10px';
-      aviso.style.background = '#fff8e6';
-      aviso.style.boxShadow = '0 6px 18px rgba(120,80,0,0.14)';
-      aviso.style.fontSize = '13px';
-      aviso.style.lineHeight = '1.4';
-      aviso.style.color = '#7a5600';
 
-      aviso.appendChild(
-        el(
-          'span',
-          'crp-anexos-aviso-texto',
-          'Há anexos obrigatórios pendentes nesta tarefa.'
-        )
+      var icone = el('span', 'crp-anexos-aviso-icone');
+      icone.setAttribute('aria-hidden', 'true');
+      aviso.appendChild(icone);
+
+      var texto = el('div', 'crp-anexos-aviso-texto');
+      texto.appendChild(
+        el('strong', 'crp-anexos-aviso-titulo', 'Anexo obrigatório pendente')
       );
+      texto.appendChild(
+        el('span', 'crp-anexos-aviso-desc', 'Envie os documentos na aba Anexos.')
+      );
+      aviso.appendChild(texto);
 
-      var botao = el('button', 'crp-anexos-aviso-acao', 'Clique aqui e veja');
+      var botao = el('button', 'crp-anexos-aviso-acao', 'Ver anexos');
       botao.type = 'button';
-      botao.style.border = '0';
-      botao.style.borderRadius = '8px';
-      botao.style.padding = '6px 10px';
-      botao.style.background = '#053f88';
-      botao.style.color = '#fff';
-      botao.style.fontSize = '12px';
-      botao.style.fontWeight = '600';
-      botao.style.whiteSpace = 'nowrap';
-      botao.style.cursor = 'pointer';
 
       botao.addEventListener('click', function () {
         var item = s.items.filter(function (i) {
@@ -530,16 +684,10 @@
 
       aviso.appendChild(botao);
 
-      var fechar = el('button', 'crp-anexos-aviso-fechar', '×');
+      var fechar = el('button', 'crp-anexos-aviso-fechar');
       fechar.type = 'button';
       fechar.setAttribute('aria-label', 'Fechar aviso');
-      fechar.style.border = '0';
-      fechar.style.background = 'transparent';
-      fechar.style.color = '#7a5600';
-      fechar.style.fontSize = '18px';
-      fechar.style.lineHeight = '1';
-      fechar.style.cursor = 'pointer';
-      fechar.style.padding = '0 2px';
+      fechar.setAttribute('title', 'Fechar aviso');
       fechar.addEventListener('click', function () {
         avisoFechado = true;
         aviso.hidden = true;
@@ -775,6 +923,14 @@
     }
 
     atualizarAvisoAnexos(s);
+    garantirCabecalhos(s);
+
+    // Resumo sem conteúdo (ex.: tarefa de abertura do processo): esconde
+    // apenas o card de resumo. A aba "Geral" continua existindo (é nela que
+    // ficam as ações do usuário) e as demais abas também permanecem.
+    var temResumo = s.summary.querySelectorAll('.crp-readonly-group').length > 0;
+    s.root.classList.toggle('crp-resumo-vazio', !temResumo);
+
     render();
     classificarStatusHistorico();
     ajustarNumeroProcesso();
@@ -849,6 +1005,44 @@
         botao.dataset.crpAnexar = '1';
       }
     );
+
+    // Campo de anexo do formulário (fora das multivaloradas): marca a célula
+    // com crp-file-field e o estado (vazio|anexado) para o CSS do protótipo.
+    // Nada do Zeev é movido nem recriado; só classe e atributos, e apenas
+    // quando mudam (a função roda a cada ciclo do MutationObserver).
+    var celulasArquivo = [];
+    Array.prototype.forEach.call(
+      root.querySelectorAll(
+        '.crp-action-content button[onclick*="fileUpload"],' +
+        '.crp-action-content .containerFormFileLink a[onclick*="fileUpload.delete"],' +
+        '.crp-action-content .containerFormFileLink a[onclick*="files.delete"],' +
+        '.crp-action-content td:has(> .containerFormFileLink) > a[onclick*="fileUpload.delete"],' +
+        '.crp-action-content td:has(> .containerFormFileLink) > a[onclick*="files.delete"]'
+      ),
+      function (el) {
+        if (el.closest('table[mult="S"]')) return;
+        var td = el.closest('td');
+        if (td && celulasArquivo.indexOf(td) < 0) celulasArquivo.push(td);
+      }
+    );
+    celulasArquivo.forEach(function (td) {
+      if (!td.classList.contains('crp-file-field')) td.classList.add('crp-file-field');
+
+      var link = td.querySelector('.containerFormFileLink a.small, .containerFormFileLink a[href*="/document/preview/"]');
+      var estado = link && (link.textContent || '').trim() ? 'anexado' : 'vazio';
+      if (td.getAttribute('data-crp-file-state') !== estado) td.setAttribute('data-crp-file-state', estado);
+
+      var remover = td.querySelector('a[onclick*="fileUpload.delete"], a[onclick*="files.delete"]');
+      var podeRemover = remover ? 'sim' : 'nao';
+      if (td.getAttribute('data-crp-file-remove') !== podeRemover) td.setAttribute('data-crp-file-remove', podeRemover);
+
+      // O botão original continua sendo o que dispara o upload; só ganha
+      // o nome acessível do novo texto visual.
+      var anexar = td.querySelector('button[onclick*="fileUpload"]');
+      if (anexar && anexar.getAttribute('aria-label') !== 'Clique para anexar') {
+        anexar.setAttribute('aria-label', 'Clique para anexar');
+      }
+    });
 
     // CRP | Campos de arquivo em tabelas multivaloradas: o controle nativo de
     // remocao vira um botao-icone (icone desenhado via CSS ::before),
@@ -949,6 +1143,98 @@
       alvo.textContent = 'Processo #' + numero;
       selo.dataset.crpProcesso = '1';
     });
+
+    mostrarNumeroNoCabecalho();
+  }
+
+  // Exibe "Processo #NNNN" logo abaixo do título da tarefa no cabeçalho.
+  // O número vem do campo oculto do Zeev (inpCodFlowExecute). Só altera o
+  // DOM quando o texto muda, para não realimentar o MutationObserver.
+  function mostrarNumeroNoCabecalho() {
+    var header = document.querySelector('#containerRequest .crp-header');
+    if (!header) return;
+
+    var titulo = header.querySelector('h1');
+    var campo = document.getElementById('inpCodFlowExecute');
+    var numero = campo ? String(campo.value || '').replace(/[^0-9]/g, '') : '';
+    if (numero === '0') numero = '';
+
+    var selo = header.querySelector('.crp-header-numero');
+
+    // O Zeev já mostra o número ("#5227") ao lado do nome do processo, mas
+    // ele some no celular. Marca esse selo nativo para o CSS escondê-lo e
+    // deixar só o nosso, visível em todas as larguras.
+    if (numero && titulo) {
+      Array.prototype.forEach.call(header.querySelectorAll('*'), function (n) {
+        if (n === selo || n.children.length) return;
+        if (n.classList.contains('crp-header-numero-nativo')) return;
+        var t = (n.textContent || '').replace(/\s+/g, '');
+        if (t === '#' + numero || t === numero) {
+          n.classList.add('crp-header-numero-nativo');
+        }
+      });
+    }
+
+    if (!numero || !titulo) {
+      if (selo && !selo.hidden) selo.hidden = true;
+      return;
+    }
+
+    // Link nativo do número (abre o relatório da solicitação). Continua no
+    // DOM, só escondido; o nosso selo repassa o clique para ele.
+    var nativo = header.querySelector('.crp-header-numero-nativo');
+    var linkNativo = nativo && (nativo.closest('a') || nativo.querySelector('a'));
+
+    if (!selo) {
+      selo = document.createElement('a');
+      selo.className = 'crp-header-numero';
+      selo.addEventListener('click', function (e) {
+        var alvo = selo.crpLinkNativo;
+        if (!alvo) return;
+        // Sem href real, o comportamento está no onclick do Zeev: dispara
+        // o clique no link original.
+        var href = alvo.getAttribute('href') || '';
+        if (!href || href === '#' || /^javascript:/i.test(href)) {
+          e.preventDefault();
+          alvo.click();
+        }
+      });
+    }
+
+    selo.crpLinkNativo = linkNativo || null;
+
+    var href = linkNativo ? linkNativo.getAttribute('href') || '' : '';
+    var hrefReal = href && href !== '#' && !/^javascript:/i.test(href);
+    var target = linkNativo ? linkNativo.getAttribute('target') || '' : '';
+
+    if (hrefReal) {
+      if (selo.getAttribute('href') !== href) selo.setAttribute('href', href);
+    } else if (linkNativo) {
+      if (selo.getAttribute('href') !== '#') selo.setAttribute('href', '#');
+    } else if (selo.hasAttribute('href')) {
+      selo.removeAttribute('href');
+    }
+
+    if (target) {
+      if (selo.getAttribute('target') !== target) selo.setAttribute('target', target);
+    } else if (selo.hasAttribute('target')) {
+      selo.removeAttribute('target');
+    }
+
+    var dica = linkNativo ? 'Abrir relatório da solicitação' : '';
+    if (dica) {
+      if (selo.getAttribute('title') !== dica) selo.setAttribute('title', dica);
+    } else if (selo.hasAttribute('title')) {
+      selo.removeAttribute('title');
+    }
+
+    if (selo.previousElementSibling !== titulo) {
+      titulo.parentNode.insertBefore(selo, titulo.nextSibling);
+    }
+
+    var texto = 'Processo #' + numero;
+    if (selo.textContent !== texto) selo.textContent = texto;
+    if (selo.hidden) selo.hidden = false;
   }
 
   // Classifica o status de cada evento do Histórico para colorir o selo
@@ -1094,7 +1380,29 @@
       group.appendChild(save);
     }
 
+    sincronizarEstado(save);
+
+    if (!save.crpEstadoObservado) {
+      save.crpEstadoObservado = true;
+      new MutationObserver(function () {
+        sincronizarEstado(save);
+      }).observe(save, {
+        attributes: true,
+        attributeFilter: ['disabled', 'class']
+      });
+    }
+
     return true;
+  }
+
+  /* Comunica o estado do botão (habilitado apenas quando há alterações). */
+  function sincronizarEstado(save) {
+    var inativo = save.disabled || save.classList.contains('disabled');
+    var rotulo = inativo ? 'Nenhuma alteração para salvar' : 'Salvar dados do formulário';
+
+    save.title = rotulo;
+    save.setAttribute('aria-label', rotulo);
+    save.setAttribute('aria-disabled', inativo ? 'true' : 'false');
   }
 
   function iniciar() {
@@ -1132,31 +1440,77 @@
 
   function estaVisivel(elemento) {
     if (!elemento) return false;
-    if (elemento.closest('[hidden], .d-none, .hide')) return false;
-    return getComputedStyle(elemento).display !== 'none' && elemento.getClientRects().length > 0;
+    var atual = elemento;
+    while (atual && atual.nodeType === 1) {
+      // Ignora o próprio esconderijo do modo "sem ação".
+      if (atual.classList && atual.classList.contains('crp-approval-hidden')) {
+        atual = atual.parentElement;
+        continue;
+      }
+      var estilo = getComputedStyle(atual);
+      if (
+        atual.hidden ||
+        estilo.display === 'none' ||
+        estilo.visibility === 'hidden' ||
+        atual.classList.contains('d-none') ||
+        atual.classList.contains('hide')
+      ) {
+        return false;
+      }
+      atual = atual.parentElement;
+    }
+    return true;
   }
 
   function remover(container) {
     if (!container) return;
-    container.classList.remove(CLASSE);
+    if (container.classList.contains(CLASSE)) container.classList.remove(CLASSE);
     var hero = container.querySelector('.crp-approval-hero');
     if (hero) hero.remove();
     var resumo = container.querySelector('#crp-summary');
     if (resumo) resumo.classList.remove('crp-approval-summary-visible');
+    var acoes = container.querySelector('.crp-actions');
+    if (acoes) acoes.classList.remove('crp-approval-hidden');
   }
 
+  // Mesma detecção usada por visibilidade-acoes.js — os dois módulos precisam
+  // concordar, senão um esconde e o outro mostra (card piscando).
   function temAcao(acoes) {
     if (!acoes) return false;
     var conteudo = acoes.querySelector('.crp-action-content') || acoes;
+    var seletores = [
+      'input:not([type="hidden"]):not([type="submit"]):not([type="reset"])',
+      'select',
+      'textarea',
+      'button',
+      '[role="button"]',
+      '[contenteditable="true"]'
+    ].join(',');
     var temControle = Array.prototype.some.call(
-      conteudo.querySelectorAll('input:not([type=hidden]),select,textarea,button,a,img'),
-      estaVisivel
+      conteudo.querySelectorAll(seletores),
+      function (campo) {
+        if (campo.matches(':disabled') || campo.readOnly) return false;
+        if (campo.closest('[inert], [aria-disabled="true"]')) return false;
+        if (estaVisivel(campo)) return true;
+        if (campo.matches('input[type="file"]') && campo.labels) {
+          return Array.prototype.some.call(campo.labels, estaVisivel);
+        }
+        return false;
+      }
     );
     if (temControle) return true;
-    // Tabela multivalorada com linhas tambem conta como acao/conteudo.
+    // Anexo (já enviado ou com botão de upload) também conta como ação, para o
+    // card não sumir logo após anexar o arquivo.
     return Array.prototype.some.call(
-      conteudo.querySelectorAll('table[mult="S"]'),
-      function (t) { return estaVisivel(t) && t.querySelectorAll('tbody tr:not(.header)').length > 0; }
+      conteudo.querySelectorAll('[data-fieldformat="FILE"],[data-fieldformat="FILE_VIEW"]'),
+      function (campo) {
+        // Só conta como ação o anexo EDITÁVEL (tem botão de upload). Listas
+        // de documentos somente leitura não devem manter o card visível.
+        var linha = campo.closest('tr') || campo.parentElement;
+        var botao = linha && linha.querySelector('button[onclick*="fileUpload"]');
+        if (!botao) return false;
+        return estaVisivel(linha || campo);
+      }
     );
   }
 
@@ -1171,6 +1525,7 @@
       '<dl class="crp-approval-facts"></dl>'
     ].join('');
     var coluna = grid.querySelector('.crp-context-column');
+    if (!coluna) return null;
     coluna.insertBefore(hero, coluna.firstChild);
     return hero;
   }
@@ -1184,12 +1539,25 @@
     var resumo = raiz.querySelector('#crp-summary');
     if (!grid || !coluna || !resumo) { remover(raiz); return; }
 
+    // Layout do protótipo: fora da aba Geral o card de ações fica escondido
+    // de propósito; mantém a decisão tomada na aba Geral.
+    if (raiz.classList.contains('crp-proto') && !raiz.classList.contains('crp-aba-geral')) return;
+
     var semAcao = !temAcao(acoes);
     if (!semAcao) { remover(raiz); return; }
 
-    raiz.classList.add(CLASSE);
-    resumo.classList.add('crp-approval-summary-visible');
-    if (acoes) acoes.classList.add('crp-approval-hidden');
+    // Aplica só quando muda (sem re-adicionar a cada ciclo -> sem piscar).
+    if (!raiz.classList.contains(CLASSE)) raiz.classList.add(CLASSE);
+    // Card "Confira as informações" desativado a pedido: o resumo já ocupa o
+    // lugar do card de ações. Remove o hero se tiver sobrado de outro ciclo.
+    var heroAntigo = raiz.querySelector('.crp-approval-hero');
+    if (heroAntigo) heroAntigo.remove();
+    if (resumo && !resumo.classList.contains('crp-approval-summary-visible')) {
+      resumo.classList.add('crp-approval-summary-visible');
+    }
+    if (acoes && !acoes.classList.contains('crp-approval-hidden')) {
+      acoes.classList.add('crp-approval-hidden');
+    }
   }
 
   var ultima = null;
@@ -1296,6 +1664,33 @@ document.addEventListener('DOMContentLoaded', () => {
   window.__crpSuggestAjuste = true;
 
   var GAP = 4;
+  var SELETOR_SUGESTAO =
+    "input[data-special-type='suggest'],input[data-fieldformat='SUGGEST2']";
+  var PLACEHOLDER = 'Digite pelo menos 3 letras para buscar';
+
+  // Campos de sugestão: sinaliza no placeholder que é uma seleção e exige
+  // ao menos 3 letras para disparar a busca.
+  function prepararCampo(campo) {
+    if (!campo || campo.disabled || campo.readOnly) return;
+    var atual = campo.getAttribute('placeholder') || '';
+    if (!/3 letras/i.test(atual)) {
+      campo.setAttribute('placeholder', PLACEHOLDER);
+    }
+    var $ = window.jQuery;
+    if ($) {
+      var ta = $(campo).data('typeahead');
+      if (ta && ta.options && ta.options.minLength !== 3) {
+        ta.options.minLength = 3;
+      }
+    }
+  }
+
+  function prepararTodos() {
+    Array.prototype.forEach.call(
+      document.querySelectorAll(SELETOR_SUGESTAO),
+      prepararCampo
+    );
+  }
 
   function listaDoCampo(campo) {
     var prox = campo.nextElementSibling;
@@ -1350,6 +1745,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (campo && campo.matches && campo.matches(
       "[data-special-type='suggest'],[data-fieldformat='SUGGEST2']")) {
       campoAtivo = campo;
+      prepararCampo(campo);
     }
   }, true);
   document.addEventListener("scroll", function () {
@@ -1359,11 +1755,31 @@ document.addEventListener('DOMContentLoaded', () => {
     if (campoAtivo) posicionar(campoAtivo);
   });
 
+  // Aplica nos campos já existentes e nos que o Zeev inserir depois.
+  var agendado = false;
+  function agendarPreparo() {
+    if (agendado) return;
+    agendado = true;
+    requestAnimationFrame(function () {
+      agendado = false;
+      prepararTodos();
+    });
+  }
+
+  prepararTodos();
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', prepararTodos);
+  }
+  new MutationObserver(agendarPreparo).observe(document.documentElement, {
+    childList: true,
+    subtree: true
+  });
+
   ciclo();
 })();
 
 /* CRP | Nome do anexo na tabela multivalorada.
-   Mostra apenas as 5 primeiras letras seguidas de "..." e mantem o nome
+   Mostra apenas as 10 primeiras letras seguidas de "..." e mantem o nome
    COMPLETO no atributo data-crp-nome-completo/title (tooltip).
    Nao mexe em links de "Proposta" nem em outras telas. */
 (function () {
@@ -1378,7 +1794,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!completo) return;
       if (!a.getAttribute('data-crp-nome-completo')) a.setAttribute('data-crp-nome-completo', completo);
       if (a.getAttribute('title') !== completo) a.setAttribute('title', completo);
-      var curto = completo.length > 5 ? completo.slice(0, 5) + '...' : completo;
+      var curto = completo.length > 10 ? completo.slice(0, 10) + '...' : completo;
       if (a.textContent !== curto) a.textContent = curto;
     });
   }
@@ -1403,12 +1819,67 @@ document.addEventListener('DOMContentLoaded', () => {
       return t === "";
     } catch (e) { return false; }
   }
+  // Cabeçalho recolhível do grupo: título + "N campos" + seta. Os elementos
+  // são criados uma única vez; depois só o texto e os atributos mudam quando
+  // necessário (evita loop com o MutationObserver).
+  function grupoRecolhivel(g, tabela, vis) {
+    var head = tabela.querySelector(':scope > tbody > tr.group');
+    var td = head && (head.querySelector(':scope > td.group') || head.firstElementChild);
+    if (!td) return;
+    // Nem sempre a célula do título tem a classe "group": marca com uma
+    // classe própria para o CSS do cabeçalho.
+    if (!head.classList.contains('crp-grupo-linha')) head.classList.add('crp-grupo-linha');
+    if (!td.classList.contains('crp-grupo-head')) td.classList.add('crp-grupo-head');
+
+    if (td.getAttribute('data-crp-grupo') !== '1') {
+      td.setAttribute('data-crp-grupo', '1');
+      var qtd = document.createElement('span');
+      qtd.className = 'crp-grupo-qtd';
+      var seta = document.createElement('span');
+      seta.className = 'crp-grupo-seta';
+      seta.setAttribute('aria-hidden', 'true');
+      td.appendChild(qtd);
+      td.appendChild(seta);
+      td.setAttribute('role', 'button');
+      td.tabIndex = 0;
+
+      var alternar = function () {
+        var recolher = !g.classList.contains('crp-recolhido');
+        g.classList.toggle('crp-recolhido', recolher);
+        td.setAttribute('aria-expanded', String(!recolher));
+      };
+      td.addEventListener('click', alternar);
+      td.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); alternar(); }
+      });
+    }
+
+    var recolhido = g.classList.contains('crp-recolhido');
+    var expandido = String(!recolhido);
+    if (td.getAttribute('aria-expanded') !== expandido) td.setAttribute('aria-expanded', expandido);
+
+    // Conta só com o grupo aberto e visível (recolhido, as linhas ficam ocultas
+    // pelo CSS e a contagem zeraria); fora disso reaproveita a última contagem.
+    if (vis && !recolhido) {
+      var n = 0;
+      Array.prototype.forEach.call(tabela.querySelectorAll(':scope > tbody > tr'), function (tr) {
+        if (tr.classList.contains('group')) return;
+        if (getComputedStyle(tr).display !== 'none') n++;
+      });
+      if (g.getAttribute('data-crp-qtd') !== String(n)) g.setAttribute('data-crp-qtd', String(n));
+    }
+    var total = Number(g.getAttribute('data-crp-qtd') || 0);
+    var texto = total === 1 ? '1 campo' : total + ' campos';
+    var alvo = td.querySelector(':scope > .crp-grupo-qtd');
+    if (alvo && alvo.textContent !== texto) alvo.textContent = texto;
+  }
   function aplicar() {
     var resumo = document.getElementById('crp-summary'); if (!resumo) return;
     var vis = getComputedStyle(resumo).display !== 'none';
     var grupos = resumo.querySelectorAll('.crp-readonly-group');
     Array.prototype.forEach.call(grupos, function (g) {
-      var tabela = g.querySelector('table.form'); if (!tabela) return;
+      // O grupo pode ser a própria table.form ou uma tabela externa que a contém.
+      var tabela = g.matches('table.form') ? g : g.querySelector('table.form'); if (!tabela) return;
       var lc = tabela.querySelectorAll("tbody > tr");
       Array.prototype.forEach.call(lc, function (tr) {
         if (tr.classList.contains("group")) return;
@@ -1417,7 +1888,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (iframeOrigemVazio(ifr)) { if (tr.style.display !== "none") tr.style.display = "none"; }
         else if (tr.style.display === "none") tr.style.display = "";
       });
-      if (vis) { var linhas = tabela.querySelectorAll("tbody > tr"); var tem=false;
+      // Recolhido, as linhas ficam ocultas pelo CSS: não recalcular "vazio".
+      if (vis && !g.classList.contains("crp-recolhido")) { var linhas = tabela.querySelectorAll("tbody > tr"); var tem=false;
         Array.prototype.forEach.call(linhas, function(tr){ if(tr.classList.contains("group"))return; if(getComputedStyle(tr).display!=="none") tem=true; });
         if (g.classList.contains("crp-empty") === tem) g.classList.toggle("crp-empty", !tem); }
       Array.prototype.forEach.call(lc, function (tr) {
@@ -1428,6 +1900,7 @@ document.addEventListener('DOMContentLoaded', () => {
         var cheio = RE_FULL.test(rot) || (val && val.trim().length > 34);
         if (cheio && !tr.classList.contains("crp-full")) tr.classList.add("crp-full");
       });
+      grupoRecolhivel(g, tabela, vis);
     });
     if (vis) {
       var arr = Array.prototype.slice.call(resumo.querySelectorAll(':scope > .crp-readonly-group')).filter(function (g) { return getComputedStyle(g).display !== 'none'; });
@@ -1502,4 +1975,294 @@ document.addEventListener('DOMContentLoaded', () => {
     var obs = new MutationObserver(agendar); obs.observe(document.body, { childList:true, subtree:true });
   }
   if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', iniciar); } else { iniciar(); }
+})();/* CRP | Selects com lista de opções no padrão do design.
+   Substitui o menu nativo do <select> por uma lista flutuante parecida com
+   a do typeahead. O <select> original continua no DOM (valor, validação e
+   eventos mudam como antes); apenas a lista é desenhada por nós. */
+(function () {
+  'use strict';
+  if (window.__crpSelectEstilizado) return;
+  window.__crpSelectEstilizado = true;
+
+  var aberto = null; /* { select, menu, ativo, itens } */
+  var MAX_LARGURA = 520;
+
+  function elegivel(sel) {
+    return !!sel && sel.tagName === 'SELECT' && !sel.multiple && !sel.disabled &&
+      sel.options.length > 0 && !!sel.closest('#containerRequest');
+  }
+
+  function fechar() {
+    if (!aberto) return;
+    aberto.menu.remove();
+    aberto.select.classList.remove('crp-select-aberto');
+    aberto.select.removeAttribute('aria-expanded');
+    aberto = null;
+  }
+
+  function posicionar() {
+    if (!aberto) return;
+    var sel = aberto.select;
+    var menu = aberto.menu;
+    var r = sel.getBoundingClientRect();
+    var vw = window.innerWidth;
+    var vh = window.innerHeight;
+    var largura = Math.min(Math.max(Math.round(r.width), 260), MAX_LARGURA, vw - 16);
+    menu.style.width = largura + 'px';
+    var alt = menu.getBoundingClientRect().height || 0;
+    var abaixo = r.bottom + 4;
+    var acima = r.top - 4 - alt;
+    var topo = abaixo;
+    if (abaixo + alt > vh - 8 && acima > 8) topo = acima;
+    var esq = r.left;
+    if (esq + largura > vw - 8) esq = Math.max(8, vw - 8 - largura);
+    menu.style.top = Math.round(topo) + 'px';
+    menu.style.left = Math.round(esq) + 'px';
+  }
+
+  function marcarAtivo(indice) {
+    if (!aberto) return;
+    var itens = aberto.itens;
+    var i = Math.max(0, Math.min(indice, itens.length - 1));
+    aberto.ativo = i;
+    itens.forEach(function (item, n) {
+      item.classList.toggle('ativo', n === i);
+    });
+    var alvo = itens[i];
+    if (alvo) {
+      var topoItem = alvo.offsetTop;
+      var baseItem = topoItem + alvo.offsetHeight;
+      if (topoItem < aberto.menu.scrollTop) {
+        aberto.menu.scrollTop = topoItem;
+      } else if (baseItem > aberto.menu.scrollTop + aberto.menu.clientHeight) {
+        aberto.menu.scrollTop = baseItem - aberto.menu.clientHeight;
+      }
+    }
+  }
+
+  function escolher(indice) {
+    if (!aberto) return;
+    var sel = aberto.select;
+    var opt = sel.options[indice];
+    if (!opt || opt.disabled) return;
+    if (sel.value !== opt.value) {
+      sel.value = opt.value;
+      sel.dispatchEvent(new Event('input', { bubbles: true }));
+      sel.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+    var alvo = sel;
+    fechar();
+    alvo.focus();
+  }
+
+  function abrir(sel) {
+    fechar();
+    var menu = document.createElement('div');
+    menu.className = 'crp-select-menu';
+    menu.setAttribute('role', 'listbox');
+
+    var itens = [];
+    Array.prototype.forEach.call(sel.options, function (opt, i) {
+      var item = document.createElement('div');
+      item.className = 'crp-select-opcao' +
+        (i === sel.selectedIndex ? ' selecionada' : '') +
+        (opt.disabled ? ' desabilitada' : '');
+      item.setAttribute('role', 'option');
+      item.setAttribute('aria-selected', i === sel.selectedIndex ? 'true' : 'false');
+      item.textContent = opt.textContent;
+      item.addEventListener('mousedown', function (e) { e.preventDefault(); });
+      item.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        escolher(i);
+      });
+      menu.appendChild(item);
+      itens.push(item);
+    });
+
+    document.body.appendChild(menu);
+    sel.classList.add('crp-select-aberto');
+    sel.setAttribute('aria-expanded', 'true');
+    aberto = { select: sel, menu: menu, ativo: sel.selectedIndex, itens: itens };
+    posicionar();
+    marcarAtivo(sel.selectedIndex);
+  }
+
+  function alternar(sel) {
+    if (aberto && aberto.select === sel) {
+      fechar();
+    } else {
+      abrir(sel);
+    }
+  }
+
+  /* Impede o menu nativo e abre o nosso. */
+  document.addEventListener('mousedown', function (e) {
+    var sel = e.target.closest && e.target.closest('select');
+    if (elegivel(sel)) {
+      e.preventDefault();
+      e.stopPropagation();
+      sel.focus();
+      alternar(sel);
+      return;
+    }
+    if (aberto && !aberto.menu.contains(e.target)) fechar();
+  }, true);
+
+  /* Teclado: abre, navega e seleciona na lista customizada. */
+  document.addEventListener('keydown', function (e) {
+    var sel = e.target;
+    if (!elegivel(sel)) return;
+
+    if (aberto && aberto.select === sel) {
+      if (e.key === 'Escape') { e.preventDefault(); fechar(); sel.focus(); return; }
+      if (e.key === 'ArrowDown') { e.preventDefault(); marcarAtivo(aberto.ativo + 1); return; }
+      if (e.key === 'ArrowUp') { e.preventDefault(); marcarAtivo(aberto.ativo - 1); return; }
+      if (e.key === 'Tab') { fechar(); return; }
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        escolher(aberto.ativo);
+        return;
+      }
+      return;
+    }
+
+    if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      abrir(sel);
+    }
+  }, true);
+
+  document.addEventListener('focusout', function (e) {
+    if (aberto && e.target === aberto.select) {
+      /* mantém aberto enquanto o foco estiver no próprio select */
+      setTimeout(function () {
+        if (aberto && document.activeElement !== aberto.select) fechar();
+      }, 0);
+    }
+  }, true);
+
+  window.addEventListener('scroll', function () { if (aberto) posicionar(); }, true);
+  window.addEventListener('resize', function () { if (aberto) posicionar(); });
+})();
+/* CRP | Modal de processamento ("Finalizando a tarefa..."): troca o gif
+   nativo do Zeev por um personalizado e aplica o visual do protótipo. */
+(function () {
+  'use strict';
+  if (window.__crpProcessando) return;
+  window.__crpProcessando = true;
+
+  var GIF = 'https://www.image2url.com/r2/default/gifs/1793995265290-97187ea0-cc48-4e33-9031-2252182ce873.gif';
+  var SEL = 'img[src*="processing-task"]';
+
+  function aplicar() {
+    var imgs = document.querySelectorAll(SEL);
+    Array.prototype.forEach.call(imgs, function (img) {
+      if (img.getAttribute('data-crp-processando') === '1') return;
+      img.setAttribute('data-crp-processando', '1');
+      img.setAttribute('alt', 'Processando a tarefa');
+      img.setAttribute('src', GIF);
+
+      var content = img.closest('.modal-content');
+      if (content) content.classList.add('crp-processando');
+      var modal = img.closest('.modal');
+      if (modal) modal.classList.add('crp-processando');
+    });
+  }
+
+  var agendado = false;
+  function agendar() {
+    if (agendado) return;
+    agendado = true;
+    requestAnimationFrame(function () {
+      agendado = false;
+      aplicar();
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', aplicar);
+  } else {
+    aplicar();
+  }
+
+  new MutationObserver(agendar).observe(document.documentElement, {
+    childList: true,
+    subtree: true
+  });
+})();
+/* CRP | Janela "Enviar arquivos" (/files/upload) no padrão do layout.
+   O modal roda num iframe próprio (mesma origem), que não carrega o nosso
+   CSS. Aqui injetamos um <style> no contentDocument dele. */
+(function () {
+  'use strict';
+  if (window.__crpUploadEstilo) return;
+  window.__crpUploadEstilo = true;
+
+  var CSS = [
+    'html,body{font-family:Roboto,"Segoe UI",Arial,sans-serif !important;color:#22304F !important;background:#FFFFFF !important;}',
+    'body{padding:6px 2px !important;}',
+    'h1,h2,h3,h4,h5{color:#1F3F8E !important;font-weight:700 !important;}',
+    'a{color:#1F3F8E !important;}',
+    '.text-muted,small,.help-block,.form-text{color:#5B6B8C !important;}',
+    'label,.control-label{color:#5B6B8C !important;font-weight:500 !important;font-size:12px !important;}',
+    '.btn{border-radius:10px !important;font-weight:600 !important;box-shadow:none !important;min-height:40px;padding:9px 18px !important;font-size:14px !important;}',
+    '.btn-primary,.btn-primary.start{background:#1F3F8E !important;border:1px solid #1F3F8E !important;color:#FFFFFF !important;}',
+    '.btn-primary:hover,.btn-primary:focus,.btn-primary.start:hover{background:#18326F !important;border-color:#18326F !important;color:#FFFFFF !important;}',
+    '.btn-secondary,.btn-default,.btn-link{background:#FFFFFF !important;border:1px solid #C7D4EA !important;color:#1F3F8E !important;}',
+    '.btn-secondary:hover,.btn-default:hover,.btn-link:hover{background:#E4ECFB !important;border-color:#1F3F8E !important;color:#1F3F8E !important;}',
+    'input[type="text"],input[type="email"],input[type="number"],input[type="password"],textarea,select,#inpDsDocType,#inpDsResume{box-sizing:border-box !important;width:100% !important;min-height:44px;padding:10px 14px !important;border:1px solid #E3E8F3 !important;border-radius:10px !important;background:#FFFFFF !important;color:#22304F !important;font-size:14px !important;box-shadow:none !important;}',
+    'textarea,#inpDsResume{min-height:80px !important;line-height:1.5 !important;}',
+    'input[type="text"]:focus,textarea:focus,select:focus,#inpDsDocType:focus{border-color:#1F3F8E !important;outline:3px solid rgba(31,63,142,.15) !important;outline-offset:0 !important;}',
+    'input[type="checkbox"]{width:18px;height:18px;vertical-align:middle;}',
+    '.fileupload-buttonbar,#fileupload,.fileupload-process{border:1px dashed #C9D3E8 !important;border-radius:12px !important;background:#F5F7FC !important;padding:16px !important;}',
+    '.fileupload-buttonbar .btn{margin:0 6px 6px 0;}',
+    '.template-upload,.template-download{border:1px solid #E3E8F3 !important;border-radius:10px !important;background:#FFFFFF !important;margin-top:8px !important;padding:8px !important;}',
+    '.template-upload .name,.template-download .name,.template-upload .size,.template-download .size{color:#1F3F8E !important;font-weight:600 !important;}',
+    '.progress{height:8px !important;border-radius:999px !important;background:#E4ECFB !important;}',
+    '.progress-bar{background:#1F3F8E !important;}',
+    '.alert{border-radius:12px !important;}'
+  ].join('');
+
+  function injetar(doc) {
+    if (!doc || !doc.head || doc.getElementById('crp-upload-style')) return;
+    var st = doc.createElement('style');
+    st.id = 'crp-upload-style';
+    st.textContent = CSS;
+    doc.head.appendChild(st);
+  }
+
+  function varrer() {
+    Array.prototype.forEach.call(document.querySelectorAll('iframe'), function (ifr) {
+      try {
+        var src = ifr.getAttribute('src') || '';
+        if (src.indexOf('/files/upload') < 0) return;
+        var doc = ifr.contentDocument;
+        if (!doc) return;
+        injetar(doc);
+        if (!ifr.__crpUploadBound) {
+          ifr.__crpUploadBound = true;
+          ifr.addEventListener('load', function () { injetar(ifr.contentDocument); });
+        }
+      } catch (e) { /* origem diferente: ignora */ }
+    });
+  }
+
+  var raf = 0;
+  function agendar() {
+    if (raf) return;
+    raf = requestAnimationFrame(function () { raf = 0; varrer(); });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', varrer);
+  } else {
+    varrer();
+  }
+  new MutationObserver(agendar).observe(document.documentElement, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ['src']
+  });
 })();

@@ -6,3 +6,6 @@
 // @include "modulos/nome-curto-anexo.js"
 // @include "modulos/resumo.js"
 // @include "modulos/tabelas.js"
+// @include "modulos/select-estilizado.js"
+// @include "modulos/processando.js"
+// @include "modulos/upload-estilo.js"

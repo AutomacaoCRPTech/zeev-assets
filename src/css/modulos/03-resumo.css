@@ -36,7 +36,7 @@
   padding: 0;
   border: 0;
 }
-#containerRequest.crp-workspace #crp-summary .crp-readonly-group table.form > tbody > tr.group > td.group {
+#containerRequest.crp-workspace:not(.crp-proto) #crp-summary .crp-readonly-group table.form > tbody > tr.group > td.group {
   display: block !important;
   width: 100%;
   padding: 0 !important;

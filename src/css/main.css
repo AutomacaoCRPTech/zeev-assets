@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap");
 @import "modulos/01-base.css";
 @import "modulos/02-workspace.css";
 @import "modulos/03-resumo.css";
@@ -21,3 +22,4 @@
 @import "modulos/21-tabelas.css";
 @import "modulos/22-anexos-tabelas.css";
 @import "modulos/23-ajustes-finais.css";
+@import "modulos/24-prototipo.css";

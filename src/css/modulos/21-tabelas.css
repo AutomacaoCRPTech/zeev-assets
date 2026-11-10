@@ -5,19 +5,31 @@
   border-spacing: 0;
   border: 1px solid #C7D4EA;
   border-radius: 10px;
-  overflow: hidden;
+  /* Sem recorte: o menu do <select> (ex.: coluna Tipo de Equipamentos)
+     precisa poder ultrapassar a tabela, senão as opções ficam cortadas. */
+  overflow: visible;
   background: #FFFFFF;
   box-shadow: 0 1px 2px rgba(20,40,64,.05);
   font-size: 13px;
 }
-/* Contêiner de rolagem horizontal do proprio componente */
+/* Cantos arredondados preservados sem overflow:hidden na tabela. */
+#containerRequest.crp-workspace table[mult="S"] > tbody > tr.header > td:first-child { border-top-left-radius: 9px; }
+#containerRequest.crp-workspace table[mult="S"] > tbody > tr.header > td:last-child { border-top-right-radius: 9px; }
+#containerRequest.crp-workspace table[mult="S"] > tbody > tr:last-child > td:first-child { border-bottom-left-radius: 9px; }
+#containerRequest.crp-workspace table[mult="S"] > tbody > tr:last-child > td:last-child { border-bottom-right-radius: 9px; }
+/* Contêiner do componente: sem recorte no desktop para o menu do select
+   escapar. Em telas estreitas volta a rolar na horizontal. */
 #containerRequest.crp-workspace .table-responsive:has(> table[mult="S"]) {
   border: 1px solid #C7D4EA;
   border-radius: 10px;
   box-shadow: 0 1px 2px rgba(20,40,64,.05);
-  overflow-x: auto;
-  overflow-y: visible;
+  overflow: visible;
   background: #FFFFFF;
+}
+@media (max-width: 900px) {
+  #containerRequest.crp-workspace .table-responsive:has(> table[mult="S"]) {
+    overflow-x: auto;
+  }
 }
 #containerRequest.crp-workspace .table-responsive:has(> table[mult="S"]) > table[mult="S"] {
   border: 0;
@@ -129,6 +141,14 @@
   font-family: inherit;
   font-size: 13px;
   box-shadow: none;
+}
+/* Selects não esticam até a borda da coluna: um <select> muito largo gera
+   um menu nativo igualmente largo, que o navegador posiciona cortado.
+   Fica com a largura do próprio conteúdo, limitada à célula. */
+#containerRequest.crp-workspace table[mult="S"] tbody td select {
+  width: auto;
+  min-width: 0;
+  max-width: 100%;
 }
 #containerRequest.crp-workspace table[mult="S"] tbody td textarea {
   box-sizing: border-box;

@@ -49,7 +49,29 @@
       group.appendChild(save);
     }
 
+    sincronizarEstado(save);
+
+    if (!save.crpEstadoObservado) {
+      save.crpEstadoObservado = true;
+      new MutationObserver(function () {
+        sincronizarEstado(save);
+      }).observe(save, {
+        attributes: true,
+        attributeFilter: ['disabled', 'class']
+      });
+    }
+
     return true;
+  }
+
+  /* Comunica o estado do botão (habilitado apenas quando há alterações). */
+  function sincronizarEstado(save) {
+    var inativo = save.disabled || save.classList.contains('disabled');
+    var rotulo = inativo ? 'Nenhuma alteração para salvar' : 'Salvar dados do formulário';
+
+    save.title = rotulo;
+    save.setAttribute('aria-label', rotulo);
+    save.setAttribute('aria-disabled', inativo ? 'true' : 'false');
   }
 
   function iniciar() {
