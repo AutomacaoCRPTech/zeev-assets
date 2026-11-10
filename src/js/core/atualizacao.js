@@ -42,15 +42,41 @@
     s.body.querySelectorAll('table.form').forEach(function (table) {
       var wrapper = table.closest('table[id="FrmExecute"]') || table;
 
-      var interactive = wrapper.querySelector(
-        'input:not([type="hidden"]), select, textarea, button, [contenteditable="true"]'
+      // Controle só conta como interativo se estiver habilitado/editável.
+      // Campos readonly/desabilitados (etapa só de visualização) não são ação.
+      var interactive = Array.prototype.some.call(
+        wrapper.querySelectorAll('input:not([type="hidden"]), select, textarea, button, [contenteditable="true"]'),
+        function (e) {
+          if (e.disabled || e.readOnly) return false;
+          if (e.matches('button')) {
+            var cs = getComputedStyle(e);
+            return cs.display !== 'none' && cs.visibility !== 'hidden';
+          }
+          return true;
+        }
       );
 
+      // Tabela multivalorada: só é "ação" se tiver inserir ou célula editável.
+      // Somente leitura (sem inserir) deve ir para o Resumo, não para Ações.
       var multiple = wrapper.querySelector('table[mult="S"]');
+      var multEditable = !!multiple && (
+        Array.prototype.some.call(
+          multiple.querySelectorAll("tbody > tr:not(.header) input:not([type='hidden']), tbody > tr:not(.header) select, tbody > tr:not(.header) textarea, tbody > tr:not(.header) [contenteditable='true']"),
+          function (e) { return !e.disabled && !e.readOnly; }
+        ) ||
+        Array.prototype.some.call(
+          multiple.querySelectorAll("button[onclick*='multipletable.add'], .btn-insert-mv"),
+          function (b) {
+            if (b.disabled || b.getAttribute('aria-disabled') === 'true') return false;
+            var cs = getComputedStyle(b);
+            return cs.display !== 'none' && cs.visibility !== 'hidden';
+          }
+        )
+      );
       var side = wrapper.getAttribute('data-crp-side');
 
       var readonly = side === 'context' ||
-        (side !== 'actions' && !interactive && !multiple);
+        (side !== 'actions' && !interactive && !multEditable);
 
       wrapper.classList.toggle('crp-readonly-group', readonly);
 

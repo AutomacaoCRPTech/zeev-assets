@@ -25,10 +25,24 @@
       return false;
     });
   }
+  // Mesmo vazia, se a tabela oferece o botao de inserir, ela está em edição
+  // (ex.: única coisa editável da etapa é a multivalorada). Sem isso, a
+  // tabela era marcada como vazia/somente leitura e o card de ações sumia.
+  function temInserir(t) {
+    var escopo = t.closest('.table-responsive') || t;
+    return Array.prototype.some.call(
+      escopo.querySelectorAll("button[onclick*='multipletable.add'], .btn-insert-mv"),
+      function (b) {
+        if (b.disabled || b.getAttribute('aria-disabled') === 'true') return false;
+        var cs = getComputedStyle(b);
+        return cs.display !== 'none' && cs.visibility !== 'hidden';
+      }
+    );
+  }
   function aplicar() {
     var tabelas = document.querySelectorAll("#containerRequest table[mult='S']");
     Array.prototype.forEach.call(tabelas, function (t) {
-      var edicao = temColunaEditavel(t);
+      var edicao = temColunaEditavel(t) || temInserir(t);
       t.classList.toggle("crp-mult-readonly", !edicao);
       var n = contarRegistros(t);
       // "ocultaNativo": o Zeev ocultou a tabela. Nao considerar o display:none
