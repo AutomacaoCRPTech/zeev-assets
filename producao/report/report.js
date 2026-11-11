@@ -1057,12 +1057,12 @@
     var panel = document.getElementById('PanelFile');
     if (!panel || panel.getAttribute('data-crp-files-watch') === '1') return;
     panel.setAttribute('data-crp-files-watch', '1');
-    var raf = 0;
-    var run = function () {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(setupFiles);
-    };
-    new MutationObserver(run).observe(panel, { childList: true, subtree: true });
+    // Sem requestAnimationFrame: em aba em segundo plano ele é pausado e os
+    // cards não voltavam. setupFiles é idempotente, então roda direto.
+    new MutationObserver(function () { setupFiles(); }).observe(panel, {
+      childList: true,
+      subtree: true
+    });
   }
 
   /* ---------- Histórico (timeline a partir do passo a passo) ---------- */
