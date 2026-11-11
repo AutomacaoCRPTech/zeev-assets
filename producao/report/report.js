@@ -1052,6 +1052,19 @@
     });
   }
 
+  // Reordenar/altera anexos recria as linhas no Zeev: reaplica os cards.
+  function watchFiles() {
+    var panel = document.getElementById('PanelFile');
+    if (!panel || panel.getAttribute('data-crp-files-watch') === '1') return;
+    panel.setAttribute('data-crp-files-watch', '1');
+    var raf = 0;
+    var run = function () {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(setupFiles);
+    };
+    new MutationObserver(run).observe(panel, { childList: true, subtree: true });
+  }
+
   /* ---------- Histórico (timeline a partir do passo a passo) ---------- */
   function buildHistorico() {
     var t = document.getElementById('TableStep');
@@ -1257,6 +1270,7 @@
     setupForm(form);
     setupMessages();
     setupFiles();
+    watchFiles();
     markMaskEmpty();
     setTimeout(markMaskEmpty, 1200);
     setTimeout(markMaskEmpty, 2600);
