@@ -723,6 +723,30 @@
       filterWrap.appendChild(fbtn);
       filterWrap.appendChild(menu);
 
+      /* Recolher/expandir o passo a passo (aberto por padrão). */
+      var toggle = el('button', 'crp-step-toggle');
+      toggle.type = 'button';
+      toggle.setAttribute('aria-controls', 'TableStep');
+      toggle.setAttribute('aria-expanded', 'true');
+      var toggleIc = el('span', 'crp-step-toggle-ic');
+      toggleIc.setAttribute('aria-hidden', 'true');
+      var toggleTxt = el('span', 'crp-step-toggle-text', 'Recolher');
+      toggle.appendChild(toggleIc);
+      toggle.appendChild(toggleTxt);
+      var collapsed = false;
+      var syncToggle = function () {
+        toggle.title = collapsed ? 'Expandir passo a passo' : 'Recolher passo a passo';
+        toggle.setAttribute('aria-label', toggle.title);
+        toggleTxt.textContent = collapsed ? 'Expandir' : 'Recolher';
+      };
+      toggle.addEventListener('click', function () {
+        collapsed = !collapsed;
+        holder.classList.toggle('crp-steps-collapsed', collapsed);
+        toggle.setAttribute('aria-expanded', String(!collapsed));
+        syncToggle();
+      });
+      syncToggle();
+
       var btn = el('button', 'crp-sort-btn');
       btn.type = 'button';
       var mode = 'end';
@@ -742,7 +766,10 @@
       });
       sync();
 
-      bar.appendChild(filterWrap);
+      var barLeft = el('div', 'crp-step-left');
+      barLeft.appendChild(toggle);
+      barLeft.appendChild(filterWrap);
+      bar.appendChild(barLeft);
       bar.appendChild(btn);
       holder.insertBefore(bar, wrap);
 
