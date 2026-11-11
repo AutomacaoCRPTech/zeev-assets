@@ -1100,21 +1100,35 @@
     var menu = dd && dd.querySelector('.dropdown-menu');
     if (!menu) return;
 
-    var order = ['LkCancel', 'LkHoldShowOn', 'LkEdit'];
+    var knownOrder = ['LkCancel', 'LkHoldShowOn', 'LkEdit'];
     var keyOf = { LkEdit: 'edit', LkHoldShowOn: 'hold', LkCancel: 'cancel' };
-    var items = {};
-    Array.prototype.forEach.call(menu.children, function (li) {
+    var entries = [];
+    Array.prototype.forEach.call(menu.children, function (li, idx) {
       var a = li.querySelector('a');
-      if (!a || !a.id || !keyOf[a.id]) return;
-      li.classList.add('crp-ab-' + keyOf[a.id]);
-      items[a.id] = li;
+      if (!a) return;
+      var label = txt(a);
+      // Excluir nunca aparece; as demais (ex.: Reabrir do super admin) entram.
+      if (a.id === 'LkDelete' || /^excluir$/i.test(label)) {
+        if (li.parentNode) li.parentNode.removeChild(li);
+        return;
+      }
+      var key = keyOf[a.id] || (/reabr/i.test(label) ? 'reopen' : 'other');
+      li.classList.add('crp-ab-' + key);
+      entries.push({ li: li, id: a.id || '', order: idx });
     });
-    var del = menu.querySelector('#LkDelete');
-    if (del && del.parentNode) del.parentNode.removeChild(del); // Excluir: nunca exibir
+
+    entries.sort(function (x, y) {
+      var ox = knownOrder.indexOf(x.id);
+      var oy = knownOrder.indexOf(y.id);
+      if (ox < 0) ox = 99;
+      if (oy < 0) oy = 99;
+      if (ox !== oy) return ox - oy;
+      return x.order - y.order;
+    });
 
     var list = el('ul', 'crp-bottom-bar-actions');
-    order.forEach(function (id) {
-      if (items[id]) list.appendChild(items[id]); // move o próprio li (mantém handlers)
+    entries.forEach(function (e) {
+      list.appendChild(e.li); // move o próprio li (mantém handlers)
     });
     if (!list.children.length) return;
 
