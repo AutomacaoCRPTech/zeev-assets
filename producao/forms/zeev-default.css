@@ -70,7 +70,7 @@
   --crp-shadow: 0 1px 2px #14284008, 0 8px 24px #1428400a;
   background: var(--crp-bg);
   color: var(--crp-text);
-  font-family: "Segoe UI", Arial, sans-serif;
+  font-family: Roboto, "Segoe UI", Arial, sans-serif;
 }
 .crp-form .container-task { background: var(--crp-bg); }
 .crp-form .crp-main {
@@ -3190,7 +3190,7 @@
   --p-card-border: #E6EBF6;
   --p-divider: #DCE2EE;
   --p-row-divider: #EEF1F7;
-  --p-placeholder: #8A97B4;
+  --p-placeholder: #62718F;
   --p-dashed: #C9D3E8;
   --p-orange: #F6A730;
   --p-orange-bg: #FDF0DC;
