@@ -410,6 +410,71 @@
     }
   }
 
+  /* ---------- Aviso de solicitação concluída ---------- */
+  function initDoneCard() {
+    var result = document.getElementById('Result');
+    var alert = result && result.closest('.alert');
+    if (!alert) return;
+    if (alert.getAttribute('data-crp-done') === '1') return;
+
+    // Mesma fonte do card Resumo: última movimentação e etapa atual.
+    var snap = stepSnapshot();
+    var dateText = '';
+    var stage = '';
+    if (snap) {
+      var m = String(snap.updated || '').match(/(\d{2})\/(\d{2})\/(\d{4})(?:\s+(\d{2}):(\d{2}))?/);
+      if (m) {
+        dateText = m[1] + '/' + m[2] + '/' + m[3];
+        if (m[4]) dateText += ' às ' + m[4] + ':' + m[5];
+      }
+      stage = snap.task || '';
+    }
+
+    alert.setAttribute('data-crp-done', '1');
+    alert.classList.add('crp-done-card');
+    alert.innerHTML = '';
+
+    var icon = el('span', 'crp-done-icon');
+    icon.setAttribute('aria-hidden', 'true');
+    alert.appendChild(icon);
+
+    var body = el('div', 'crp-done-body');
+    body.appendChild(el('span', 'crp-done-eyebrow', 'SITUAÇÃO'));
+    body.appendChild(el('h3', 'crp-done-title', 'Solicitação concluída'));
+
+    var meta = el('div', 'crp-done-meta');
+    if (dateText) {
+      var d = el('span', 'crp-done-meta-item');
+      d.appendChild(el('span', 'crp-done-meta-ic crp-done-ic-clock'));
+      d.appendChild(document.createTextNode('Finalizada em ' + dateText));
+      meta.appendChild(d);
+    }
+    if (stage) {
+      var s = el('span', 'crp-done-meta-item');
+      s.appendChild(el('span', 'crp-done-meta-ic crp-done-ic-step'));
+      s.appendChild(document.createTextNode('Última etapa: ' + stage));
+      meta.appendChild(s);
+    }
+    if (meta.children.length) body.appendChild(meta);
+    alert.appendChild(body);
+
+    var pill = el('span', 'crp-done-pill crp-kv-value crp-status-tag crp-step-done');
+    pill.appendChild(el('span', 'crp-done-pill-ic'));
+    pill.appendChild(document.createTextNode('Concluído'));
+    alert.appendChild(pill);
+  }
+
+  function watchDoneCard() {
+    var panel = document.getElementById('PanelFinish');
+    if (!panel || panel.getAttribute('data-crp-done-watch') === '1') return;
+    panel.setAttribute('data-crp-done-watch', '1');
+    new MutationObserver(function () { initDoneCard(); }).observe(panel, {
+      childList: true,
+      subtree: true
+    });
+  }
+
+
   /* ---------- Passo a passo ---------- */
   function statusClass(t) {
     t = String(t || '').toLowerCase();
@@ -1078,6 +1143,8 @@
 
     initHeader();
     initSummary();
+    initDoneCard();
+    watchDoneCard();
     initRequesterCard();
     buildBottomBar();
     setupSteps();
