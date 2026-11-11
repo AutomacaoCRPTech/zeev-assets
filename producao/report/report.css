@@ -460,7 +460,10 @@ body.pop #PanelForm table.form > tbody > tr > td.col1{
 }
 /* Valor vazio NÃO recebe marcador (evita "—" em todos os campos).
    Máscara vazia (ex.: CEP "_____-___"): esconde os "_" e mostra "—". */
-body.pop #PanelForm table.form > tbody > tr > td.col1.crp-val-empty::before{ content:none !important; }
+body.pop #PanelForm table.form > tbody > tr > td.col1.crp-val-empty{ min-height:0; }
+body.pop #PanelForm table.form > tbody > tr > td.col1.crp-val-empty::before{
+  content:"—"; color:var(--crp-muted); font-size:15px; font-weight:400; font-style:italic;
+}
 body.pop #PanelForm td.col1 [data-crp-mask="1"]{ font-size:0 !important; color:transparent !important; }
 body.pop #PanelForm td.col1 [data-crp-mask="1"]::after{
   content:"—"; font-size:15px; color:var(--crp-muted); font-weight:400;

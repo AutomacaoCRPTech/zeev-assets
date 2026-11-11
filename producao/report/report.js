@@ -868,6 +868,31 @@
     });
   }
 
+  /* Campo vazio: marca a célula (crp-val-empty) para mostrar "—" em cinza.
+     É reavaliado a cada passada (o Zeev preenche os valores depois do carregamento):
+     quem ganha valor perde a marca. */
+  function markEmptyValues() {
+    var form = document.getElementById('PanelForm');
+    if (!form) return;
+    toArr(form.querySelectorAll('table.form > tbody > tr > td.col1')).forEach(function (td) {
+      var vazio = !td.querySelector('img,a,input,select,textarea,table,iframe,[data-crp-mask]') &&
+        !String(td.textContent || '').replace(/[\s ]/g, '');
+      td.classList.toggle('crp-val-empty', vazio);
+    });
+  }
+
+  function watchEmptyValues() {
+    var form = document.getElementById('PanelForm');
+    if (!form || form.getAttribute('data-crp-empty-watch') === '1') return;
+    form.setAttribute('data-crp-empty-watch', '1');
+    var timer = null;
+    new MutationObserver(function () {
+      clearTimeout(timer);
+      timer = setTimeout(markEmptyValues, 150);
+    }).observe(form, { childList: true, subtree: true, characterData: true });
+    markEmptyValues();
+  }
+
   /* ---------- Mensagens: cartão limpo (avatar + nome/e-mail + data) ---------- */
   function setupMessages() {
     var t = document.getElementById('tblMessage');
@@ -1301,6 +1326,9 @@
     markMaskEmpty();
     setTimeout(markMaskEmpty, 1200);
     setTimeout(markMaskEmpty, 2600);
+    watchEmptyValues();
+    setTimeout(markEmptyValues, 1200);
+    setTimeout(markEmptyValues, 2600);
     return true;
   }
 
