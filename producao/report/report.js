@@ -2649,6 +2649,29 @@
     if (l2) box.appendChild(el('div', 'crp-rel-resp-line2', l2));
   }
 
+  function relPeopleExpand(box, people) {
+    var btn = el('button', 'crp-rel-people-more', 'Ver todos');
+    btn.type = 'button';
+    btn.setAttribute('aria-expanded', 'false');
+    var list = el('div', 'crp-rel-people-list');
+    list.hidden = true;
+    people.forEach(function (p) {
+      var row = el('div', 'crp-rel-people-row');
+      row.appendChild(el('span', 'crp-rel-people-name', p.name));
+      var det = [p.cargo, p.empresa].filter(Boolean).join(' · ');
+      if (det) row.appendChild(el('span', 'crp-rel-people-det', ' · ' + det));
+      if (p.email) row.title = p.email;
+      list.appendChild(row);
+    });
+    btn.addEventListener('click', function () {
+      list.hidden = !list.hidden;
+      btn.textContent = list.hidden ? 'Ver todos' : 'Ocultar';
+      btn.setAttribute('aria-expanded', list.hidden ? 'false' : 'true');
+    });
+    box.appendChild(btn);
+    box.appendChild(list);
+  }
+
   function relRespBlock(x) {
     var people = (x.people || []).slice(0);
     if (!people.length && x.resp) {
@@ -2678,7 +2701,17 @@
         box.appendChild(lo1);
         relCargoLine(box, people[0]);
       } else {
-        box.appendChild(el('div', 'crp-rel-resp-line1', 'e mais ' + (people.length - 1)));
+        var lo = el('div', 'crp-rel-resp-line1');
+        lo.appendChild(document.createTextNode('Responsáveis: '));
+        lo.appendChild(el('span', 'crp-rel-resp-name', people[0].name));
+        if (people.length === 2) {
+          lo.appendChild(document.createTextNode(' e '));
+          lo.appendChild(el('span', 'crp-rel-resp-name', people[1].name));
+        } else {
+          lo.appendChild(document.createTextNode(' e mais ' + (people.length - 1)));
+        }
+        box.appendChild(lo);
+        relPeopleExpand(box, people);
       }
       wrap.appendChild(box);
       return wrap;
@@ -2699,6 +2732,7 @@
       var matched = people.filter(function (p) { return p.name.toLowerCase() === exec.toLowerCase(); }).length;
       var outros = Math.max(people.length - Math.max(matched, 1), 0);
       if (outros) box.appendChild(el('div', 'crp-rel-resp-line2', 'Atribuída também a ' + outros + ' pessoa' + (outros === 1 ? '' : 's')));
+      relPeopleExpand(box, people);
     } else if (people.length === 1) {
       var l1 = el('div', 'crp-rel-resp-line1');
       l1.appendChild(document.createTextNode(verb));
@@ -2713,30 +2747,14 @@
       l2p.appendChild(document.createTextNode(' e '));
       l2p.appendChild(el('span', 'crp-rel-resp-name', people[1].name));
       box.appendChild(l2p);
+      relPeopleExpand(box, people);
     } else {
       var lm = el('div', 'crp-rel-resp-line1');
       lm.appendChild(document.createTextNode('Responsáveis: '));
       lm.appendChild(el('span', 'crp-rel-resp-name', people[0].name));
       lm.appendChild(document.createTextNode(' e mais ' + (people.length - 1)));
       box.appendChild(lm);
-      var btn = el('button', 'crp-rel-people-more', 'Ver todos');
-      btn.type = 'button';
-      var list = el('div', 'crp-rel-people-list');
-      list.hidden = true;
-      people.forEach(function (p) {
-        var row = el('div', 'crp-rel-people-row');
-        row.appendChild(el('span', 'crp-rel-people-name', p.name));
-        var det = [p.cargo, p.empresa].filter(Boolean).join(' · ');
-        if (det) row.appendChild(el('span', 'crp-rel-people-det', ' · ' + det));
-        if (p.email) row.title = p.email;
-        list.appendChild(row);
-      });
-      btn.addEventListener('click', function () {
-        list.hidden = !list.hidden;
-        btn.textContent = list.hidden ? 'Ver todos' : 'Ocultar';
-      });
-      box.appendChild(btn);
-      box.appendChild(list);
+      relPeopleExpand(box, people);
     }
     wrap.appendChild(box);
     return wrap;
