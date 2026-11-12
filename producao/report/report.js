@@ -1343,9 +1343,7 @@
         else if (/cancelar/.test(norm)) key = 'cancel';
         else key = 'other';
       }
-      act.classList.add('crp-ab-el');
-      li.classList.add('crp-ab-' + key);
-      entries.push({ li: li, key: key, order: idx });
+      entries.push({ act: act, li: li, key: key, order: idx, label: label });
     });
 
     entries.sort(function (x, y) {
@@ -1356,7 +1354,25 @@
 
     var list = el('ul', 'crp-bottom-bar-actions');
     entries.forEach(function (e) {
-      list.appendChild(e.li); // move o próprio li (mantém handlers)
+      var barLi = el('li', 'crp-ab-' + e.key);
+      var ctl;
+      if (e.act.tagName === 'INPUT') {
+        ctl = el('button', 'crp-ab-el', e.act.value || '');
+        ctl.type = 'button';
+      } else {
+        ctl = el('a', 'crp-ab-el', String(e.label || '').trim());
+        ctl.href = 'javascript:void(0)';
+      }
+      ctl.setAttribute('role', 'button');
+      if (e.act.disabled) ctl.setAttribute('aria-disabled', 'true');
+      ctl.addEventListener('click', function (ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        // Mantém o controle original dentro do form/nav: dispara o handler nativo.
+        try { e.act.click(); } catch (err) {}
+      });
+      barLi.appendChild(ctl);
+      list.appendChild(barLi);
     });
     if (!list.children.length) return;
 
@@ -1370,7 +1386,15 @@
     document.body.appendChild(bar);
     document.body.classList.add('crp-has-bottom-bar');
 
-    if (dd && dd.parentNode) dd.parentNode.removeChild(dd);
+    if (dd) {
+      dd.style.position = 'absolute';
+      dd.style.left = '-9999px';
+      dd.style.top = '0';
+      dd.style.width = '1px';
+      dd.style.height = '1px';
+      dd.style.overflow = 'hidden';
+      dd.style.opacity = '0';
+    }
   }
 
   /* ---------- Abas ---------- */
