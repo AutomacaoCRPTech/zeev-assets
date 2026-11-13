@@ -3077,10 +3077,10 @@
 #containerRequest.crp-workspace table[mult="S"]:not(.crp-mult-readonly) button[onclick*="fileUpload"]:focus-visible {
   outline: 2px solid #053F88; outline-offset: 2px;
 }
-/* Com arquivo: ocultar o botao "Anexar arquivo". */
+/* Com arquivo: mantem o botao visivel para substituir o anexo. */
 #containerRequest.crp-workspace table[mult="S"] td[column-name]:has(.containerFormFileLink a.small) button[onclick*="fileUpload"],
 #containerRequest.crp-workspace table[mult="S"] td[column-name]:has(a[href*="/document/preview/"]) button[onclick*="fileUpload"] {
-  display: none !important;
+  display: inline-flex !important;
 }
 /* Acao de remocao: botao-icone (lixeira). */
 #containerRequest.crp-workspace table[mult="S"]:not(.crp-mult-readonly) .containerFormFileLink a[onclick*="fileUpload.delete"],
@@ -4416,7 +4416,53 @@
   border-radius: var(--p-radius-ctrl) !important;
   background: #F3F7FF !important;
 }
-#containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field[data-crp-file-state="anexado"] button[onclick*="fileUpload"] { display: none !important; }
+/* Com arquivo: mantem o botao nativo no campo para substituir o anexo. */
+#containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field[data-crp-file-state="anexado"] button[onclick*="fileUpload"] {
+  display: inline-flex !important;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-sizing: border-box;
+  width: auto !important;
+  max-width: none !important;
+  height: 30px;
+  min-height: 30px;
+  margin: 0 0 0 4px !important;
+  padding: 0 10px !important;
+  border: 1px solid var(--p-navy) !important;
+  border-radius: 6px !important;
+  background: #FFFFFF !important;
+  color: var(--p-navy) !important;
+  font-size: 0 !important;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: none !important;
+}
+#containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field[data-crp-file-state="anexado"] button[onclick*="fileUpload"]::before {
+  content: "";
+  flex: 0 0 14px;
+  width: 14px;
+  height: 14px;
+  background: currentColor !important;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+#containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field[data-crp-file-state="anexado"] button[onclick*="fileUpload"]::after {
+  content: "Substituir";
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+#containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field[data-crp-file-state="anexado"] button[onclick*="fileUpload"]:hover {
+  background: var(--p-inner) !important;
+  border-color: var(--p-navy) !important;
+}
+#containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field[data-crp-file-state="anexado"] button[onclick*="fileUpload"]:focus-visible {
+  outline: 3px solid rgba(31, 63, 142, .2) !important;
+  outline-offset: 2px !important;
+}
 #containerRequest.crp-proto.crp-workspace .crp-action-content td.crp-file-field[data-crp-file-state="anexado"] .containerFormFileLink {
   display: flex !important;
   flex: 1 1 auto;

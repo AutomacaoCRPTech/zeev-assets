@@ -1047,11 +1047,13 @@
         var multi = !!botao.closest('table[mult="S"]');
         var campo = botao.closest('td');
         var arquivos = campo ? campo.querySelectorAll('.containerFormFileLink a[href*="/document/preview/"]').length : 0;
-        var texto = multi && arquivos > 0 ? 'Adicionar arquivo' : 'Anexar arquivo';
+        var texto = arquivos > 0 ? 'Substituir arquivo' : (multi ? 'Adicionar arquivo' : 'Anexar arquivo');
 
         if (!botao.children.length && botao.textContent.trim() !== texto) {
           botao.textContent = texto;
         }
+        botao.setAttribute('aria-label', texto);
+        botao.setAttribute('title', texto);
 
         botao.dataset.crpAnexar = '1';
       }
