@@ -2480,10 +2480,16 @@
 
       var end = c(cols.end);
       var stRaw = c(cols.status);
-      // Aberta = qualquer status que não seja terminal (Concluído, Aprovado,
-      // Cancelado, Reprovado, Encerrado...). Status vazio: aberta se sem conclusão.
+      // O ícone nativo "Tarefa finalizada" é a fonte de verdade para concluída,
+      // mesmo quando a coluna Status vem vazia.
+      var doneIcon = tr.querySelector('[title*="finalizada" i], img[src*="true.png"]');
+      var doneByIcon = !!doneIcon;
+      // Aberta = qualquer status que não seja terminal; o ícone de finalizada
+      // sempre prevalece (tarefa concluída não é atrasada).
       var terminal = /conclu|finaliz|cancel|reprov|recus|encerr|complet|aprovad|closed|done/i.test(stRaw);
-      var open = !terminal;
+      var open = doneByIcon ? false : !terminal;
+      var statusText = stRaw;
+      if (doneByIcon && (!String(statusText).trim() || /atrasad/i.test(statusText))) statusText = 'Concluída';
       var endStamp = parseStamp(end);
       var subLink = tr.querySelector('td:first-child a[href*="wfrel_tracker_detail"]') || tr.querySelector('a[href*="wfrel_tracker_detail"]');
       var formLink = tr.querySelector('a[href*="wfrel_tracker_form_detail"]') || tr.querySelector('td:last-child a[data-colorbox]');
@@ -2496,8 +2502,9 @@
         subtitle: subtitle,
         start: c(cols.start),
         end: end,
-        statusRaw: c(cols.status),
-        status: relStatus(c(cols.status)),
+        statusRaw: statusText,
+        status: relStatus(statusText),
+        doneByIcon: doneByIcon,
         resp: respRaw,
         email: email,
         people: people,
