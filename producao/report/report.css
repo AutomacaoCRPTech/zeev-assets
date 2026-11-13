@@ -1601,3 +1601,7 @@ body.pop .crp-rel-detail:focus-visible{ outline:2px solid #1F3F8E; outline-offse
 body.pop .crp-rel-tl-task-link{ color:var(--crp-blue) !important; text-decoration:underline; text-underline-offset:2px; cursor:pointer; }
 body.pop .crp-rel-tl-task-link:hover{ color:#03336F !important; }
 body.pop .crp-rel-tl-task-link:focus-visible{ outline:2px solid #1F3F8E; outline-offset:2px; border-radius:4px; }
+/* ---------- Passo a passo: origem e ordem ---------- */
+body.pop .crp-rel-badge.crp-rel-origem{
+  background:#E8F0FE; color:#053F88; border:1px solid #C7D4EA;
+}

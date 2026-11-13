@@ -2806,7 +2806,7 @@
     var outros = data.filter(function (x) { return !x.open; });
 
     function item(x) {
-      var li = el('div', 'crp-rel-tl-item ' + (x.late ? 'atrasada' : x.status.cls));
+      var li = el('div', 'crp-rel-tl-item ' + (x.origin ? 'origem ' : '') + (x.late ? 'atrasada' : x.status.cls));
       var top = el('div', 'crp-rel-tl-top');
       var taskEl;
       if (x.detailEl && x.detailNewTab) {
@@ -2833,6 +2833,7 @@
         }
       }
       top.appendChild(taskEl);
+      if (x.origin) top.appendChild(relBadge('origem', 'Origem'));
       if (String(x.statusRaw || '').trim()) {
         top.appendChild(relBadge(x.late ? 'atrasada' : x.status.cls, x.late ? 'Atrasada' : x.status.label));
       }
@@ -2858,8 +2859,8 @@
           det.title = 'Abrir subprocesso em nova aba';
           det.textContent = 'Abrir subprocesso';
         } else {
-          det.title = 'Abrir detalhes da tarefa';
-          det.textContent = 'Ver detalhes';
+          det.title = 'Abrir histórico da tarefa';
+          det.textContent = 'Ver histórico';
           det.setAttribute('role', 'button');
           det.addEventListener('click', function (e) {
             e.preventDefault();
@@ -2872,26 +2873,43 @@
       return li;
     }
 
-    var dones = outros;
-    if (abertos.length > 1) {
-      var grp = el('div', 'crp-rel-tl-group');
-      grp.appendChild(el('div', 'crp-rel-tl-grouphead', 'Em paralelo · ' + abertos.length + ' tarefas'));
-      abertos.forEach(function (x) { grp.appendChild(item(x)); });
-      list.appendChild(grp);
-    } else {
-      abertos.forEach(function (x) { list.appendChild(item(x)); });
+    var origin = data.length ? data[0] : null;
+    if (origin) origin.origin = true;
+
+    var dones = data.filter(function (x) { return !x.open && x !== origin; });
+    var abertos = data.filter(function (x) { return x.open && x !== origin; });
+    var stamp = function (x) {
+      var s = parseStamp(x.end);
+      if (s === null) s = parseStamp(x.start);
+      return s === null ? 0 : s;
+    };
+    dones.sort(function (a, b) { return stamp(a) - stamp(b); });
+    abertos.sort(function (a, b) {
+      return (b.late ? 1 : 0) - (a.late ? 1 : 0) ||
+        ((parseStamp(a.end) === null ? Infinity : parseStamp(a.end)) - (parseStamp(b.end) === null ? Infinity : parseStamp(b.end)));
+    });
+
+    function grupo(titulo, itens) {
+      var g = el('div', 'crp-rel-tl-group');
+      g.appendChild(el('div', 'crp-rel-tl-grouphead', titulo));
+      itens.forEach(function (x) { g.appendChild(item(x)); });
+      list.appendChild(g);
     }
 
     if (REL.stepFilter === 'abertas') {
-      // já nascem ocultas no item(); não renderiza as concluídas
-    } else if (data.length > 10 && dones.length) {
-      var det = el('details', 'crp-rel-donebox');
-      det.appendChild(el('summary', 'crp-rel-donebox-sum', 'Mostrar ' + dones.length + (dones.length === 1 ? ' tarefa concluída' : ' tarefas concluídas')));
-      dones.forEach(function (x) { det.appendChild(item(x)); });
-      list.appendChild(det);
-    } else {
-      dones.forEach(function (x) { list.appendChild(item(x)); });
+      var abertas = data.filter(function (x) { return x.open; }).sort(function (a, b) {
+        return (b.late ? 1 : 0) - (a.late ? 1 : 0) ||
+          ((parseStamp(a.end) === null ? Infinity : parseStamp(a.end)) - (parseStamp(b.end) === null ? Infinity : parseStamp(b.end)));
+      });
+      if (abertas.length) grupo('Em aberto · ' + abertas.length + (abertas.length === 1 ? ' tarefa' : ' tarefas'), abertas);
+      else list.appendChild(el('div', 'crp-rel-open-empty', 'Nenhuma tarefa aberta.'));
+      host.appendChild(list);
+      return;
     }
+
+    if (origin) grupo('Origem', [origin]);
+    if (dones.length) grupo('Concluídas · ' + dones.length + (dones.length === 1 ? ' tarefa' : ' tarefas'), dones);
+    if (abertos.length) grupo('Em aberto · ' + abertos.length + (abertos.length === 1 ? ' tarefa' : ' tarefas'), abertos);
     host.appendChild(list);
   }
 
