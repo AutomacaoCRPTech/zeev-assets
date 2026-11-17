@@ -574,8 +574,12 @@
       stage = snap.task || '';
     }
 
+    var resultText = txt(result).replace(/\s+/g, ' ').trim();
+    var canceled = /^cancel/i.test(resultText);
+
     alert.setAttribute('data-crp-done', '1');
     alert.classList.add('crp-done-card');
+    if (canceled) alert.classList.add('crp-done-canceled');
     alert.innerHTML = '';
 
     var icon = el('span', 'crp-done-icon');
@@ -584,13 +588,13 @@
 
     var body = el('div', 'crp-done-body');
     body.appendChild(el('span', 'crp-done-eyebrow', 'SITUAÇÃO'));
-    body.appendChild(el('h3', 'crp-done-title', 'Solicitação concluída'));
+    body.appendChild(el('h3', 'crp-done-title', canceled ? 'Solicitação cancelada' : 'Solicitação concluída'));
 
     var meta = el('div', 'crp-done-meta');
     if (dateText) {
       var d = el('span', 'crp-done-meta-item');
       d.appendChild(el('span', 'crp-done-meta-ic crp-done-ic-clock'));
-      d.appendChild(document.createTextNode('Finalizada em ' + dateText));
+      d.appendChild(document.createTextNode((canceled ? 'Cancelada em ' : 'Finalizada em ') + dateText));
       meta.appendChild(d);
     }
     if (stage) {
@@ -602,9 +606,9 @@
     if (meta.children.length) body.appendChild(meta);
     alert.appendChild(body);
 
-    var pill = el('span', 'crp-done-pill crp-kv-value crp-status-tag crp-step-done');
+    var pill = el('span', 'crp-done-pill crp-kv-value crp-status-tag ' + (canceled ? 'crp-step-error' : 'crp-step-done'));
     pill.appendChild(el('span', 'crp-done-pill-ic'));
-    pill.appendChild(document.createTextNode('Concluído'));
+    pill.appendChild(document.createTextNode(canceled ? 'Cancelado' : 'Concluído'));
     alert.appendChild(pill);
   }
 
