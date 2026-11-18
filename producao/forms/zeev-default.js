@@ -2336,3 +2336,332 @@ document.addEventListener('DOMContentLoaded', () => {
     attributeFilter: ['src']
   });
 })();
+
+(function () {
+  'use strict';
+
+  if (window.__crpReasonModal) return;
+  window.__crpReasonModal = true;
+
+  var boxes = ['BoxForceInputReason', 'BoxRejection', 'BoxNotConclude'];
+  var lastAction = null;
+  var overlay = null;
+  var activeBox = null;
+  var original = null;
+  var draftKey = '';
+
+  function clean(text) {
+    return (text || '').replace(/\s+/g, ' ').trim();
+  }
+
+  function titleFor(label) {
+    var text = (label || '').toLowerCase();
+
+    if (/revis/.test(text)) return 'Justificativa para solicitar revisão';
+    if (/reprov|rejeit/.test(text)) return 'Justificativa para reprovação';
+    if (/aprov/.test(text)) return 'Justificativa para aprovação';
+    if (/conclu|finaliz/.test(text)) return 'Justificativa para conclusão';
+
+    var action = clean(label)
+      .replace(/\s*\.{3,}\s*$/, '')
+      .replace(/\s*…\s*$/, '');
+
+    return action ? 'Justificativa para ' + action : 'Justificativa';
+  }
+
+  function keyFor(button, label) {
+    if (button && button.id) return button.id;
+
+    return 'label-' + (label || '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '');
+  }
+
+  function storageKey(key) {
+    return 'crp-reason-draft:' + key;
+  }
+
+  function readDraft(key) {
+    try {
+      return window.sessionStorage.getItem(storageKey(key)) || '';
+    } catch (e) {
+      return '';
+    }
+  }
+
+  function saveDraft(key, value) {
+    if (!key) return;
+
+    try {
+      if (value && value.trim()) {
+        window.sessionStorage.setItem(storageKey(key), value);
+      } else {
+        window.sessionStorage.removeItem(storageKey(key));
+      }
+    } catch (e) {}
+  }
+
+  function clearDraft(key) {
+    try {
+      window.sessionStorage.removeItem(storageKey(key));
+    } catch (e) {}
+  }
+
+  function parseColor(value) {
+    var match = String(value || '').match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/i);
+    if (!match) return null;
+
+    var alpha = match[4] === undefined ? 1 : parseFloat(match[4]);
+    if (alpha < 0.1) return null;
+
+    return {
+      r: parseInt(match[1], 10),
+      g: parseInt(match[2], 10),
+      b: parseInt(match[3], 10)
+    };
+  }
+
+  function isNeutral(color) {
+    var max = Math.max(color.r, color.g, color.b);
+    var min = Math.min(color.r, color.g, color.b);
+    return (min > 244 && max > 248) || (max < 12 && min < 8);
+  }
+
+  function tone(accent, contrast) {
+    return {
+      accent: accent,
+      soft: accent.replace('rgb(', 'rgba(').replace(')', ', 0.12)'),
+      contrast: contrast
+    };
+  }
+
+  function fallbackTone(label) {
+    var text = (label || '').toLowerCase();
+
+    if (/revis/.test(text)) return tone('rgb(199, 119, 0)', '#FFFFFF');
+    if (/reprov|rejeit/.test(text)) return tone('rgb(217, 48, 37)', '#FFFFFF');
+    if (/aprov/.test(text)) return tone('rgb(30, 142, 62)', '#FFFFFF');
+
+    return tone('rgb(31, 63, 142)', '#FFFFFF');
+  }
+
+  function toneFor(button, label) {
+    var style = window.getComputedStyle(button);
+    var candidates = [
+      parseColor(style.backgroundColor),
+      parseColor(style.borderTopColor),
+      parseColor(style.color)
+    ].filter(Boolean).filter(function (color) {
+      return !isNeutral(color);
+    });
+
+    var best = null;
+    var bestScore = -1;
+
+    candidates.forEach(function (color) {
+      var score = Math.max(color.r, color.g, color.b) -
+        Math.min(color.r, color.g, color.b);
+
+      if (score > bestScore) {
+        best = color;
+        bestScore = score;
+      }
+    });
+
+    if (!best) return fallbackTone(label);
+
+    var accent = 'rgb(' + best.r + ', ' + best.g + ', ' + best.b + ')';
+    var luminance = (0.299 * best.r + 0.587 * best.g + 0.114 * best.b) / 255;
+
+    return tone(accent, luminance > 0.65 ? '#1F2937' : '#FFFFFF');
+  }
+
+  function visibleBox() {
+    for (var i = 0; i < boxes.length; i++) {
+      var box = document.getElementById(boxes[i]);
+      if (box && box.offsetWidth && box.offsetHeight) return box;
+    }
+    return null;
+  }
+
+  function saveCurrentDraft() {
+    if (!activeBox || !draftKey) return;
+    if (activeBox.__crpConfirmed) return;
+
+    var field = activeBox.querySelector('textarea');
+    saveDraft(draftKey, field ? field.value : '');
+  }
+
+  function close() {
+    if (!overlay) return;
+
+    saveCurrentDraft();
+
+    if (activeBox) {
+      activeBox.style.display = 'none';
+      if (original && original.parent && original.parent.isConnected) {
+        original.parent.insertBefore(activeBox, original.next);
+      }
+    }
+
+    overlay.remove();
+    overlay = null;
+    activeBox = null;
+    original = null;
+    draftKey = '';
+    document.body.classList.remove('crp-reason-open');
+  }
+
+  function bindConfirm(box) {
+    if (box.__crpReasonBound) return;
+    box.__crpReasonBound = true;
+
+    box.addEventListener('click', function (event) {
+      var button = event.target.closest && event.target.closest('button');
+      if (!button) return;
+      if (button.id !== 'BtnConfirmReason' && !/confirmar/i.test(button.textContent || '')) return;
+
+      var field = box.querySelector('textarea');
+      if (field && !field.value.trim()) return;
+
+      box.__crpConfirmed = true;
+      clearDraft(draftKey);
+    });
+  }
+
+  function bindDraft(box) {
+    if (box.__crpDraftBound) return;
+    box.__crpDraftBound = true;
+
+    box.addEventListener('input', function (event) {
+      if (!event.target || !event.target.matches || !event.target.matches('textarea')) return;
+      if (!draftKey) return;
+
+      saveDraft(draftKey, event.target.value);
+    });
+  }
+
+  function open(box) {
+    if (overlay) return;
+
+    var action = lastAction && Date.now() - lastAction.time < 6000
+      ? lastAction
+      : null;
+
+    activeBox = box;
+    box.__crpConfirmed = false;
+    original = {
+      parent: box.parentNode,
+      next: box.nextSibling
+    };
+    draftKey = action ? action.key : 'default';
+
+    overlay = document.createElement('div');
+    overlay.className = 'crp-reason-overlay';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.innerHTML =
+      '<div class="crp-reason-modal">' +
+        '<div class="crp-reason-head">' +
+          '<h3 class="crp-reason-title"></h3>' +
+          '<button type="button" class="crp-reason-close" aria-label="Fechar">×</button>' +
+        '</div>' +
+        '<div class="crp-reason-body"></div>' +
+      '</div>';
+
+    var colors = action ? action.tone : fallbackTone('');
+    overlay.style.setProperty('--crp-reason-accent', colors.accent);
+    overlay.style.setProperty('--crp-reason-soft', colors.soft);
+    overlay.style.setProperty('--crp-reason-contrast', colors.contrast);
+
+    overlay.querySelector('.crp-reason-title').textContent =
+      titleFor(action ? action.label : '');
+    overlay.querySelector('.crp-reason-close').addEventListener('click', close);
+    overlay.querySelector('.crp-reason-body').appendChild(box);
+
+    var pressedOutside = false;
+
+    overlay.addEventListener('pointerdown', function (event) {
+      pressedOutside = event.target === overlay;
+    });
+
+    overlay.addEventListener('pointercancel', function () {
+      pressedOutside = false;
+    });
+
+    overlay.addEventListener('click', function (event) {
+      if (event.target === overlay && pressedOutside) close();
+      pressedOutside = false;
+    });
+
+    document.body.appendChild(overlay);
+    document.body.classList.add('crp-reason-open');
+
+    bindConfirm(box);
+    bindDraft(box);
+
+    var field = box.querySelector('textarea');
+    if (field) {
+      if (!field.value.trim()) {
+        var draft = readDraft(draftKey);
+        if (draft) field.value = draft;
+      }
+      window.setTimeout(function () { field.focus(); }, 40);
+    }
+  }
+
+  function sync() {
+    var box = visibleBox();
+
+    if (box && !overlay) {
+      open(box);
+    } else if (!box && overlay) {
+      close();
+    }
+  }
+
+  document.addEventListener('click', function (event) {
+    var button = event.target.closest && event.target.closest('button');
+    if (!button) return;
+    if (button.closest('.crp-reason-overlay, #BoxForceInputReason, #BoxRejection, #BoxNotConclude')) return;
+
+    var label = clean(button.textContent)
+      .replace(/\s*\.{3,}\s*$/, '')
+      .replace(/\s*…\s*$/, '');
+    var onclick = button.getAttribute('onclick') || '';
+    var isAction = /doActionNotValidate|reject\(|approve\(|notConclude\(/i.test(onclick) ||
+      button.id === 'btnFinish' ||
+      /^customBtn_/i.test(button.id) ||
+      /(revis|reprov|rejeit|aprov|conclu|finaliz|justific)/i.test(label);
+
+    if (!isAction) return;
+
+    lastAction = {
+      label: label,
+      key: keyFor(button, label),
+      tone: toneFor(button, label),
+      time: Date.now()
+    };
+  }, true);
+
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape' && overlay) close();
+  });
+
+  function start() {
+    sync();
+    new MutationObserver(sync).observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['style', 'class']
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start);
+  } else {
+    start();
+  }
+})();
