@@ -82,6 +82,35 @@
     return (parts[0][0] + (last[0] || '')).toUpperCase();
   }
 
+  function relPhotoFromUser(user) {
+    if (!user) return '';
+
+    var photo = user.querySelector('.user-photo');
+    if (!photo) return '';
+
+    var img = photo.querySelector('img');
+    if (img && img.getAttribute('src')) return img.getAttribute('src');
+
+    var bg = photo.style.backgroundImage || getComputedStyle(photo).backgroundImage || '';
+    var match = bg.match(/url\(["']?(.*?)["']?\)/);
+    return match ? match[1] : '';
+  }
+
+  function relAvatarEl(name, photo, className) {
+    var avatar = el('span', className);
+
+    if (photo) {
+      avatar.classList.add('crp-avatar-photo');
+      avatar.style.backgroundImage = 'url("' + String(photo).replace(/"/g, '%22') + '")';
+      avatar.setAttribute('aria-label', name || '');
+    } else {
+      avatar.textContent = initials(name);
+      avatar.setAttribute('aria-hidden', 'true');
+    }
+
+    return avatar;
+  }
+
   function cardHeader(eyebrow, title, badge, iconKey) {
     var head = el('div', 'crp-card-head');
     head.appendChild(icon(iconKey || 'geral', 'crp-card-ic'));
@@ -309,10 +338,9 @@
         var pm = txt(strong).match(/\(([^)]+@[^)]+)\)/) || txt(req).match(/[\w.+-]+@[\w.-]+\.\w+/);
         if (pm) mail = (pm[1] || pm[0]).toLowerCase();
       }
-      if (name) {
-        var av = el('span', 'crp-kv-avatar', initials(name));
-        av.setAttribute('aria-hidden', 'true');
-        grid.appendChild(kvBox(av, 'Solicitante', name, mail));
+    if (name) {
+      var av = relAvatarEl(name, relPhotoFromUser(req), 'crp-kv-avatar');
+      grid.appendChild(kvBox(av, 'Solicitante', name, mail));
         req.classList.add('crp-src-hidden');
       } else {
         // estrutura inesperada: mostra o bloco original dentro do card
@@ -2552,6 +2580,13 @@
     return b;
   }
 
+  function relMetaItem(kind, label, value) {
+    var item = el('span', 'crp-rel-tl-meta-item crp-rel-tl-' + kind);
+    item.appendChild(el('span', 'crp-rel-tl-meta-label', label));
+    item.appendChild(el('span', 'crp-rel-tl-meta-value', value));
+    return item;
+  }
+
   // Prazo com hora 00:00/00:00:0x é data pura (evita "00:00:01").
   function relPrazo(raw) {
     var s = String(raw || '').trim();
@@ -2604,7 +2639,14 @@
     if (em) { empresa = em[1].trim(); tail = tail.slice(0, em.index).trim(); }
     if (!empresa && /(S\.?\s*A\.?|LTDA|EIRELI)\s*$/i.test(tail)) { empresa = tail; tail = ''; }
     cargo = tail;
-    return { name: name, cargo: cargo, empresa: empresa, email: email, userid: u.getAttribute('userid') || '' };
+    return {
+      name: name,
+      cargo: cargo,
+      empresa: empresa,
+      email: email,
+      userid: u.getAttribute('userid') || '',
+      photo: relPhotoFromUser(u)
+    };
   }
 
   /* Plano B: um e-mail = uma pessoa; descarta iniciais soltas de avatar. */
@@ -2718,8 +2760,7 @@
     var wrap = el('div', 'crp-rel-tl-resp');
     var avs = el('div', 'crp-rel-avatars');
     people.slice(0, 3).forEach(function (p) {
-      var av = el('span', 'crp-rel-avatar', initials(p.name));
-      av.setAttribute('aria-hidden', 'true');
+      var av = relAvatarEl(p.name, p.photo, 'crp-rel-avatar');
       if (p.email) av.title = p.email;
       avs.appendChild(av);
     });
@@ -2755,8 +2796,8 @@
     var exec = x.executor || '';
     var aprov = /aprov/i.test(x.statusRaw || '');
     var verb;
-    if (exec) verb = aprov ? 'Aprovada por ' : (x.end ? 'Concluída em ' + relNoSec(x.end) + ' por ' : 'Concluída por ');
-    else if (people.length === 1) verb = aprov ? 'Aprovada por ' : (x.end ? 'Concluída em ' + relNoSec(x.end) + ' por ' : 'Concluída por ');
+    if (exec) verb = aprov ? 'Aprovada por ' : 'Concluída por ';
+    else if (people.length === 1) verb = aprov ? 'Aprovada por ' : 'Concluída por ';
     else verb = 'Responsáveis: ';
 
     if (exec && people.length > 1) {
@@ -2868,10 +2909,15 @@
       li.appendChild(top);
       if (x.subtitle) li.appendChild(el('div', 'crp-rel-tl-sub', x.subtitle));
       var meta = el('div', 'crp-rel-tl-meta');
+      if (String(x.start || '').trim()) {
+        meta.appendChild(relMetaItem('start', 'Aberta em', relNoSec(x.start)));
+      }
       if (x.open) {
-        if (parseStamp(x.end) !== null) meta.appendChild(el('span', 'crp-rel-tl-prazo', 'Prazo: ' + relPrazo(relNoSec(x.end))));
-      } else if (x.end && !(x.people && x.people.length)) {
-        meta.appendChild(el('span', 'crp-rel-tl-conc', 'Concluído em ' + relNoSec(x.end)));
+        if (parseStamp(x.end) !== null) {
+          meta.appendChild(relMetaItem('prazo', 'Prazo', relPrazo(relNoSec(x.end))));
+        }
+      } else if (x.end) {
+        meta.appendChild(relMetaItem('conc', 'Concluída em', relPrazo(relNoSec(x.end))));
       }
       if (meta.children.length) li.appendChild(meta);
       var rb = relRespBlock(x);

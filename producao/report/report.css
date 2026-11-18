@@ -1139,6 +1139,7 @@ body.pop .crp-rel-avatar{
   background:var(--crp-read); color:var(--crp-blue); font-size:10px; font-weight:700;
 }
 body.pop .crp-rel-avatar-sm{ flex-basis:22px; width:22px; height:22px; font-size:9px; }
+body.pop .crp-avatar-photo{ background-size:cover; background-position:center; background-repeat:no-repeat; color:transparent; }
 
 /* Timeline do passo a passo */
 body.pop .crp-rel-steps{ margin:0 0 14px; }
@@ -1161,7 +1162,15 @@ body.pop .crp-rel-tl-item.atrasada::before{ background:var(--crp-error); }
 body.pop .crp-rel-tl-item.cancelada::before{ background:#9AA7C4; }
 body.pop .crp-rel-tl-top{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
 body.pop .crp-rel-tl-task{ color:var(--crp-text); font-weight:600; font-size:14px; }
-body.pop .crp-rel-tl-meta{ display:flex; gap:6px 14px; flex-wrap:wrap; margin-top:4px; color:var(--crp-muted); font-size:12px; }
+body.pop .crp-rel-tl-meta{ display:flex; align-items:center; gap:6px 8px; flex-wrap:wrap; margin-top:8px; color:var(--crp-muted); font-size:12px; }
+body.pop .crp-rel-tl-meta-item{ display:inline-flex; align-items:center; gap:6px; padding:4px 9px; border:1px solid var(--crp-line); border-radius:999px; background:#F7F9FD; white-space:nowrap; line-height:1.2; }
+body.pop .crp-rel-tl-meta-item::before{ content:""; flex:0 0 6px; width:6px; height:6px; border-radius:50%; background:currentColor; }
+body.pop .crp-rel-tl-meta-label{ color:var(--crp-muted); font-size:10px; font-weight:500; letter-spacing:.03em; text-transform:uppercase; }
+body.pop .crp-rel-tl-meta-value{ color:var(--crp-text); font-weight:600; }
+body.pop .crp-rel-tl-start{ color:var(--crp-blue); background:#F2F6FC; border-color:#DCE6F5; }
+body.pop .crp-rel-tl-prazo{ color:#A86400; background:#FFF8EA; border-color:#F0DDBB; }
+body.pop .crp-rel-tl-conc{ color:var(--crp-green); background:#F0F8F2; border-color:#D2E8D8; }
+body.pop .crp-rel-tl-item.atrasada .crp-rel-tl-prazo{ color:var(--crp-error); background:var(--crp-error-bg); border-color:#F1C7C7; }
 body.pop .crp-rel-tl-resp{ display:flex; align-items:center; gap:6px; margin-top:6px; color:var(--crp-muted); font-size:12px; }
 body.pop .crp-rel-tl-respname{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 body.pop .crp-rel-tl-group{
