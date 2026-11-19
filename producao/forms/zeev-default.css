@@ -5371,11 +5371,23 @@ select.crp-select-aberto {
   color: var(--crp-reason-contrast, #FFFFFF);
   font-size: 14px;
   font-weight: 600;
+  cursor: pointer;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
 }
 
 .crp-reason-body #BtnConfirmReason:hover,
 .crp-reason-body #BtnConfirmReason:focus-visible {
-  filter: brightness(0.92);
+  background: var(--crp-reason-accent, #1F3F8E) !important;
+  border-color: var(--crp-reason-accent, #1F3F8E) !important;
+  color: var(--crp-reason-contrast, #FFFFFF) !important;
+  box-shadow: 0 0 0 3px var(--crp-reason-soft, rgba(31, 63, 142, 0.15));
+  transform: translateY(-1px);
+  filter: none;
+}
+
+.crp-reason-body #BtnConfirmReason:active {
+  transform: translateY(0);
+  box-shadow: none;
 }
 
 body.crp-reason-open {

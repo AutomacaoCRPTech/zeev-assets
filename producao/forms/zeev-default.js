@@ -2527,6 +2527,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       box.__crpConfirmed = true;
       clearDraft(draftKey);
+      window.setTimeout(close, 80);
     });
   }
 
