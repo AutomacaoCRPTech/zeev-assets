@@ -84,6 +84,12 @@ Em cada fluxo/app do Zeev:
     .catch(function () { inject('main'); });
 })();
 ```
+
+### Para puxar o estilo dos relatórios, utilize o código abaixo:
+```
+<script src="https://cdn.jsdelivr.net/gh/AutomacaoCRPTech/zeev-assets@main/producao/report/report-loader.js"></script>
+```
+
 ### Observações importantes
 
 - **Demora:** o SHA é guardado no `localStorage` por 5 minutos (`TTL`). Então uma alteração nova
