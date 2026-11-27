@@ -1001,7 +1001,11 @@
       var atual = ordem.filter(function (c) { return s.left.contains(c); });
       var atualFiltrado = Array.prototype.slice.call(s.left.children).filter(function (c) { return ordem.indexOf(c) >= 0; });
       var jaCorreto = atualFiltrado.length === ordem.length && atualFiltrado.every(function (c, i) { return c === ordem[i]; });
-      if (!jaCorreto) {
+      var editando = document.activeElement && (
+        document.activeElement.matches('input, textarea, select') ||
+        document.activeElement.isContentEditable
+      );
+      if (!jaCorreto && !editando) {
         ordem.forEach(function (c) { s.left.appendChild(c); });
       }
     }
